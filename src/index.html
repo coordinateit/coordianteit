@@ -1,10 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Document</title>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
 
-</body>
+    <title>CoordinateIt</title>
+
+    <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Custom Styles -->
+      <link rel="stylesheet" href="main.css">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">CoordinateIt</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form method="POST" action="/dashboard.html" class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="text" placeholder="Email" class="form-control" name="email">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control" name="password">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+    <!-- jumbotron -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Stop the Scheduling nightmare...</h1>
+        <p>Coordination is the key to stop wasting your time and money. CoordinateIt is an easy scheduler that tracks the time and location of appointments.</p>
+      </div>
+    </div>
+
+
+    <div class="container">
+   <section>
+      <div class="row">
+        <div class="col-md-6">
+          <p class="lead">Stop "just getting things in the books" and figure out when and where YOU can make appointments!</p>
+        </div>
+        <div class="col-md-6">
+          <div class="img_placeholder"></div>
+        </div>
+      </div>
+   </section>
+
+   <section>
+    <div class="row">
+        <div class="col-md-6">
+          <div class="img_placeholder"></div>
+        </div>
+        <div class="col-md-6">
+          <p class="lead">CoordinateIt gives you the power to easily see what appointments you have any given day and WHEN and WHERE your next appointment best fits in!</p>
+       </div>
+     </div>
+   </section>
+
+   <section>
+      <div class="row">
+         <div class="col-md-12">
+           <h2 class="text-center">Key Benefits CoordinateIt will bring to your business</h2>
+          <table>
+            <tr>
+              <td><i class="fa fa-calendar fa-5x" aria-hidden="true"></i></td>
+              <td><p class="lead">Easily create new appointments and capture when and where they will be!</p></td>
+            </tr>
+            <tr>
+              <td><i class="fa fa-map-marker fa-5x" aria-hidden="true"></i></td>
+              <td><p class="lead">Manage where the appointments will be to better fit your schedule and day!</p></td>
+            </tr>
+            <tr>
+              <td><i class="fa fa-file-text-o fa-5x" aria-hidden="true"></i></td>
+              <td><p class="lead">Easily export maps and appointments to take with you for your daily schedule!</p></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+   </section>
+      <hr>
+
+      <footer>
+        <p>&copy; 2016 CoordinateIt, Inc.</p>
+      </footer>
+     </div><!-- /container -->
+
+
+    <!-- jQuery -->
+      <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+
+    <!-- Custom Scripts -->
+      <script src="script.js" type="text/javascript"></script>
+
+    <!-- Bootstrap JS -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- Font Awesome -->
+      <script src="https://use.fontawesome.com/535525bdff.js"></script>
+
+  </body>
 </html>
