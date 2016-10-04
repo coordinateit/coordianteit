@@ -1,0 +1,15 @@
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+section {
+  margin-top: 40px;
+}
+
+.img_placeholder {
+  height: 300px;
+  width: 500px;
+  background-color: gray;
+  border-radius: 10px;
+}
