@@ -4,7 +4,20 @@ body {
 }
 
 section {
-  margin-top: 40px;
+  margin-top: 80px;
+}
+
+table {
+  margin: 40px auto;
+}
+
+td {
+  padding: 20px;
+  vertical-align: middle;
+}
+
+td:first-child {
+  text-align: center;
 }
 
 .img_placeholder {
