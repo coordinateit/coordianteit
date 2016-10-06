@@ -3,7 +3,7 @@ var router = express.Router();
 var bcrypt = require('bcrypt');
 var knex = require('../db/knex');
 
-// ROUTE QUERIES DATABASE FOR USER INFO, STARTS COOKIE SESSION IF VALID
+// QUERY DATABASE FOR USER INFO, START COOKIE SESSION IF VALID
 router.post('/login', function(req, res, next) {
   knex('users')
     .where({email: req.body.email})
