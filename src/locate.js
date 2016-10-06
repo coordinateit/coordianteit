@@ -5,6 +5,8 @@ $(document).ready(function() {
     navigator.geolocation.getCurrentPosition(function(data) {
       var position = {lat: data.coords.latitude, lng: data.coords.longitude}
       window.localStorage.position = JSON.stringify(position);
+      $('#dummysignin').hide();
+      $('#signin').show();
     });
   }
 });
