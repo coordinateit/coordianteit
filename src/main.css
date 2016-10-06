@@ -26,9 +26,3 @@ td:first-child {
   background-color: gray;
   border-radius: 10px;
 }
-
-#map {
-  height: 500px;
-  width: 500px;
-  border: 1px solid blue;
-}

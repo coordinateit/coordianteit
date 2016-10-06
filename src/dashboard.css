@@ -1,0 +1,28 @@
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+.dashcontainer {
+  height: 100%;
+  width: 100%;
+}
+
+.cal-container {
+  float:left;
+  margin: 2%;
+  width: 46%;
+}
+
+.maplist-container {
+  float:right;
+  margin: 2%;
+  width: 46%;
+}
+
+#map {
+    height: 65vh;
+    width: 45vw;
+    position: relative;
+    margin: auto;
+}
