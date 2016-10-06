@@ -4,6 +4,8 @@ exports.up = function(knex, Promise) {
     table.string('email').unique().notNullable();
     table.string('password').notNullable();
     table.string('name').unique().notNullable();
+    table.string('phone');
+    table.integer('team_id').references('id').inTable('teams');
     table.boolean('isadmin').notNullable().defaultsTo(false);
   });
 };
