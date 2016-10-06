@@ -3,6 +3,15 @@ body {
   padding-bottom: 20px;
 }
 
+#signin {
+  display: none;
+}
+
+#dummysignin {
+  background-color: #aaa;
+  color: #fff;
+}
+
 section {
   margin-top: 80px;
 }
