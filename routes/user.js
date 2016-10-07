@@ -27,10 +27,11 @@ router.get('/listView', function(req, res, next) {
   //job type
   //phone number
 
-  if (req.sesion.id) {
+  if (req.session.id) {
     knex('jobs')
       .join('visits', 'jobs.id', 'visits.jobs_id')
       .then(function(visits) {
+        console.log(visits);
         res.send(visits);
       })
   }
