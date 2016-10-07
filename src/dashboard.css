@@ -29,14 +29,33 @@ h1 {
   width: 46%;
 }
 
+#list {
+  margin: auto;
+  display: none;
+  overflow: auto;
+}
+
 #map {
   height: 65vh;
   width: 45vw;
   margin: auto;
+}
+
+.options-container {
+  position: relative;
+}
+
+.createjob {
+  position: absolute;
+  right: 0px;
+  top: 30px;
 
 }
 
-#list {
-  margin: auto;
-  display: none;
+.team-dropdown {
+  display: inline-block;
+}
+
+.modal-content {
+  padding: 40px;
 }
