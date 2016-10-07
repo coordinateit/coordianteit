@@ -15,7 +15,6 @@ $(document).ready(function() {
     dataType: 'json',
     url: '/user/jobsAll'
   }).then(function(jobs) {
-    console.log(jobs);
     setMarkers(jobs);
   });
 });

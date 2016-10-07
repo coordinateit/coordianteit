@@ -23,6 +23,24 @@
 </head>
 <body>
 
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">CoordinateIt</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">Profile</a></li>
+        </ul>
+      </div><!--/.navbar-collapse -->
+    </div>
+  </nav>
 
 <h1>Today's Activities</h1>
 
@@ -30,19 +48,22 @@
 
       <div class="cal-container">
         <div id="calendar"></div>
+        <div>
+          
+        </div>
       </div>
 
       <div class="maplist-container">
         <div>
           <label class="switch-light" onclick="">
-            <input type="checkbox">
+            <input class="switch" type="checkbox" checked="checked">
             <strong>
             view
             </strong>
 
             <span class="well">
-              <span>Map</span>
               <span>List</span>
+              <span>Map</span>
               <a class="btn btn-primary"></a>
             </span>
           </label>
@@ -70,6 +91,7 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.js'></script>
 <script src='calendar.js'></script>
 <script src='map.js'></script>
+<script src='dashboard.js'></script>
 <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap' async></script>
 
 </body>
