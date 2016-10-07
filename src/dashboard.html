@@ -35,23 +35,32 @@
       <div class="maplist-container">
         <div>
           <label class="switch-light" onclick="">
-          <input type="checkbox">
-          <strong>
-          view
-          </strong>
+            <input type="checkbox">
+            <strong>
+            view
+            </strong>
 
-          <span class="well">
-            <span>Map</span>
-            <span>List</span>
-            <a class="btn btn-primary"></a>
-          </span>
-</label>
+            <span class="well">
+              <span>Map</span>
+              <span>List</span>
+              <a class="btn btn-primary"></a>
+            </span>
+          </label>
         </div>
 
         <div id="map"></div>
-        <div id="list"></div>
+        <div id="list" class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <th>Team</th>
+              <th>Start Time</th>
+              <th>Job Type</th>
+              <th>Address</th>
+              <th>Phone</th>
+            </tr>
+          </table>
+        </div>
       </div>
-
     </div>
   </div><!--container-->
 

@@ -3,6 +3,10 @@ html, body {
   width: 100%;
 }
 
+h1 {
+  margin-left: 40px;
+}
+
 .dashcontainer {
   height: 100%;
   width: 100%;
@@ -21,8 +25,12 @@ html, body {
 }
 
 #map {
-    height: 65vh;
-    width: 45vw;
-    position: relative;
-    margin: auto;
+  height: 65vh;
+  width: 45vw;
+  display: none;
+}
+
+#list {
+  display: block;
+  margin: auto;
 }
