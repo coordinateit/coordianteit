@@ -6,10 +6,10 @@ $(document).ready(function(){
     dataType: 'json',
     url: '/user/visitsAll'
   }).then(function(data) {
-    var visits = data.map(function(i) {
-      let start = new Date(parseInt(i.start));
-      let end = new Date(parseInt(i.start));
-      return {title: i.visittype, start: start, end: end}
+    var visits = data.map(function(visit) {
+      let start = new Date(parseInt(visit.start));
+      let end = new Date(parseInt(visit.end));
+      return {title: visit.visittype, start: start, end: end}
     })
     initCalendar(visits);
   });
