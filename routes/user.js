@@ -20,4 +20,20 @@ router.get('/visitsAll', function(req, res, next) {
   }
 });
 
+router.get('/listView', function(req, res, next) {
+  //team
+  //start time
+  //address
+  //job type
+  //phone number
+
+  if (req.sesion.id) {
+    knex('jobs')
+      .join('visits', 'jobs.id', 'visits.jobs_id')
+      .then(function(visits) {
+        res.send(visits);
+      })
+  }
+});
+
 module.exports = router;
