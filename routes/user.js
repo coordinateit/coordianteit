@@ -42,20 +42,10 @@ router.get('/visitsAll', function(req, res, next) {
 
 // RETURNS VISITS COMBINED WITH JOBS TABLE
 router.get('/listView', function(req, res, next) {
-<<<<<<< HEAD
-=======
-  //team
-  //start time
-  //address
-  //job type
-  //phone number
-
->>>>>>> origin/master
   if (req.session.id) {
     knex('jobs')
       .join('visits', 'jobs.id', 'visits.jobs_id')
       .then(function(visits) {
-        console.log(visits);
         res.send(visits);
       })
   }
