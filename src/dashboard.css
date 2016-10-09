@@ -1,4 +1,4 @@
-html, body {
+body, html, .dashcontainer {
   height: 100%;
   width: 100%;
 }
@@ -9,53 +9,53 @@ body {
 }
 
 h1 {
-  margin-left: 40px;
+  margin-left: 2%;
 }
 
-.dashcontainer {
-  height: 100%;
-  width: 100%;
+.cal-container, .maplist-container {
+  margin: 2%;
+  width: 46%;
 }
 
 .cal-container {
   float:left;
-  margin: 2%;
-  width: 46%;
-}
-
-.maplist-container {
-  float:right;
-  margin: 2%;
-  width: 46%;
-}
-
-#list {
-  margin: auto;
-  display: none;
-  overflow: auto;
-}
-
-#map {
-  height: 65vh;
-  width: 45vw;
-  margin: auto;
-}
-
-.options-container {
-  position: relative;
 }
 
 .createjob {
   position: absolute;
   right: 0px;
   top: 30px;
+}
 
+.maplist-container {
+  float:right;
+}
+
+.modal-content {
+  padding: 40px;
+}
+
+.navbar {
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+.options-container {
+  position: relative;
 }
 
 .team-dropdown {
   display: inline-block;
 }
 
-.modal-content {
-  padding: 40px;
+#list {
+  display: none;
+  margin: auto;
+  overflow: auto;
+}
+
+#map {
+  height: 65vh;
+  margin: auto;
+  width: 45vw;
 }
