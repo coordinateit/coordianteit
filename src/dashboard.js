@@ -16,7 +16,6 @@
 
 ////// Add data to list ///////
 
-
 function getListData(){
   $.ajax({
     type: 'GET',
@@ -24,6 +23,24 @@ function getListData(){
     url: '/user/listView',
     success: function(data){
       console.log(data);
+
+      for (var i = 0; i < data.length; i++) {
+        data[i]
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
   });
 };
