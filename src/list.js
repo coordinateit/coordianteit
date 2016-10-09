@@ -1,19 +1,3 @@
-
-
-////// Map List Switch ///////
-
-  $(".switch").change(function() {
-      var userinput = $(this);
-      if (userinput.prop("checked")){
-        $("#map").show();
-        $("#list").hide();
-      } else {
-        $("#map").hide();
-        $("#list").show();
-      }
-    });
-
-
 ////// Add data to list ///////
 
 function getListData(){

@@ -3,15 +3,6 @@ body {
   padding-bottom: 20px;
 }
 
-#signin {
-  display: none;
-}
-
-#dummysignin {
-  background-color: #aaa;
-  color: #fff;
-}
-
 section {
   margin-top: 80px;
 }
@@ -34,4 +25,18 @@ td:first-child {
   width: 500px;
   background-color: gray;
   border-radius: 10px;
+}
+
+.navbar {
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+#dummysignin {
+  background-color: #aaa;
+  color: #fff;
+}
+
+#signin {
+  display: none;
 }
