@@ -1,0 +1,43 @@
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+h1 {
+  margin-left: 20px;
+  margin-bottom: 40px;
+}
+
+section {
+  margin-top: 40px;
+}
+
+.credentials, .user_management {
+  display: none;
+}
+
+.navbar {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.topspacing {
+  margin-top: 40px;
+}
+
+#list {
+  display: none;
+  margin: auto;
+  overflow: auto;
+}
+
+#map {
+  height: 65vh;
+  margin: auto;
+  width: 65vw;
+}

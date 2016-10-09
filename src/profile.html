@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../../favicon.ico">
+
+  <title>Profile</title>
+
+  <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Custom CSS -->
+    <link rel="stylesheet" href="profile.css">
+  <!-- Toggle Switch -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/css-toggle-switch/latest/toggle-switch.css" />
+
+</head>
+<body>
+
+  <!-- Nav bar -->
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">CoordinateIt</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="searchjobs.html">Search Jobs</a></li>
+          <li><a href="profile.html">Profile</a></li>
+        </ul>
+      </div><!--/.navbar-collapse -->
+    </div>
+  </nav>
+
+  <h1>Profile</h1>
+
+<div class="container-fluid">
+
+  <!-- Profile Menu Buttons -->
+  <div class="row">
+    <div class="col-md-2 col-md-offset-2">
+        <button type="button" class="btn btn-primary btn-lg btn-block">E-mail/Password</button>
+    </div>
+    <div class="col-md-2">
+        <button type="button" class="btn btn-primary btn-lg btn-block">User Management</button>
+    </div>
+    <div class="col-md-2">
+        <button type="button" class="btn btn-primary btn-lg btn-block">Team Management</button>
+    </div>
+    <div class="col-md-2">
+        <button type="button" class="btn btn-primary btn-lg btn-block">Payment Info</button>
+    </div>
+  </div>
+
+  <!-- Update Login -->
+  <section class="credentials">
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
+        <form action="">
+          <fieldset>
+            <legend>Update Login</legend>
+            <div class="form-group">
+              <label for="email">E-Mail</label>
+              <input type="text" class="form-control" name="email" placeholder="e-mail@domain.com">
+            </div>
+            <div class="form-group">
+              <label for="old_password">Old Password</label>
+              <input type="password" class="form-control" name="old_password" placeholder="Old Password">
+            </div>
+            <div class="form-group">
+              <label for="new_password">New Password</label>
+              <input type="password" class="form-control" name="new_password" placeholder="New Password">
+            </div>
+            <div class="form-group">
+              <label for="retype_password">Retype New Password</label>
+              <input type="text" class="form-control" name="retype_password" placeholder="Retype New Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- User Management -->
+  <section class="user_management">
+    <div class="row">
+      <div class="col-md-3">
+        <form action="">
+          <fieldset>
+            <legend>Create User</legend>
+            <div class="form-group">
+              <label for="first_name">First Name</label>
+              <input type="text" class="form-control" name="first_name" placeholder="First Name">
+            </div>
+            <div class="form-group">
+              <label for="last_name">Last Name</label>
+              <input type="text" class="form-control" name="last_name" placeholder="Last Name">
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="text" class="form-control" name="phone" placeholder="phone">
+            </div>
+            <div class="form-group">
+              <label for="email">E-Mail</label>
+              <input type="text" class="form-control" name="email" placeholder="e-mail@domain.com">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+              <label for="user_type">User Type</label>
+              <select name="user_type" class="form-control">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Create User</button>
+          </fieldset>
+        </form>
+      </div>
+      <div class="col-md-9">
+        <table class="table table-striped table-responsive">
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>E-mail</th>
+            <th>Phone</th>
+            <th>User Type</th>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Management -->
+  <section class="team_management">
+    <div class="row">
+      <div class="col-md-4">
+        <form action="">
+          <fieldset>
+            <legend>Create Team</legend>
+            <div class="form-group">
+              <label for="team_name">Team Name</label>
+              <input type="text" class="form-control" name="team_name" placeholder="Team Name">
+            </div>
+            <div class="form-group">
+              <label for="vehicle">Vehicle</label>
+              <input type="text" class="form-control" name="vehicle" placeholder="Vehicle">
+            </div>
+            <button type="submit" class="btn btn-primary">Create Team</button>
+          </fieldset>
+        </form>
+        <form class="topspacing" action="">
+          <div class="form-group">
+            <fieldset>
+              <legend>Select Team</legend>
+              <select name="select_team" class="form-control">
+                <option value="team1">Team 1</option>
+                <option value="team1">Team 2</option>
+                <option value="team1">Team 3</option>
+              </select>
+            </fieldset>
+          </div>
+        </form>
+        <h3 class="topspacing">Team Members</h3>
+        <table class="table table-striped table-responsive">
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone</th>
+          </tr>
+        </table>
+        <h3 class="topspacing">Vehicle</h3>
+        <p class="lead">F-150</p>
+      </div>
+      <div class="col-md-8">
+
+          <!-- Map - List Switch -->
+          <div>
+            <label class="switch-light" onclick="">
+              <input class="switch" type="checkbox" checked="checked">
+              <span class="well">
+                <span>List</span>
+                <span>Map</span>
+                <a class="btn btn-primary"></a>
+              </span>
+            </label>
+          </div>
+
+          <!-- Map -->
+          <div id="map"></div>
+
+          <!-- List -->
+          <div id="list" class="table-responsive">
+            <table class="list table table-striped">
+              <tr>
+                <th>Team</th>
+                <th>Start Time</th>
+                <th>Job Type</th>
+                <th>Address</th>
+                <th>Phone</th>
+              </tr>
+            </table>
+            <a href="list.html" target="_blank">Printer Friendly Version</a>
+          </div>
+      </div>
+    </div>
+  </section>
+  <!-- Payment Info -->
+
+
+
+</div> <!-- .container-fluid -->
+
+
+<script src='https://code.jquery.com/jquery-2.2.3.min.js' integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=' crossorigin='anonymous'></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src='profile.js'></script>
+<script src='map.js'></script>
+<script src='dashboard.js'></script>
+<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap' async></script>
+
+</body>
+</html>
