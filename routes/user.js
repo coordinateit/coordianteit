@@ -75,7 +75,6 @@ router.post('/postJob', function(req, res, next) {
     }
   }
   function insert() {
-    console.log(req.body);
     knex('jobs')
       .insert({
         lat: lat,
