@@ -1,4 +1,4 @@
-body, html, .dashcontainer {
+body, html, {
   height: 100%;
   width: 100%;
 }
@@ -9,7 +9,7 @@ body {
 }
 
 h1 {
-  margin-left: 2%;
+  margin-left: 20px;
 }
 
 .cal-container, .maplist-container {
@@ -36,8 +36,8 @@ h1 {
 }
 
 .navbar {
-  padding-left: 2%;
-  padding-right: 2%;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .options-container {
