@@ -37,7 +37,7 @@ function setMarkers(jobs) {
     var marker = new google.maps.Marker({
       position: {lat: parseFloat(jobs[i].lat), lng: parseFloat(jobs[i].lng)},
       map: map,
-      // label: jobs[i].team_id.toString(),
+      label: String.fromCharCode(jobs[i].id + 64),
       title: jobs[i].customer_name
     });
     markers.push(marker);
