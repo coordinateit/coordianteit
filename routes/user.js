@@ -47,6 +47,7 @@ router.get('/listView', function(req, res, next) {
     knex('jobs')
       .join('visits', 'jobs.id', 'visits.jobs_id')
       .then(function(visits) {
+        console.log(visits);
         res.send(visits);
       })
   }
