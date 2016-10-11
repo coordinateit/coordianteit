@@ -21,6 +21,7 @@ function getJobs(bounds) {
     dataType: 'json',
     url: '/user/jobs'
   }).then(function(jobs) {
+    console.log(jobs);
     setMarkers(jobs);
   });
 }

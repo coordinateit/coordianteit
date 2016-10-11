@@ -22,6 +22,7 @@ function getListData(){
     dataType: 'json',
     url: '/user/listView',
     success: function(data) {
+      console.log(data);
       makeList(data);
     }
   });
