@@ -35,12 +35,29 @@ function setMarkers(jobs) {
   markers = [];
   // SET NEW MARKERS
   for (var i = 0; i < jobs.length; i++) {
-    var marker = new google.maps.Marker({
+    let marker = new google.maps.Marker({
       position: {lat: parseFloat(jobs[i].lat), lng: parseFloat(jobs[i].lng)},
       map: map,
+      id: jobs[i].id,
       label: String.fromCharCode(jobs[i].id + 64),
       title: jobs[i].customer_name
     });
+    marker.addListener('click', function() {
+      getJob(marker.id)
+      $('#viewModal').modal('show');
+    });
     markers.push(marker);
   }
+}
+
+// GET DATA FOR A SPECIFIC JOB
+function getJob(id) {
+  var url = '/user/job/' + id;
+  $.ajax({
+    type: 'GET',
+    datatype: 'json',
+    url: url
+  }).then(function(job) {
+    console.log(job);
+  });
 }
