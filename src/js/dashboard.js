@@ -22,8 +22,7 @@ function getListData(){
     dataType: 'json',
     url: '/user/listView',
     success: function(data) {
-      console.log(data);
-      makeList(data);
+      visitList(data);
     }
   });
 };
@@ -31,7 +30,7 @@ function getListData(){
 
 ////// Add data to list ///////
 
-function makeList(data) {
+function visitList(data) {
   for (var i = 0; i < data.length; i++) {
     let date = new Date(parseInt(data[i].start));
     let meridiem = 'am';
@@ -50,6 +49,30 @@ function makeList(data) {
 }
 
 
+////// Get team data from server ///////
+
+function getTeamList() {
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/teams',
+    success: function(data) {
+      teamList(data);
+    }
+  });
+}
+
+
+////// Add data to list ///////
+
+function teamList(teams) {
+  for (var i = 0; i < teams.length; i++) {
+    $('.teams').append(`<option value="${teams[i].id}">Team ${teams[i].id}</option>`)
+  }
+}
+
+
 $(document).ready(function(){
   getListData();
+  getTeamList();
 });
