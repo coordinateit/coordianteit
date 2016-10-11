@@ -41,18 +41,29 @@ router.get('/visitsAll', function(req, res, next) {
   }
 });
 
+// GETS A LIST OF TEAMS
+router.get('/teams', function(req, res, next) {
+  if (req.session.id) {
+    knex('teams')
+      .then(function(teams) {
+        res.send(teams);
+      })
+  }
+});
+
 // RETURNS VISITS COMBINED WITH JOBS TABLE
 router.get('/listView', function(req, res, next) {
   if (req.session.id) {
     knex('jobs')
       .join('visits', 'jobs.id', 'visits.jobs_id')
       .then(function(visits) {
-        console.log(visits);
         res.send(visits);
       })
   }
 });
 
+// GETS A SINGLE JOB BY ID
+// !!!!!!!!!!!!!!!!!!!!!!!!  CHANGE ME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 router.get('/job/:id', function(req, res, next) {
   if (req.session.id) {
     knex('jobs')

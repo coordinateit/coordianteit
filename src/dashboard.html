@@ -56,10 +56,8 @@
 
             <!-- Team Selection Dropdown -->
             <div class="form-group">
-              <select class="form-control" name="" id="">
-                <option value="Team1">Team 1</option>
-                <option value="Team2">Team 2</option>
-                <option value="Team3">Team 3</option>
+              <select class="form-control teams">
+                <!-- Teams appended from dashboard.js makeList() -->
               </select>
             </div>
           </div>
@@ -212,10 +210,8 @@
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="team">Team</label>
-                        <select class="form-control" name="team">
-                          <option value="Team1">Team 1</option>
-                          <option value="Team2">Team 2</option>
-                          <option value="Team3">Team 3</option>
+                        <select class="form-control teams" name="team">
+                          <!-- Teams appended from dashboard.js makeList() -->
                         </select>
                       </div>
                     </div>
@@ -251,13 +247,13 @@
                     <div class="col-md-8">
                       <div class="form-group">
                         <label for="customer_name">Customer Name</label>
-                        <input type="text" name="customer_name" class="form-control" placeholder="Customer Name">
+                        <input type="text" id="customer_name" name="customer_name" class="form-control" placeholder="Customer Name">
                       </div>
                     </div>
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="po_number">PO Number</label>
-                        <input type="text" name="po_number" class="form-control" placeholder="PO Number">
+                        <input type="text" id="po_number" name="po_number" class="form-control" placeholder="PO Number">
                       </div>
                     </div>
                   </div>
@@ -266,34 +262,34 @@
                     <div class="col-md-8">
                       <div class="form-group">
                         <label for="email">E-mail</label>
-                        <input type="text" name="email" class="form-control" placeholder="name@domain.com">
+                        <input type="text" id="email" name="email" class="form-control" placeholder="name@domain.com">
                       </div>
                     </div>
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="phone_number">Phone Number</label>
-                        <input type="text" name="phone_number" class="form-control" placeholder="###-###-###">
+                        <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="###-###-###">
                       </div>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label for="address">Job Location</label>
-                    <input type="text" name="address" class="form-control" placeholder="Street Address">
+                    <input type="text" id="address" name="address" class="form-control" placeholder="Street Address">
                   </div>
 
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="city">City</label>
-                        <input type="text" name="city" class="form-control" placeholder="City">
+                        <input type="text" id="city" name="city" class="form-control" placeholder="City">
                       </div>
                     </div>
 
                     <div class="col-md-3">
                       <div class="form-group">
                         <label for="state">State</label>
-                        <select class="form-control" name="state">
+                        <select id="state" class="form-control" name="state">
                           <option value="AL">Alabama</option>
                         	<option value="AK">Alaska</option>
                         	<option value="AZ">Arizona</option>
@@ -352,7 +348,7 @@
                     <div class="col-md-3">
                       <div class="form-group">
                         <label for="zip">Zip</label>
-                        <input type="text" name="zip" class="form-control" placeholder="Zip">
+                        <input type="text" id="zip" name="zip" class="form-control" placeholder="Zip">
                       </div>
                     </div>
                   </div>
@@ -361,7 +357,7 @@
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="job-date">Job Date</label>
-                        <input type="date" class="form-control" name="job_date" >
+                        <input type="date" id="job_date" class="form-control" name="job_date" >
                       </div>
                     </div>
                     <div class="col-md-4">
@@ -382,16 +378,14 @@
                     <div class="col-md-5">
                       <div class="job-type">
                         <label for="job-type">Job Type</label>
-                        <input type="text" class="form-control" name="job_type" placeholder="Job Type">
+                        <input type="text" id="job_type" class="form-control" name="job_type" placeholder="Job Type">
                       </div>
                     </div>
                     <div class="col-md-4">
                       <div class="form-group">
                         <label for="team">Team</label>
-                        <select class="form-control" name="team">
-                          <option value="Team1">Team 1</option>
-                          <option value="Team2">Team 2</option>
-                          <option value="Team3">Team 3</option>
+                        <select id="team" class="form-control teams" name="team">
+                          <!-- Teams appended from dashboard.js makeList() -->
                         </select>
                       </div>
                     </div>
@@ -409,7 +403,7 @@
 
                   <div class="form-group">
                     <label for="notes">Job Notes</label>
-                    <textarea name="notes" class="form-control" placeholder="Add your job notes here"></textarea>
+                    <textarea name="notes" id="notes" class="form-control" placeholder="Add your job notes here"></textarea>
                   </div>
                     <button type="submit" class="btn btn-primary">Update Job</button>
                 </form>
