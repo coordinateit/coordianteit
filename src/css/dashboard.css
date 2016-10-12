@@ -8,8 +8,14 @@ body {
   padding-bottom: 20px;
 }
 
+form:nth-child(2) {
+  margin-top: 20px;
+}
+
+
 h1 {
-  margin-left: 20px;
+  margin-left: 40px;
+  display: inline-block;
 }
 
 .cal-container, .maplist-container {
@@ -19,12 +25,6 @@ h1 {
 
 .cal-container {
   float:left;
-}
-
-.createjob {
-  position: absolute;
-  right: 0px;
-  top: 30px;
 }
 
 .maplist-container {
@@ -40,12 +40,10 @@ h1 {
   padding-right: 10px;
 }
 
-.options-container {
-  position: relative;
-}
-
 .team-dropdown {
   display: inline-block;
+  margin-left: 60px;
+  vertical-align: middle;
 }
 
 #list {
@@ -58,4 +56,13 @@ h1 {
   height: 65vh;
   margin: auto;
   width: 45vw;
+}
+
+#create_form {
+  display:none;
+}
+
+#visit_list {
+  display: none;
+  margin-top: 20px;
 }

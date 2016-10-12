@@ -152,7 +152,7 @@ function getJob(id) {
 
 ////// Map List Switch ///////
 
-$(".switch").change(function() {
+$(".switch_map_list").change(function() {
     var userinput = $(this);
     if (userinput.prop("checked")){
       $("#map").show();
@@ -164,7 +164,18 @@ $(".switch").change(function() {
   });
 
 
+  ////// Calendar - Create Job Switch ///////
 
+  $(".switch_calendar_job").change(function() {
+      var userinput = $(this);
+      if (userinput.prop("checked")){
+        $("#calendar").show();
+        $("#create_form").hide();
+      } else {
+        $("#calendar").hide();
+        $("#create_form").show();
+      }
+    });
 
 
 ////// Add data to list ///////
