@@ -3,8 +3,6 @@ exports.up = function(knex, Promise) {
     table.increments('id').primary();
     table.decimal('lat', 11, 7).notNullable();
     table.decimal('lng', 11, 7).notNullable();
-    table.bigInteger('start');
-    table.bigInteger('end');
     table.string('customer_name').notNullable();
     table.string('po_number');
     table.string('email');

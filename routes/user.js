@@ -67,9 +67,7 @@ router.get('/listView', function(req, res, next) {
 router.get('/job/:id', function(req, res, next) {
   if (req.session.id) {
     knex('jobs')
-      .join('visits', 'jobs.id', 'visits.jobs_id')
-      .where({jobs_id: req.params.id})
-      .first()
+      .where({id: req.params.id})
       .then(function(job) {
         res.send(job);
       })
