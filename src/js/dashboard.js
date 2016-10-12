@@ -19,6 +19,16 @@ function getTeamList() {
 }
 
 
+////// Populate team lists //////
+
+function teamList(teams) {
+  for (var i = 0; i < teams.length; i++) {
+    $('.teams').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
+  }
+}
+
+
+
 ////// Get list data from server ///////
 
 function getListData(){
@@ -128,6 +138,7 @@ function getJob(id) {
     datatype: 'json',
     url: url
   }).then(function(job) {
+    console.log(job);
     $('#customer_name').attr('value', job.customer_name);
     $('#po_number').attr('value', job.po_number);
     $('#email').attr('value', job.email);
@@ -138,10 +149,7 @@ function getJob(id) {
     let state = document.getElementById('state');
     state.value = job.state;
     $('#zip').attr('value', job.zip);
-    $('#job_date').attr('value', job.job_date);
-    $('#job_type').attr('value', job.job_type);
     let team = document.getElementById('team');
-    console.log(job.team_id);
     team.value = job.team_id;
     // let priority = document.getElementById('priority');
     // priority.value = job.priority;
