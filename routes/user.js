@@ -135,4 +135,15 @@ router.post('/postJob', function(req, res, next) {
   }
 });
 
+router.get('/test', function(req, res, next) {
+  if (req.session.id) {
+    knex('users')
+      .where({id: req.session.id})
+      .first()
+      .then(function(user) {
+        res.send({email: user.email});
+      });
+  }
+});
+
 module.exports = router;
