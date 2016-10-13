@@ -213,3 +213,13 @@ function visitList(data) {
     $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
   }
 }
+
+////// Profile Button Div Switch /////
+
+$(".menu button").on("click", function(){
+  var button_id = "." + $(this).attr("id");
+  $(".credentials").hide();
+  $(".team_management").hide();
+  $(".user_management").hide();
+  $(button_id).show();
+});
