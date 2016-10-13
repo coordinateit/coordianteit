@@ -63,14 +63,27 @@ router.get('/listView', function(req, res, next) {
 });
 
 // GETS A SINGLE JOB BY ID
-// !!!!!!!!!!!!!!!!!!!!!!!!  CHANGE ME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 router.get('/job/:id', function(req, res, next) {
   if (req.session.id) {
     knex('jobs')
       .where({id: req.params.id})
+      .first()
       .then(function(job) {
         res.send(job);
       })
+  }
+});
+
+router.get('/visit/:id', function(req, res, next) {
+  if (req.session.id) {
+    console.log(req.params.id);
+    knex('jobs')
+      .join('visits', 'jobs_id', 'jobs.id')
+      .where('visits.id', req.params.id)
+      .first()
+      .then(function(visit) {
+        res.send(visit)
+      });
   }
 });
 
