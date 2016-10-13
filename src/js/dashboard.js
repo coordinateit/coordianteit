@@ -122,7 +122,9 @@ function setMarkers(jobs) {
     });
     marker.addListener('click', function() {
       getJob(marker.id)
-      $('#viewModal').modal('show');
+      $("#calendar").hide();
+      $("#create_form").show();
+      $(".switch_calendar_job").prop("checked", false);
     });
     markers.push(marker);
   }
@@ -138,52 +140,58 @@ function getJob(id) {
     datatype: 'json',
     url: url
   }).then(function(job) {
-    console.log(job);
-    $('#customer_name').attr('value', job.customer_name);
-    $('#po_number').attr('value', job.po_number);
-    $('#email').attr('value', job.email);
-    $('#po_number').attr('value', job.po_number);
-    $('#phone_number').attr('value', job.phone_number);
-    $('#address').attr('value', job.address);
-    $('#city').attr('value', job.city);
-    let state = document.getElementById('state');
-    state.value = job.state;
-    $('#zip').attr('value', job.zip);
-    let team = document.getElementById('team');
-    team.value = job.team_id;
-    // let priority = document.getElementById('priority');
-    // priority.value = job.priority;
-    $('#notes').attr('value', job.notes);
+    showJob(job);
   });
+}
+
+
+////// Show job in form //////
+
+function showJob(job) {
+  $('#customer_name').attr('value', job.customer_name);
+  $('#po_number').attr('value', job.po_number);
+  $('#email').attr('value', job.email);
+  $('#po_number').attr('value', job.po_number);
+  $('#phone_number').attr('value', job.phone_number);
+  $('#address').attr('value', job.address);
+  $('#city').attr('value', job.city);
+  let state = document.getElementById('state');
+  state.value = job.state;
+  $('#zip').attr('value', job.zip);
+  let team = document.getElementById('team');
+  team.value = job.team_id;
+  let priority = document.getElementById('priority');
+  priority.value = job.priority;
+  $('#notes').attr('value', job.notes);
 }
 
 
 ////// Map List Switch ///////
 
 $(".switch_map_list").change(function() {
-    var userinput = $(this);
-    if (userinput.prop("checked")){
-      $("#map").show();
-      $("#list").hide();
-    } else {
-      $("#map").hide();
-      $("#list").show();
-    }
-  });
+  var userinput = $(this);
+  if (userinput.prop("checked")){
+    $("#map").show();
+    $("#list").hide();
+  } else {
+    $("#map").hide();
+    $("#list").show();
+  }
+});
 
 
   ////// Calendar - Create Job Switch ///////
 
   $(".switch_calendar_job").change(function() {
-      var userinput = $(this);
-      if (userinput.prop("checked")){
-        $("#calendar").show();
-        $("#create_form").hide();
-      } else {
-        $("#calendar").hide();
-        $("#create_form").show();
-      }
-    });
+    var userinput = $(this);
+    if (userinput.prop("checked")){
+      $("#calendar").show();
+      $("#create_form").hide();
+    } else {
+      $("#calendar").hide();
+      $("#create_form").show();
+    }
+  });
 
 
 ////// Add data to list ///////

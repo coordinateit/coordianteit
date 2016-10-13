@@ -63,11 +63,11 @@ router.get('/listView', function(req, res, next) {
 });
 
 // GETS A SINGLE JOB BY ID
-// !!!!!!!!!!!!!!!!!!!!!!!!  CHANGE ME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 router.get('/job/:id', function(req, res, next) {
   if (req.session.id) {
     knex('jobs')
       .where({id: req.params.id})
+      .first()
       .then(function(job) {
         res.send(job);
       })
