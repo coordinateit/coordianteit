@@ -2,6 +2,7 @@ $(document).ready(function(){
   getListData();
   getTeamList();
   getVisits();
+  testLogin();
 });
 
 
@@ -244,3 +245,14 @@ $(".menu button").on("click", function(){
   $(".user_management").hide();
   $(button_id).show();
 });
+
+function testLogin() {
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/test',
+    success: function(user) {
+      $('#testLogin').text(user.email);
+    }
+  });
+}
