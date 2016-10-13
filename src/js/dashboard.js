@@ -54,18 +54,41 @@ function getVisits() {
     var visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));
       let end = new Date(parseInt(visit.end));
-      return {title: visit.visittype, start: start, end: end}
+      return {id: visit.id, title: visit.visit_type, start: start, end: end}
     })
     initCalendar(visits);
   });
 }
 
 
-////// Display visits on calendar //////
+////// Initialize calendar and display visits //////
 
 function initCalendar(visits) {
   $('#calendar').fullCalendar({
-    events: visits
+    events: visits,
+    eventClick: function(event) {
+      getVisit(event._id);
+    },
+    eventMouseover: function() {
+      document.body.style.cursor = "pointer";
+    },
+    eventMouseout: function() {
+      document.body.style.cursor = "default";
+    }
+  });
+}
+
+
+////// Get visit and associated job //////
+
+function getVisit(id) {
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/visit/' + id,
+    success: function(data) {
+      showJob(data);
+    }
   });
 }
 
@@ -104,15 +127,11 @@ function getJobs(bounds) {
 ////// Display jobs on mpa //////
 
 function setMarkers(jobs) {
-
-  // Clear markers
-  for (var i = 0; i < markers.length; i++) {
+  for (var i = 0; i < markers.length; i++) {  // Clear markers
     markers[i].setMap(null);
   }
   markers = [];
-
-  // Set new markers
-  for (var i = 0; i < jobs.length; i++) {
+  for (var i = 0; i < jobs.length; i++) {  // Set new markers
     let marker = new google.maps.Marker({
       position: {lat: parseFloat(jobs[i].lat), lng: parseFloat(jobs[i].lng)},
       map: map,
@@ -122,9 +141,6 @@ function setMarkers(jobs) {
     });
     marker.addListener('click', function() {
       getJob(marker.id)
-      $("#calendar").hide();
-      $("#create_form").show();
-      $(".switch_calendar_job").prop("checked", false);
     });
     markers.push(marker);
   }
@@ -139,8 +155,8 @@ function getJob(id) {
     type: 'GET',
     datatype: 'json',
     url: url
-  }).then(function(job) {
-    showJob(job);
+  }).then(function(data) {
+    showJob(data);
   });
 }
 
@@ -148,6 +164,11 @@ function getJob(id) {
 ////// Show job in form //////
 
 function showJob(job) {
+  // Toggle calendar / job form
+  $("#calendar").hide();
+  $("#create_form").show();
+  $(".switch_calendar_job").prop("checked", false);
+  // Populate job form
   $('#customer_name').attr('value', job.customer_name);
   $('#po_number').attr('value', job.po_number);
   $('#email').attr('value', job.email);
@@ -180,18 +201,18 @@ $(".switch_map_list").change(function() {
 });
 
 
-  ////// Calendar - Create Job Switch ///////
+////// Calendar - Create Job Switch ///////
 
-  $(".switch_calendar_job").change(function() {
-    var userinput = $(this);
-    if (userinput.prop("checked")){
-      $("#calendar").show();
-      $("#create_form").hide();
-    } else {
-      $("#calendar").hide();
-      $("#create_form").show();
-    }
-  });
+$(".switch_calendar_job").change(function() {
+  var userinput = $(this);
+  if (userinput.prop("checked")){
+    $("#calendar").show();
+    $("#create_form").hide();
+  } else {
+    $("#calendar").hide();
+    $("#create_form").show();
+  }
+});
 
 
 ////// Add data to list ///////

@@ -74,6 +74,19 @@ router.get('/job/:id', function(req, res, next) {
   }
 });
 
+router.get('/visit/:id', function(req, res, next) {
+  if (req.session.id) {
+    console.log(req.params.id);
+    knex('jobs')
+      .join('visits', 'jobs_id', 'jobs.id')
+      .where('visits.id', req.params.id)
+      .first()
+      .then(function(visit) {
+        res.send(visit)
+      });
+  }
+});
+
 // POST NEW JOB TO JOBS TABLE
 router.post('/postJob', function(req, res, next) {
   var lat, lng, start, end;
