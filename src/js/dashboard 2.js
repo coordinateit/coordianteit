@@ -1,8 +1,52 @@
+
+
+////// Invoke these functions when page loads //////
+
 $(document).ready(function(){
   getListData();
   getTeamList();
   getVisits();
-  testLogin();
+  // testLogin();
+});
+
+
+////// Profile Button Div Switch /////
+
+$(".menu button").on("click", function(){
+  var button_id = "." + $(this).attr("id");
+  $(".credentials").hide();
+  $(".team_management").hide();
+  $(".user_management").hide();
+  $(button_id).show();
+});
+
+
+////// Testing //////
+
+// function testLogin() {
+//   $.ajax({
+//     type: 'GET',
+//     dataType: 'json',
+//     url: '/user/test',
+//     success: function(user) {
+//       $('#testLogin').text(user.email);
+//     }
+//   });
+// }
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    TEAMS                                   //
+////////////////////////////////////////////////////////////////////////////////
+
+
+var teamFilter;
+$('#teams').change(function(clicked) {
+  var selection = $('#teams').find(":selected").val();
+  teamFilter = selection;
+  getVisits();
+  getJobs();
 });
 
 
@@ -30,33 +74,27 @@ function teamList(teams) {
 
 
 
-////// Get list data from server ///////
-
-function getListData(){
-  $.ajax({
-    type: 'GET',
-    dataType: 'json',
-    url: '/user/listView',
-    success: function(data) {
-      visitList(data);
-    }
-  });
-}
+////////////////////////////////////////////////////////////////////////////////
+//                                  CALENDAR                                  //
+////////////////////////////////////////////////////////////////////////////////
 
 
 ////// Get visits from server //////
 
 function getVisits() {
   $.ajax({
-    type: 'GET',
+    type: 'POST',
     dataType: 'json',
-    url: '/user/visitsAll'
+    data: {team: teamFilter},
+    url: '/user/visits'
   }).then(function(data) {
     var visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));
       let end = new Date(parseInt(visit.end));
       return {id: visit.id, title: visit.visit_type, start: start, end: end}
     })
+    // $('#calendar').fullCalendar('removeEvents');
+    // $('#calendar').fullCalendar('rerenderEvents');
     initCalendar(visits);
   });
 }
@@ -65,6 +103,7 @@ function getVisits() {
 ////// Initialize calendar and display visits //////
 
 function initCalendar(visits) {
+  console.log(visits);
   $('#calendar').fullCalendar({
     events: visits,
     eventClick: function(event) {
@@ -94,19 +133,25 @@ function getVisit(id) {
 }
 
 
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    MAP                                     //
+////////////////////////////////////////////////////////////////////////////////
+
+
 ////// Initialize map using current position //////
 
 var map;
 var markers = [];
+var bounds;
 var position = JSON.parse(window.localStorage.position);
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: position,
-    zoom: 11,
-    fullscreenControl: true
+    zoom: 11
   });
   map.addListener('tilesloaded', function() {
-    var bounds = map.getBounds();
+    bounds = map.getBounds();
     getJobs(bounds);
   });
 }
@@ -114,11 +159,11 @@ function initMap() {
 
 ////// Get jobs from server //////
 
-function getJobs(bounds) {
+function getJobs() {
   $.ajax({
     type: 'POST',
-    data: {bounds: JSON.stringify(bounds)},
     dataType: 'json',
+    data: {bounds: JSON.stringify(bounds), team: teamFilter},
     url: '/user/jobs'
   }).then(function(jobs) {
     setMarkers(jobs);
@@ -126,7 +171,7 @@ function getJobs(bounds) {
 }
 
 
-////// Display jobs on mpa //////
+////// Display jobs on map //////
 
 function setMarkers(jobs) {
   for (var i = 0; i < markers.length; i++) {  // Clear markers
@@ -138,7 +183,7 @@ function setMarkers(jobs) {
       position: {lat: parseFloat(jobs[i].lat), lng: parseFloat(jobs[i].lng)},
       map: map,
       id: jobs[i].id,
-      label: String.fromCharCode(jobs[i].id + 64),
+      // label: String.fromCharCode(jobs[i].id + 64),
       title: jobs[i].customer_name
     });
     marker.addListener('click', function() {
@@ -147,6 +192,53 @@ function setMarkers(jobs) {
     markers.push(marker);
   }
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    LIST                                    //
+////////////////////////////////////////////////////////////////////////////////
+
+
+////// Get list data from server ///////
+
+function getListData(){
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/listView',
+    success: function(data) {
+      visitList(data);
+    }
+  });
+}
+
+
+////// Add data to list ///////
+
+function visitList(data) {
+  for (var i = 0; i < data.length; i++) {
+    let date = new Date(parseInt(data[i].start));
+    let meridiem = 'am';
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    if (hours > 12) {
+      meridiem = 'pm';
+      hours -= 12;
+    }
+    if (minutes < 10) {
+      minutes = "0" + minutes;
+    }
+    let time = hours + ":" + minutes + " " + meridiem;
+    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
+  }
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    FORM                                    //
+////////////////////////////////////////////////////////////////////////////////
 
 
 ////// Get data for a specific job //////
@@ -215,45 +307,3 @@ $(".switch_calendar_job").change(function() {
     $("#create_form").show();
   }
 });
-
-
-////// Add data to list ///////
-
-function visitList(data) {
-  for (var i = 0; i < data.length; i++) {
-    let date = new Date(parseInt(data[i].start));
-    let meridiem = 'am';
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    if (hours > 12) {
-      meridiem = 'pm';
-      hours -= 12;
-    }
-    if (minutes < 10) {
-      minutes = "0" + minutes;
-    }
-    let time = hours + ":" + minutes + " " + meridiem;
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
-  }
-}
-
-////// Profile Button Div Switch /////
-
-$(".menu button").on("click", function(){
-  var button_id = "." + $(this).attr("id");
-  $(".credentials").hide();
-  $(".team_management").hide();
-  $(".user_management").hide();
-  $(button_id).show();
-});
-
-function testLogin() {
-  $.ajax({
-    type: 'GET',
-    dataType: 'json',
-    url: '/user/test',
-    success: function(user) {
-      $('#testLogin').text(user.email);
-    }
-  });
-}
