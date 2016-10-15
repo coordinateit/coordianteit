@@ -5,6 +5,7 @@
 $(document).ready(function(){
   getListData();
   getTeamList();
+  initCalendar();
   getVisits();
   // testLogin();
 });
@@ -79,6 +80,23 @@ function teamList(teams) {
 ////////////////////////////////////////////////////////////////////////////////
 
 
+////// Initialize calendar and display visits //////
+
+function initCalendar() {
+  $('#calendar').fullCalendar({
+    eventClick: function(event) {
+      getVisit(event._id);
+    },
+    eventMouseover: function() {
+      document.body.style.cursor = "pointer";
+    },
+    eventMouseout: function() {
+      document.body.style.cursor = "default";
+    }
+  });
+}
+
+
 ////// Get visits from server //////
 
 function getVisits() {
@@ -93,28 +111,9 @@ function getVisits() {
       let end = new Date(parseInt(visit.end));
       return {id: visit.id, title: visit.visit_type, start: start, end: end}
     })
-    // $('#calendar').fullCalendar('removeEvents');
-    // $('#calendar').fullCalendar('rerenderEvents');
-    initCalendar(visits);
-  });
-}
-
-
-////// Initialize calendar and display visits //////
-
-function initCalendar(visits) {
-  console.log(visits);
-  $('#calendar').fullCalendar({
-    events: visits,
-    eventClick: function(event) {
-      getVisit(event._id);
-    },
-    eventMouseover: function() {
-      document.body.style.cursor = "pointer";
-    },
-    eventMouseout: function() {
-      document.body.style.cursor = "default";
-    }
+    $('#calendar').fullCalendar('removeEvents');
+    $('#calendar').fullCalendar('addEventSource', visits);
+    $('#calendar').fullCalendar('refetchEvents');
   });
 }
 
@@ -148,7 +147,8 @@ var position = JSON.parse(window.localStorage.position);
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: position,
-    zoom: 11
+    zoom: 11,
+    fullscreenControl: true
   });
   map.addListener('tilesloaded', function() {
     bounds = map.getBounds();

@@ -4,7 +4,7 @@ var knex = require('../db/knex');
 var geocoder = require('geocoder');
 
 
-// RETURNS JOBS BASED ON MAP POSITION
+////// Gets jobs based on map position, optionally filtered by team //////
 
 router.post('/jobs', function(req, res, next) {
   if (req.session.id) {
@@ -37,7 +37,7 @@ router.post('/jobs', function(req, res, next) {
 });
 
 
-// RETURNS VISITS
+////// Gets visits //////
 
 router.post('/visits', function(req, res, next) {
   if (req.session.id) {
@@ -57,19 +57,21 @@ router.post('/visits', function(req, res, next) {
 });
 
 
-// GETS A LIST OF TEAMS
+////// Gets a list of teams //////
 
 router.get('/teams', function(req, res, next) {
   if (req.session.id) {
     knex('teams')
       .then(function(teams) {
         res.send(teams);
-      })
+      });
+  } else {
+    res.redirect('/');
   }
 });
 
 
-// RETURNS VISITS COMBINED WITH JOBS TABLE
+////// Get visits and jobs //////
 
 router.get('/listView', function(req, res, next) {
   if (req.session.id) {
@@ -82,7 +84,7 @@ router.get('/listView', function(req, res, next) {
 });
 
 
-// GETS A SINGLE JOB BY ID
+////// Get job by ID //////
 
 router.get('/job/:id', function(req, res, next) {
   if (req.session.id) {
@@ -95,6 +97,8 @@ router.get('/job/:id', function(req, res, next) {
   }
 });
 
+
+////// Get visit by ID //////
 
 router.get('/visit/:id', function(req, res, next) {
   if (req.session.id) {
@@ -109,7 +113,7 @@ router.get('/visit/:id', function(req, res, next) {
 });
 
 
-// POST NEW JOB TO JOBS TABLE
+////// Post new job //////
 
 router.post('/postJob', function(req, res, next) {
   var lat, lng, start, end;
@@ -155,6 +159,90 @@ router.post('/postJob', function(req, res, next) {
       .then(function() {
         res.redirect('/dashboard.html');
       });
+  }
+});
+
+
+////// Search jobs //////
+
+router.post('/search', function(req, res, next) {
+  if (req.session.id) {
+    var lat, lng;
+    var search = JSON.parse(req.body.search);
+
+    // If radius specified
+    if (search.radius) {
+      let address = search.address + ", " + search.city + ", " + search.state + ", " + search.zip;
+      geocoder.geocode(address, function(err, data) {
+        if (!err) {
+          lat = data.results[0].geometry.location.lat;
+          lng = data.results[0].geometry.location.lng;
+        } else {
+          res.send('Invalid search.')
+        }
+      });
+      search.address = null;
+      search.city = null;
+      search.state = null;
+      search.zip = null;
+    }
+
+    knex('visits')
+      .join('jobs', 'visits.jobs_id', 'jobs.id')
+      .where(function() {
+        if (search.customer_name) {
+          this.where('customer_name', search.customer_name)
+        }
+      }).andWhere(function() {
+        if (search.po) {
+          this.where('po', search.po)
+        }
+      }).andWhere(function() {
+        if (search.priority) {
+          this.where('priority', search.priority)
+        }
+      }).andWhere(function() {
+        if (search.team_id) {
+          this.where('team_id', search.team_id)
+        }
+      }).andWhere(function() {
+        if (search.start && search.end) {
+          //write where between
+
+
+        }
+      }).andWhere(function() {
+        if (search.address) {
+          this.where('address', search.address)
+        }
+      }).andWhere(function() {
+        if (search.city) {
+          this.where('city', search.city)
+        }
+      }).andWhere(function() {
+        if (search.state) {
+          this.where('state', search.state)
+        }
+      }).andWhere(function() {
+        if (search.zip) {
+          this.where('zip', search.zip)
+        }
+      }).andWhere(function() {
+        if (search.radius) {
+          // write where between
+
+
+        }
+      }).andWhere(function() {
+        if (search.notes) {
+          // write where in
+
+
+        }
+      })
+      .then(function(data) {
+        res.send(data);
+      })
   }
 });
 
