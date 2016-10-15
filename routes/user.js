@@ -167,82 +167,100 @@ router.post('/postJob', function(req, res, next) {
 
 router.post('/search', function(req, res, next) {
   if (req.session.id) {
-    var lat, lng;
     var search = JSON.parse(req.body.search);
+    var lat, lng, fromDate, toDate;
 
-    // If radius specified
-    if (search.radius) {
-      let address = search.address + ", " + search.city + ", " + search.state + ", " + search.zip;
-      geocoder.geocode(address, function(err, data) {
-        if (!err) {
-          lat = data.results[0].geometry.location.lat;
-          lng = data.results[0].geometry.location.lng;
-        } else {
-          res.send('Invalid search.')
-        }
-      });
-      search.address = null;
-      search.city = null;
-      search.state = null;
-      search.zip = null;
+    checkDates();
+
+    function checkDates() {
+      if (search.from && search.to) {
+        fromDate = new Date(search.from);
+        fromDate = fromDate.getTime();
+        toDate = new Date(search.to);
+        toDate = toDate.getTime() + 86400000;
+        checkRadius();
+      } else {
+        checkRadius();
+      }
     }
 
-    knex('visits')
-      .join('jobs', 'visits.jobs_id', 'jobs.id')
-      .where(function() {
-        if (search.customer_name) {
-          this.where('customer_name', search.customer_name)
-        }
-      }).andWhere(function() {
-        if (search.po) {
-          this.where('po', search.po)
-        }
-      }).andWhere(function() {
-        if (search.priority) {
-          this.where('priority', search.priority)
-        }
-      }).andWhere(function() {
-        if (search.team_id) {
-          this.where('team_id', search.team_id)
-        }
-      }).andWhere(function() {
-        if (search.start && search.end) {
-          //write where between
+    // If radius specified
+    function checkRadius() {
+      if (search.radius) {
+        let address = search.address + ", " + search.city + ", " + search.state + ", " + search.zip;
+        geocoder.geocode(address, function(err, data) {
+          if (!err) {
+            lat = data.results[0].geometry.location.lat;
+            lng = data.results[0].geometry.location.lng;
+            searchQuery();
+          } else {
+            res.send('Invalid address.');
+          }
+        });
+        search.address = null;
+        search.city = null;
+        search.state = null;
+        search.zip = null;
+      } else {
+        searchQuery();
+      }
+    }
 
-
-        }
-      }).andWhere(function() {
-        if (search.address) {
-          this.where('address', search.address)
-        }
-      }).andWhere(function() {
-        if (search.city) {
-          this.where('city', search.city)
-        }
-      }).andWhere(function() {
-        if (search.state) {
-          this.where('state', search.state)
-        }
-      }).andWhere(function() {
-        if (search.zip) {
-          this.where('zip', search.zip)
-        }
-      }).andWhere(function() {
-        if (search.radius) {
-          // write where between
-
-
-        }
-      }).andWhere(function() {
-        if (search.notes) {
-          // write where in
-
-
-        }
-      })
-      .then(function(data) {
-        res.send(data);
-      })
+    function searchQuery() {
+      knex('visits')
+        .join('jobs', 'visits.jobs_id', 'jobs.id')
+        .where(function() {
+          if (search.customer_name) {
+            this.where('customer_name', search.customer_name)
+          }
+        }).andWhere(function() {
+          if (search.po) {
+            this.where('po', search.po)
+          }
+        }).andWhere(function() {
+          if (search.priority) {
+            this.where('priority', search.priority)
+          }
+        }).andWhere(function() {
+          if (search.team_id) {
+            this.where('team_id', search.team_id)
+          }
+        }).andWhere(function() {
+          if (search.from && search.to) {
+            this.whereBetween('start', [fromDate, toDate])
+          }
+        }).andWhere(function() {
+          if (search.address) {
+            this.where('address', search.address)
+          }
+        }).andWhere(function() {
+          if (search.city) {
+            this.where('city', search.city)
+          }
+        }).andWhere(function() {
+          if (search.state) {
+            this.where('state', search.state)
+          }
+        }).andWhere(function() {
+          if (search.zip) {
+            this.where('zip', search.zip)
+          }
+        }).andWhere(function() {
+          if (search.radius) {
+            this.where('lat', '<', (lat + search.radius/200))
+              .andWhere('lat', '>', (lat - search.radius/200))
+              .andWhere('lng', '<', (lng + search.radius/200))
+              .andWhere('lng', '>', (lng - search.radius/200))
+          }
+        // }).andWhere(function() {
+        //   if (search.notes) {
+        //     // write where in
+        //   }
+        })
+        .then(function(data) {
+          res.send(data);
+        })
+    }
   }
 });
 

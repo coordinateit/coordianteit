@@ -14,11 +14,11 @@ $('#searchSubmit').click(function(event) {
   if ($('#team').val()) {
     search.team_id = $('#team').val();
   }
-  if ($('#start').val()) {
-    search.start = $('#start').val();
+  if ($('#from').val()) {
+    search.from = $('#from').val();
   }
-  if ($('#end').val()) {
-    search.end = $('#end').val();
+  if ($('#to').val()) {
+    search.to = $('#to').val();
   }
   if ($('#address').val()) {
     search.address = $('#address').val();
