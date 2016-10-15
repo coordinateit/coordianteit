@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
     table.string('visit_type').notNullable();
     table.bigInteger('start').notNullable();
     table.bigInteger('end').notNullable();
+    table.integer('team_id').references('id').inTable('teams');
     table.string('extraequipment', 1000);
     table.string('notes', 5000);
   });
