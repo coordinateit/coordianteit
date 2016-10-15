@@ -1,6 +1,13 @@
+/*
+Author: gooWee - gooWee@mail.com
+Author URI: http://www.goowee.io/
+*/
+
+/******<< Global Styles >>******/
+
 body {
-  padding-top: 50px;
   padding-bottom: 20px;
+  padding-top: 50px;
 }
 
 section {
@@ -26,15 +33,23 @@ td:first-child {
 }
 
 .img_placeholder {
-  height: 300px;
-  width: 500px;
   background-color: gray;
   border-radius: 10px;
+  height: 300px;
+  width: 500px;
+}
+
+/******<< Nav Styles >>******/
+
+nav p {
+  font-size: 2em;
+  font-weight: 500;
+  line-height: 1.1;
 }
 
 .navbar {
-  padding-left: 2%;
-  padding-right: 2%;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #dummysignin {
