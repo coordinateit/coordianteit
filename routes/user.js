@@ -12,27 +12,14 @@ router.post('/jobs', function(req, res, next) {
     var south = JSON.parse(req.body.bounds).south;
     var east = JSON.parse(req.body.bounds).east;
     var west = JSON.parse(req.body.bounds).west;
-    if (req.body.team) {
-      knex('jobs')
-        .join('visits', 'jobs_id', 'jobs.id')
-        .where('team_id', req.body.team)
-        .andWhere('lat', '<', north)
-        .andWhere('lat', '>', south)
-        .andWhere('lng', '<', east)
-        .andWhere('lng', '>', west)
-        .then(function(jobs) {
-          res.send(jobs);
-        })
-    } else {
-      knex('jobs')
-        .where('lat', '<', north)
-        .andWhere('lat', '>', south)
-        .andWhere('lng', '<', east)
-        .andWhere('lng', '>', west)
-        .then(function(jobs) {
-          res.send(jobs);
-        })
-    }
+    knex('jobs')
+      .where('lat', '<', north)
+      .andWhere('lat', '>', south)
+      .andWhere('lng', '<', east)
+      .andWhere('lng', '>', west)
+      .then(function(jobs) {
+        res.send(jobs);
+      })
   }
 });
 
@@ -41,18 +28,10 @@ router.post('/jobs', function(req, res, next) {
 
 router.post('/visits', function(req, res, next) {
   if (req.session.id) {
-    if (req.body.team) {
-      knex('visits')
-        .where('team_id', req.body.team)
-        .then(function(visits) {
-          res.send(visits);
-        })
-    } else {
-      knex('visits')
-        .then(function(visits) {
-          res.send(visits);
-        })
-    }
+    knex('visits')
+      .then(function(visits) {
+        res.send(visits);
+      })
   }
 });
 
@@ -102,6 +81,7 @@ router.get('/job/:id', function(req, res, next) {
 
 router.get('/visit/:id', function(req, res, next) {
   if (req.session.id) {
+    console.log(req.params.id);
     knex('jobs')
       .join('visits', 'jobs_id', 'jobs.id')
       .where('visits.id', req.params.id)
@@ -275,5 +255,6 @@ router.post('/search', function(req, res, next) {
 //       });
 //   }
 // });
+
 
 module.exports = router;
