@@ -26,7 +26,7 @@ router.post('/jobs', function(req, res, next) {
 
 ////// Gets visits //////
 
-router.post('/visits', function(req, res, next) {
+router.get('/visits', function(req, res, next) {
   if (req.session.id) {
     knex('visits')
       .then(function(visits) {

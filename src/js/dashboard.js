@@ -68,7 +68,7 @@ function getVisits() {
   $.ajax({
     type: 'GET',
     dataType: 'json',
-    url: '/user/visitsAll'
+    url: '/user/visits'
   }).then(function(data) {
     var visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));
@@ -289,4 +289,13 @@ function testLogin() {
       $('#testLogin').text(user.email);
     }
   });
+}
+
+
+////// Display search results //////
+
+if (localStorage.search) {
+  let id = JSON.parse(window.localStorage.search);
+  getVisit(id);
+  window.localStorage.search = null;
 }
