@@ -1,8 +1,9 @@
 $(document).ready(function(){
   getListData();
   getTeamList();
+  initCalendar();
   getVisits();
-  testLogin();
+  // testLogin();
 });
 
 
@@ -44,6 +45,23 @@ function getListData(){
 }
 
 
+////// Initialize calendar and display visits //////
+
+function initCalendar() {
+  $('#calendar').fullCalendar({
+    eventClick: function(event) {
+      getVisit(event._id);
+    },
+    eventMouseover: function() {
+      document.body.style.cursor = "pointer";
+    },
+    eventMouseout: function() {
+      document.body.style.cursor = "default";
+    }
+  });
+}
+
+
 ////// Get visits from server //////
 
 function getVisits() {
@@ -57,7 +75,9 @@ function getVisits() {
       let end = new Date(parseInt(visit.end));
       return {id: visit.id, title: visit.visit_type, start: start, end: end}
     })
-    initCalendar(visits);
+    $('#calendar').fullCalendar('removeEvents');
+    $('#calendar').fullCalendar('addEventSource', visits);
+    $('#calendar').fullCalendar('refetchEvents');
   });
 }
 
