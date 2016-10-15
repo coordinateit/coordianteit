@@ -1,9 +1,68 @@
+
+////// Invoke these functions when page loads //////
+
 $(document).ready(function(){
   getListData();
   getTeamList();
   initCalendar();
   getVisits();
   // testLogin();
+});
+
+
+////// Calendar / Create Switch ///////
+
+$(".switch_calendar_job").change(function() {
+  var userinput = $(this);
+  if (userinput.prop("checked")){
+    $("#calendar").show();
+    $("#create_form").hide();
+  } else {
+    $("#calendar").hide();
+    $("#create_form").show();
+  }
+});
+
+
+////// Map / List Switch ///////
+
+$(".switch_map_list").change(function() {
+  var userinput = $(this);
+  if (userinput.prop("checked")){
+    $("#map").show();
+    $("#list").hide();
+  } else {
+    $("#map").hide();
+    $("#list").show();
+  }
+});
+
+
+// function testLogin() {
+//   $.ajax({
+//     type: 'GET',
+//     dataType: 'json',
+//     url: '/user/test',
+//     success: function(user) {
+//       $('#testLogin').text(user.email);
+//     }
+//   });
+// }
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    TEAMS                                   //
+////////////////////////////////////////////////////////////////////////////////
+
+
+////// Filter page by team //////
+
+var teamFilter;
+$('#teams').change(function(clicked) {
+  teamFilter = $('#teams').find(":selected").val();
+  getVisits();
+  getJobs();
 });
 
 
@@ -31,18 +90,9 @@ function teamList(teams) {
 
 
 
-////// Get list data from server ///////
-
-function getListData(){
-  $.ajax({
-    type: 'GET',
-    dataType: 'json',
-    url: '/user/listView',
-    success: function(data) {
-      visitList(data);
-    }
-  });
-}
+////////////////////////////////////////////////////////////////////////////////
+//                                  CALENDAR                                  //
+////////////////////////////////////////////////////////////////////////////////
 
 
 ////// Initialize calendar and display visits //////
@@ -66,8 +116,9 @@ function initCalendar() {
 
 function getVisits() {
   $.ajax({
-    type: 'GET',
+    type: 'POST',
     dataType: 'json',
+    data: {team: teamFilter},
     url: '/user/visits'
   }).then(function(data) {
     var visits = data.map(function(visit) {
@@ -78,24 +129,6 @@ function getVisits() {
     $('#calendar').fullCalendar('removeEvents');
     $('#calendar').fullCalendar('addEventSource', visits);
     $('#calendar').fullCalendar('refetchEvents');
-  });
-}
-
-
-////// Initialize calendar and display visits //////
-
-function initCalendar(visits) {
-  $('#calendar').fullCalendar({
-    events: visits,
-    eventClick: function(event) {
-      getVisit(event._id);
-    },
-    eventMouseover: function() {
-      document.body.style.cursor = "pointer";
-    },
-    eventMouseout: function() {
-      document.body.style.cursor = "default";
-    }
   });
 }
 
@@ -114,10 +147,17 @@ function getVisit(id) {
 }
 
 
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    MAP                                     //
+////////////////////////////////////////////////////////////////////////////////
+
+
 ////// Initialize map using current position //////
 
 var map;
 var markers = [];
+var bounds;
 var position = JSON.parse(window.localStorage.position);
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -126,7 +166,7 @@ function initMap() {
     fullscreenControl: true
   });
   map.addListener('tilesloaded', function() {
-    var bounds = map.getBounds();
+    bounds = map.getBounds();
     getJobs(bounds);
   });
 }
@@ -134,10 +174,10 @@ function initMap() {
 
 ////// Get jobs from server //////
 
-function getJobs(bounds) {
+function getJobs() {
   $.ajax({
     type: 'POST',
-    data: {bounds: JSON.stringify(bounds)},
+    data: {bounds: JSON.stringify(bounds), team: teamFilter},
     dataType: 'json',
     url: '/user/jobs'
   }).then(function(jobs) {
@@ -158,7 +198,6 @@ function setMarkers(jobs) {
       position: {lat: parseFloat(jobs[i].lat), lng: parseFloat(jobs[i].lng)},
       map: map,
       id: jobs[i].id,
-      label: String.fromCharCode(jobs[i].id + 64),
       title: jobs[i].customer_name
     });
     marker.addListener('click', function() {
@@ -167,6 +206,53 @@ function setMarkers(jobs) {
     markers.push(marker);
   }
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    LIST                                    //
+////////////////////////////////////////////////////////////////////////////////
+
+
+////// Get list data from server ///////
+
+function getListData(){
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/listView',
+    success: function(data) {
+      visitList(data);
+    }
+  });
+}
+
+
+////// Add data to list ///////
+
+function visitList(data) {
+  for (var i = 0; i < data.length; i++) {
+    let date = new Date(parseInt(data[i].start));
+    let meridiem = 'am';
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    if (hours > 12) {
+      meridiem = 'pm';
+      hours -= 12;
+    }
+    if (minutes < 10) {
+      minutes = "0" + minutes;
+    }
+    let time = hours + ":" + minutes + " " + meridiem;
+    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
+  }
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    FORM                                    //
+////////////////////////////////////////////////////////////////////////////////
 
 
 ////// Get data for a specific job //////
@@ -192,7 +278,7 @@ function showJob(job) {
   $(".switch_calendar_job").prop("checked", false);
   // Populate job form
   $('#customer_name').val(job.customer_name);
-  //$('#customer_name').attr('value', job.customer_name);
+  $('#customer_name').attr('value', job.customer_name);
   $('#po_number').val(job.po_number);
   $('#email').val(job.email);
   $('#po_number').val(job.po_number);
@@ -222,53 +308,21 @@ function showJob(job) {
     $("#visit_list").hide();
   });
 
-////// Map List Switch ///////
 
-$(".switch_map_list").change(function() {
-  var userinput = $(this);
-  if (userinput.prop("checked")){
-    $("#map").show();
-    $("#list").hide();
-  } else {
-    $("#map").hide();
-    $("#list").show();
+  ////// Display search results //////
+
+  if (localStorage.search) {
+    let id = JSON.parse(window.localStorage.search);
+    getVisit(id);
+    window.localStorage.search = null;
   }
-});
 
 
-////// Calendar - Create Job Switch ///////
 
-$(".switch_calendar_job").change(function() {
-  var userinput = $(this);
-  if (userinput.prop("checked")){
-    $("#calendar").show();
-    $("#create_form").hide();
-  } else {
-    $("#calendar").hide();
-    $("#create_form").show();
-  }
-});
+  ////////////////////////////////////////////////////////////////////////////////
+  //                                    PROFILE                                 //
+  ////////////////////////////////////////////////////////////////////////////////
 
-
-////// Add data to list ///////
-
-function visitList(data) {
-  for (var i = 0; i < data.length; i++) {
-    let date = new Date(parseInt(data[i].start));
-    let meridiem = 'am';
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    if (hours > 12) {
-      meridiem = 'pm';
-      hours -= 12;
-    }
-    if (minutes < 10) {
-      minutes = "0" + minutes;
-    }
-    let time = hours + ":" + minutes + " " + meridiem;
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
-  }
-}
 
 ////// Profile Button Div Switch /////
 
@@ -279,23 +333,3 @@ $(".menu button").on("click", function(){
   $(".user_management").hide();
   $(button_id).show();
 });
-
-function testLogin() {
-  $.ajax({
-    type: 'GET',
-    dataType: 'json',
-    url: '/user/test',
-    success: function(user) {
-      $('#testLogin').text(user.email);
-    }
-  });
-}
-
-
-////// Display search results //////
-
-if (localStorage.search) {
-  let id = JSON.parse(window.localStorage.search);
-  getVisit(id);
-  window.localStorage.search = null;
-}

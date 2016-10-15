@@ -49,7 +49,6 @@ function getSearch(search) {
     data: {search: JSON.stringify(search)},
     url: "/user/search",
     success: function(data) {
-      console.log(data);
       setMarkers(data);
     }
   })
