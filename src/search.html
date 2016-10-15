@@ -55,41 +55,39 @@
           <fieldset>
             <div class="form-group">
               <label for="customer">Customer</label>
-              <input type="text" class="form-control" name="customer" placeholder="Customer">
+              <input type="text" id="customer" class="form-control" name="customer" placeholder="Customer">
             </div>
             <div class="form-group">
               <label for="po">PO Number</label>
-              <input type="text" class="form-control" name="po" placeholder="PO Number">
+              <input type="text" id="po" class="form-control" name="po" placeholder="PO Number">
             </div>
             <div class="form-group">
               <label for="priority">Priority</label>
-              <select name="priority" class="form-control">
+              <select name="priority" id="priority" class="form-control">
                 <option value=""></option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
+                <option value="1">High</option>
+                <option value="2">Medium</option>
+                <option value="3">Low</option>
               </select>
             </div>
             <div class="form-group">
               <label for="team">Team</label>
-              <select name="team" class="form-control">
+              <select name="team" id="team" class="form-control teams">
                 <option value=""></option>
-                <option value="team1">Team 1</option>
-                <option value="team2">Team 2</option>
-                <option value="team3">Team 3</option>
+                  <!-- Teams appended from dashboard.js makeList() -->
               </select>
             </div>
             <div class="form-group">
               <label for="address">Address</label>
-              <input type="text" class="form-control" name="address" placeholder="Address">
+              <input type="text" id="address" class="form-control" name="address" placeholder="Address">
             </div>
             <div class="form-group">
               <label for="city">City</label>
-              <input type="text" class="form-control" name="city" placeholder="City">
+              <input type="text" id="city" class="form-control" name="city" placeholder="City">
             </div>
             <div class="form-group">
               <label for="state">State</label>
-              <select class="form-control" name="state">
+              <select class="form-control" id="state" name="state">
                 <option value=""></option>
                 <option value="AL">Alabama</option>
                 <option value="AK">Alaska</option>
@@ -146,31 +144,31 @@
             </div>
             <div class="form-group">
               <label for="zip">Zip Code</label>
-              <input type="text" class="form-control" name="zip" placeholder="Zip Code">
+              <input type="text" id="zip" class="form-control" name="zip" placeholder="Zip Code">
             </div>
             <div class="form-group">
               <label for="radius">Radius</label>
-              <select name="team" class="form-control">
+              <select name="team" id="radius" class="form-control">
                 <option value=""></option>
-                <option value="5miles">5 Miles</option>
-                <option value="10miles">10 Miles</option>
-                <option value="25miles">25 Miles</option>
-                <option value="50miles">50 Miles</option>
+                <option value="5">5 Miles</option>
+                <option value="10">10 Miles</option>
+                <option value="25">25 Miles</option>
+                <option value="50">50 Miles</option>
               </select>
             </div>
             <div class="form-group">
               <label for="from_date">From</label>
-              <input type="date" class="form-control" name="from_date" >
+              <input type="date" id="from" class="form-control" name="from_date" >
             </div>
             <div class="form-group">
               <label for="to_date">To</label>
-              <input type="date" class="form-control" name="to_date" >
+              <input type="date" id="to" class="form-control" name="to_date" >
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="notes">Notes</label>
-              <input type="text" class="form-control" name="notes" placeholder="Notes">
-            </div>
-            <button type="submit" class="btn btn-primary">Search</button>
+              <input type="text" id="notes" class="form-control" name="notes" placeholder="Notes">
+            </div> -->
+            <button id="searchSubmit" type="submit" class="btn btn-primary">Search</button>
           </fieldset>
         </form>
       </div>
@@ -215,8 +213,8 @@
 
 <script src='https://code.jquery.com/jquery-2.2.3.min.js' integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=' crossorigin='anonymous'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src='js/map.js'></script>
 <script src='js/dashboard.js'></script>
+<script src='js/search.js'></script>
 <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap' async></script>
 
 </body>
