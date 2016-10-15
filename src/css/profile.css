@@ -1,3 +1,10 @@
+/*
+Author: gooWee - gooWee@mail.com
+Author URI: http://www.goowee.io/
+*/
+
+/******<< Global Styles >>******/
+
 body, html {
   height: 100%;
   width: 100%;
@@ -9,35 +16,46 @@ body {
 }
 
 h1 {
-  margin-left: 20px;
-  margin-bottom: 40px;
+  margin-top: 0px;
+}
+
+h2 {
+  display: inline-block;
+  margin-left: 40px;
 }
 
 section {
   margin-top: 40px;
+  margin-bottom: 40px;
 }
 
-.credentials, .user_management {
-  display: none;
-}
+/******<< Nav Styles >>******/
 
 .navbar {
   padding-left: 10px;
   padding-right: 10px;
 }
 
+/******<< Section Styles >>******/
+
+.credentials, .user_management {
+  display: none;
+}
+
 .topspacing {
   margin-top: 40px;
 }
 
+#map, #list {
+  margin: auto;
+}
+
 #list {
   display: none;
-  margin: auto;
   overflow: auto;
 }
 
 #map {
   height: 65vh;
-  margin: auto;
   width: 65vw;
 }
