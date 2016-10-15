@@ -12,7 +12,6 @@ exports.up = function(knex, Promise) {
     table.string('state').notNullable();
     table.integer('zip').notNullable();
     table.string('job_type');
-    table.integer('team_id').references('id').inTable('teams');
     table.string('priority');
     table.string('notes', 5000);
   });
