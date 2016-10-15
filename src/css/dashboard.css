@@ -1,4 +1,11 @@
-body, html, {
+/*
+Author: gooWee - gooWee@mail.com
+Author URI: http://www.goowee.io/
+*/
+
+/******<< Global Styles >>******/
+
+body, html {
   height: 100%;
   width: 100%;
 }
@@ -8,15 +15,32 @@ body {
   padding-bottom: 20px;
 }
 
+footer {
+  margin: 0 20px;
+  clear: both;
+}
+
 form:nth-child(2) {
   margin-top: 20px;
 }
 
+h1, h2 {
+  margin-top: 0px;
+}
 
-h1 {
+h2 {
   margin-left: 40px;
   display: inline-block;
 }
+
+/******<< Nav Styles >>******/
+
+.navbar {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/******<< Dashboard Styles >>******/
 
 .cal-container, .maplist-container {
   margin: 2%;
@@ -31,19 +55,14 @@ h1 {
   float:right;
 }
 
-.modal-content {
-  padding: 40px;
-}
-
-.navbar {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
 .team-dropdown {
   display: inline-block;
   margin-left: 60px;
   vertical-align: middle;
+}
+
+#create_form {
+  display: none;
 }
 
 #list {
@@ -56,10 +75,6 @@ h1 {
   height: 65vh;
   margin: auto;
   width: 45vw;
-}
-
-#create_form {
-  display:none;
 }
 
 #visit_list {

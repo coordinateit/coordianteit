@@ -146,7 +146,7 @@ function getJobs(bounds) {
 }
 
 
-////// Display jobs on mpa //////
+////// Display jobs on map //////
 
 function setMarkers(jobs) {
   for (var i = 0; i < markers.length; i++) {  // Clear markers
@@ -191,23 +191,36 @@ function showJob(job) {
   $("#create_form").show();
   $(".switch_calendar_job").prop("checked", false);
   // Populate job form
-  $('#customer_name').attr('value', job.customer_name);
-  $('#po_number').attr('value', job.po_number);
-  $('#email').attr('value', job.email);
-  $('#po_number').attr('value', job.po_number);
-  $('#phone_number').attr('value', job.phone_number);
-  $('#address').attr('value', job.address);
-  $('#city').attr('value', job.city);
+  $('#customer_name').val(job.customer_name);
+  //$('#customer_name').attr('value', job.customer_name);
+  $('#po_number').val(job.po_number);
+  $('#email').val(job.email);
+  $('#po_number').val(job.po_number);
+  $('#phone_number').val(job.phone_number);
+  $('#address').val(job.address);
+  $('#city').val(job.city);
   let state = document.getElementById('state');
   state.value = job.state;
-  $('#zip').attr('value', job.zip);
+  $('#zip').val(job.zip);
   let team = document.getElementById('team');
   team.value = job.team_id;
   let priority = document.getElementById('priority');
   priority.value = job.priority;
-  $('#notes').attr('value', job.notes);
+  $('#notes').val(job.notes);
+  // Toggle visit list / visit form
+  $("#create_visit").hide();
+  $("#visit_list").show();
+  $('#create_job_button').text('Edit Job');
 }
 
+////// Clear job form //////
+
+  $('#clear').click(function(){
+    $('#create_job').find('input:text, select, textarea').val('');
+    $('#create_job_button').text('Create Job');
+    $("#create_visit").show();
+    $("#visit_list").hide();
+  });
 
 ////// Map List Switch ///////
 
