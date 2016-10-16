@@ -78,8 +78,6 @@ router.get('/teams', function(req, res, next) {
       .then(function(teams) {
         res.send(teams);
       });
-  } else {
-    res.redirect('/');
   }
 });
 
@@ -275,15 +273,18 @@ router.post('/search', function(req, res, next) {
               .andWhere('lng', '<', (lng + search.radius/200))
               .andWhere('lng', '>', (lng - search.radius/200))
           }
-        // }).andWhere(function() {
-        //   if (search.notes) {
-        //     // write where in
-        //   }
         })
         .then(function(data) {
           res.send(data);
         })
     }
+  }
+});
+
+router.get('/authorize', function(req, res, next) {
+  if (req.session.isadmin) {
+    console.log("admin");
+    res.redirect('/admin.html');
   }
 });
 
