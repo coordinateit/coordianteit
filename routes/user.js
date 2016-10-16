@@ -179,44 +179,83 @@ router.post('/postJob', function(req, res, next) {
 
 ////// Update existing job //////
 
-router.post('/updateJob', function(req, res, next {
-  var lat, lng;
-  var address = req.body.address + ', ' + req.body.city + ', ' + req.body.state + ', ' + req.body.zip;
-  geocoder.geocode(address, function(err, data) {
-    if (!req.body.customer_name) {
-      res.send('Please add customer name.')
+router.post('/updateJob', function(req, res, next) {
+  if (req.session.id) {
+    var lat, lng;
+    var address = req.body.address + ', ' + req.body.city + ', ' + req.body.state + ', ' + req.body.zip;
+    geocoder.geocode(address, function(err, data) {
+      if (!req.body.customer_name) {
+        res.send('Please add customer name.')
+      }
+      if (!err) {
+        lat = data.results[0].geometry.location.lat;
+        lng = data.results[0].geometry.location.lng;
+        insert();
+      } else {
+        res.send('Invalid address.')
+      }
+    });
+    function insert() {
+      knex('jobs')
+        .insert({
+          lat: lat,
+          lng: lng,
+          start: start,
+          end: end,
+          customer_name: req.body.customer_name,
+          po_number: req.body.po_number,
+          email: req.body.email,
+          phone_number: req.body.phone_number,
+          address: req.body.address,
+          city: req.body.city,
+          state: req.body.state,
+          zip: req.body.zip,
+          job_type: req.body.jobtype,
+          team_id: req.body.team_id,
+          priority: req.body.priority,
+          notes: req.body.notes
+        })
+        .then(function() {
+          res.send();
+        });
     }
-    if (!err) {
-      lat = data.results[0].geometry.location.lat;
-      lng = data.results[0].geometry.location.lng;
-      insert();
+  }
+});
+
+
+////// Post visit //////
+
+router.post('/postVisit', function(req, res, next) {
+  if (req.session.id) {
+    var start, end;
+    if (req.body.date && req.body.start && req.body.end) {
+      start = Date.parse(req.body.date + ', ' + req.body.start);
+      end = Date.parse(req.body.date + ', ' + req.body.end);
+      insertVisit();
     } else {
-      res.send('Invalid address.')
+      res.send('Invalid date and time.')
     }
-  });
-  function insert() {
-    knex('jobs')
-      .insert({
-        lat: lat,
-        lng: lng,
-        start: start,
-        end: end,
-        customer_name: req.body.customer_name,
-        po_number: req.body.po_number,
-        email: req.body.email,
-        phone_number: req.body.phone_number,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        zip: req.body.zip,
-        job_type: req.body.jobtype,
-        team_id: req.body.team_id,
-        priority: req.body.priority,
-        notes: req.body.notes
-      })
-      .then(function() {
-        res.send();
-      });
+    function insertVisit() {
+      knex('visits')
+        .insert({
+          jobs_id: req.body.jobs_id,
+          visit_type: req.body.visit_type,
+          start: start,
+          end: end,
+          team_id: req.body.team_id,
+          notes: req.body.notes
+        })
+        .returning('id')
+        .then(function(id) {
+          knex('visits')
+            .where('id', id[0])
+            .first()
+            .then(function(visit) {
+              res.send(visit);
+            })
+        });
+    }
+  }
 });
 
 

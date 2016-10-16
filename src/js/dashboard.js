@@ -320,7 +320,6 @@ $('#update_job_button').click(function(event) {
     job_type: $('#job_type').val(),
     notes: $('#notes').val()
   }
-  console.log(data);
   $.ajax({
     type: "POST",
     dataType: "json",
