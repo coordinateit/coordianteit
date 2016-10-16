@@ -278,7 +278,6 @@ function showJob(job) {
   $(".switch_calendar_job").prop("checked", false);
   // Populate job form
   $('#customer_name').val(job.customer_name);
-  $('#customer_name').attr('value', job.customer_name);
   $('#po_number').val(job.po_number);
   $('#email').val(job.email);
   $('#po_number').val(job.po_number);
