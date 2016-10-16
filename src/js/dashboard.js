@@ -300,6 +300,39 @@ function getJob(id) {
 }
 
 
+////// Post job //////
+
+$('#update_job_button').click(function(event) {
+  event.preventDefault();
+  let data = {
+    id: currentJob,
+    customer_name: $('#customer_name').val(),
+    po_number: $('#po_number').val(),
+    email: $('#email').val(),
+    po_number: $('#po_number').val(),
+    phone_number: $('#phone_number').val(),
+    address: $('#address').val(),
+    city: $('#city').val(),
+    state: $('#state').val(),
+    zip: $('#zip').val(),
+    team_id: $('#team_id').val(),
+    priority: $('#priority').val(),
+    job_type: $('#job_type').val(),
+    notes: $('#notes').val()
+  }
+  console.log(data);
+  $.ajax({
+    type: "POST",
+    dataType: "json",
+    data: data,
+    url: "/user/updateJob",
+    success: function(data) {
+      showJob(data)
+    }
+  });
+});
+
+
 ////// Show job in form //////
 
 function showJob(job) {
@@ -322,6 +355,7 @@ function showJob(job) {
   team.value = job.team_id;
   let priority = document.getElementById('priority');
   priority.value = job.priority;
+  $('#job_type').val(job.job_type);
   $('#notes').val(job.notes);
 
   // Toggle visit list / visit form, get visits for job
@@ -332,7 +366,8 @@ function showJob(job) {
     success: function(data) {
       $("#create_visit").hide();
       $("#visit_list").show();
-      $('#create_job_button').text('Edit Job');
+      $('#create_job_button').hide();
+      $('#update_job_button').show();
       $('.visit_list').empty();
       for (var i = 0; i < data.length; i++) {
         visitAppend(data[i]);

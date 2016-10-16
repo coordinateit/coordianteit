@@ -6,7 +6,7 @@ exports.up = function(knex, Promise) {
     table.string('customer_name').notNullable();
     table.string('po_number');
     table.string('email');
-    table.string('phone_number').notNullable();
+    table.string('phone_number');
     table.string('address').notNullable();
     table.string('city').notNullable();
     table.string('state').notNullable();
