@@ -322,6 +322,7 @@ function showJob(job) {
   team.value = job.team_id;
   let priority = document.getElementById('priority');
   priority.value = job.priority;
+  $('#job_type').val(job.job_type);
   $('#notes').val(job.notes);
 
   // Toggle visit list / visit form, get visits for job
