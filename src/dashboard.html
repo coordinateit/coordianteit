@@ -126,7 +126,7 @@
                 <div class="form-group">
                   <label for="state">State</label>
                   <select id="state" class="form-control" name="state">
-                    <option value=""></option>
+                    <option value="">State</option>
                     <option value="AL">Alabama</option>
                     <option value="AK">Alaska</option>
                     <option value="AZ">Arizona</option>
@@ -201,6 +201,7 @@
                 <div class="form-group">
                   <label for="team">Team</label>
                   <select id="team" class="form-control teams" name="team">
+                    <option value="">Team</option>
                     <!-- Teams appended from dashboard.js makeList() -->
                   </select>
                 </div>
@@ -209,6 +210,7 @@
                 <div class="form-group">
                   <label for="priority">Priority</label>
                   <select id="priority" class="form-control" name="priority">
+                    <option value="">Priority</option>
                     <option value="1">High</option>
                     <option value="2">Medium</option>
                     <option value="3">Low</option>
@@ -228,35 +230,47 @@
           <!-- Create Visit Form/List -->
           <form id="create_visit" action="/user/postVisit" method="POST">
               <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                   <div class="form-group">
                     <label for="visit-date">Visit Date</label>
                     <input type="date" class="form-control" name="visit_date" >
                   </div>
                 </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label for="visit-type">Visit Type</label>
-                    <input type="text" name="visit-type" class="form-control" placeholder="Visit Type">
-                  </div>
-                </div>
-                <div class="col-md-3">
+
+                <div class="col-md-4">
                   <div class="form-group">
                     <label for="start-time">Start Time</label>
                     <input type="time" class="form-control" name="start_time">
                   </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                   <div class="form-group">
                     <label for="end-time">End Time</label>
                     <input type="time" class="form-control" name="end_time">
                   </div>
                 </div>
               </div>
-              <div class="form-group">
-                <label for="visit-notes">Visit Notes</label>
-                <textarea name="notes" class="form-control" placeholder="Add your visit notes here"></textarea>
-              </div>
+                <div class = "row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="visit-type">Visit Type</label>
+                      <input type="text" name="visit-type" class="form-control" placeholder="Visit Type">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="team">Team</label>
+                      <select id="team" class="form-control teams" name="team">
+                        <option value="">Team</option>
+                        <!-- Teams appended from dashboard.js makeList() -->
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="visit-notes">Visit Notes</label>
+                  <textarea name="notes" class="form-control" placeholder="Add your visit notes here"></textarea>
+                </div>
               <button type="submit" class="btn btn-primary">Create Visit</button>
             </form>
 
