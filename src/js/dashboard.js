@@ -86,6 +86,7 @@ $('#teams').change(function(clicked) {
   teamFilter = $('#teams').find(":selected").val();
   getVisits();
   getJobs();
+  getListData();
   $("#calendar").show();
   $("#create_form").hide();
   $(".switch_calendar_job").prop("checked", true);
@@ -219,11 +220,12 @@ function setMarkers(jobs) {
 
 ////// Get list data from server ///////
 
-function getListData(){
+function getListData() {
   $.ajax({
-    type: 'GET',
+    type: 'POST',
     dataType: 'json',
-    url: '/user/listView',
+    data: {team: teamFilter},
+    url: '/user/list',
     success: function(data) {
       visitList(data);
     }
@@ -234,6 +236,7 @@ function getListData(){
 ////// Add data to list ///////
 
 function visitList(data) {
+  $(".list").empty();
   for (var i = 0; i < data.length; i++) {
     let date = new Date(parseInt(data[i].start));
     let meridiem = 'am';
@@ -291,7 +294,6 @@ function getJob(id) {
 
 function showJob(job) {
   // Toggle calendar / job form
-
   $("#calendar").hide();
   $("#create_form").show();
   $(".switch_calendar_job").prop("checked", false);
@@ -321,19 +323,9 @@ function showJob(job) {
       $("#create_visit").hide();
       $("#visit_list").show();
       $('#create_job_button').text('Edit Job');
+      $('.visit_list').empty();
       for (var i = 0; i < data.length; i++) {
         visitAppend(data[i]);
-        // let start = new Date(parseInt(data[i].start));
-        // let startTime = parseTime(data[i].start);
-        // let endTime = parseTime(data[i].end);
-        // $('.visit_list').append(
-        //   `<tr>
-        //     <td>${start.toDateString()}</td>
-        //     <td>${startTime}</td>
-        //     <td>${endTime}</td>
-        //     <td>${data[i].visit_type}</td>
-        //     <td>${data[i].team_id}</td>
-        //   </tr>`);
       }
     }
   })
@@ -378,7 +370,7 @@ $('#visitSubmit').click(function(event) {
     date: $('#visit_date').val(),
     start: $('#visit_start').val(),
     end: $('#visit_end').val(),
-    // team_id: $('#visit_').val(),
+    team_id: $('#visit_team').val(),
     notes: $('#visit_notes').val()
   };
   $.ajax({
@@ -387,7 +379,6 @@ $('#visitSubmit').click(function(event) {
     data: data,
     url: "/user/postVisit",
     success: function(visit) {
-      console.log(visit);
       $("#create_visit").hide();
       $("#visit_list").show();
       visitAppend(visit);

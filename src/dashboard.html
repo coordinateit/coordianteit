@@ -233,20 +233,20 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label for="visit-date">Visit Date</label>
-                    <input type="date" class="form-control" name="visit_date" >
+                    <input type="date" id="visit_date" class="form-control" name="visit_date" >
                   </div>
                 </div>
 
                 <div class="col-md-4">
                   <div class="form-group">
                     <label for="start-time">Start Time</label>
-                    <input type="time" class="form-control" name="start_time">
+                    <input type="time" id="visit_start" class="form-control" name="start_time">
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
                     <label for="end-time">End Time</label>
-                    <input type="time" class="form-control" name="end_time">
+                    <input type="time" id="visit_end" class="form-control" name="end_time">
                   </div>
                 </div>
               </div>
@@ -254,13 +254,13 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="visit-type">Visit Type</label>
-                      <input type="text" name="visit-type" class="form-control" placeholder="Visit Type">
+                      <input type="text" id="visit_type" name="visit-type" class="form-control" placeholder="Visit Type">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="team">Team</label>
-                      <select id="team" class="form-control teams" name="team">
+                      <select id="visit_team" class="form-control teams" name="team">
                         <option value="">Team</option>
                         <!-- Teams appended from dashboard.js makeList() -->
                       </select>
@@ -271,7 +271,7 @@
                   <label for="visit-notes">Visit Notes</label>
                   <textarea name="notes" class="form-control" placeholder="Add your visit notes here"></textarea>
                 </div>
-              <button type="submit" class="btn btn-primary">Create Visit</button>
+              <button type="submit" id="visit_notes" class="btn btn-primary">Create Visit</button>
             </form>
 
             <!-- Visit List -->
@@ -285,7 +285,7 @@
                   <th>Team</th>
                 </tr>
               </table>
-              <button type="submit" class="btn btn-primary">Add Visit</button>
+              <button type="submit" id="addVisit" class="btn btn-primary">Add Visit</button>
             </div>
         </div>
 
