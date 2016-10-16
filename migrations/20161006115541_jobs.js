@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
     table.string('state').notNullable();
     table.integer('zip').notNullable();
     table.string('job_type');
-    table.string('priority');
+    table.integer('priority');
     table.string('notes', 5000);
   });
 };

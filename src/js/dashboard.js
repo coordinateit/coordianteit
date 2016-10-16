@@ -107,6 +107,16 @@ function initCalendar() {
     },
     eventMouseout: function() {
       document.body.style.cursor = "default";
+    },
+    header: {
+        left: 'title',
+        center: 'month,agendaDay',
+        right: 'prev,next today myCustomButton'
+    },
+    views: {
+        agendaDay: {
+            titleFormat: 'MMMM Do'
+        }
     }
   });
 }

@@ -16,7 +16,7 @@
 
     <!-- Custom Styles -->
       <link rel="stylesheet" href="css/main.css">
-
+      <link rel="stylesheet" href="css/animations/loader.css">
   </head>
 
   <body>
@@ -41,7 +41,14 @@
               <input type="password" id="password" placeholder="Password" class="form-control" name="password">
             </div>
             <button type="submit" id="signin" class="btn btn-success">Sign in</button>
-            <div id="dummysignin" class="btn">Sign In</div>
+
+            <div id="dummysignin" class="btn">
+                <div class="loader-inner ball-pulse">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+            </div>
           </form>
         </div><!--/.navbar-collapse -->
       </div>
