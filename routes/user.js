@@ -57,6 +57,19 @@ router.post('/visits', function(req, res, next) {
 });
 
 
+////// Get visits for a given job ///////
+
+router.get('/jobVisits/:jobId', function(req, res, next) {
+  if (req.session.id) {
+    knex('visits')
+      .where('jobs_id', req.params.jobId)
+      .then(function(data) {
+        res.send(data);
+      })
+  }
+});
+
+
 ////// Gets a list of teams //////
 
 router.get('/teams', function(req, res, next) {
@@ -65,21 +78,28 @@ router.get('/teams', function(req, res, next) {
       .then(function(teams) {
         res.send(teams);
       });
-  } else {
-    res.redirect('/');
   }
 });
 
 
 ////// Get visits and jobs //////
 
-router.get('/listView', function(req, res, next) {
+router.post('/list', function(req, res, next) {
   if (req.session.id) {
-    knex('jobs')
-      .join('visits', 'jobs.id', 'visits.jobs_id')
-      .then(function(visits) {
-        res.send(visits);
-      })
+    if (req.body.team) {
+      knex('jobs')
+        .join('visits', 'jobs.id', 'visits.jobs_id')
+        .where('team_id', req.body.team)
+        .then(function(visits) {
+          res.send(visits);
+        });
+    } else {
+      knex('jobs')
+        .join('visits', 'jobs.id', 'visits.jobs_id')
+        .then(function(visits) {
+          res.send(visits);
+        });
+    }
   }
 });
 
@@ -253,15 +273,18 @@ router.post('/search', function(req, res, next) {
               .andWhere('lng', '<', (lng + search.radius/200))
               .andWhere('lng', '>', (lng - search.radius/200))
           }
-        // }).andWhere(function() {
-        //   if (search.notes) {
-        //     // write where in
-        //   }
         })
         .then(function(data) {
           res.send(data);
         })
     }
+  }
+});
+
+router.get('/authorize', function(req, res, next) {
+  if (req.session.isadmin) {
+    console.log("admin");
+    res.redirect('/admin.html');
   }
 });
 
