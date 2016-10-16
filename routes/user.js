@@ -155,8 +155,6 @@ router.post('/postJob', function(req, res, next) {
       .insert({
         lat: lat,
         lng: lng,
-        start: start,
-        end: end,
         customer_name: req.body.customer_name,
         po_number: req.body.po_number,
         email: req.body.email,
@@ -190,18 +188,17 @@ router.post('/updateJob', function(req, res, next) {
       if (!err) {
         lat = data.results[0].geometry.location.lat;
         lng = data.results[0].geometry.location.lng;
-        insert();
+        update();
       } else {
         res.send('Invalid address.')
       }
     });
-    function insert() {
+    function update() {
       knex('jobs')
-        .insert({
+        .where('id', req.body.id)
+        .update({
           lat: lat,
           lng: lng,
-          start: start,
-          end: end,
           customer_name: req.body.customer_name,
           po_number: req.body.po_number,
           email: req.body.email,
@@ -215,8 +212,15 @@ router.post('/updateJob', function(req, res, next) {
           priority: req.body.priority,
           notes: req.body.notes
         })
-        .then(function() {
-          res.send();
+        .returning('id')
+        .then(function(id) {
+          knex('jobs')
+            .where('id', id[0])
+            .first()
+            .then(function(job) {
+              console.log(job);
+              res.send(job);
+            })
         });
     }
   }
@@ -361,6 +365,10 @@ router.get('/authorize', function(req, res, next) {
     console.log("admin");
     res.redirect('/admin.html');
   }
+});
+
+router.get('/logout', function(req, res, next) {
+  req.session = null;
 });
 
 

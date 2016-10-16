@@ -440,18 +440,11 @@ if (window.localStorage.search) {
 }
 
 
-
-////////////////////////////////////////////////////////////////////////////////
-//                                    PROFILE                                 //
-////////////////////////////////////////////////////////////////////////////////
-
-
-////// Profile Button Div Switch /////
-
-$(".menu button").on("click", function(){
-  var button_id = "." + $(this).attr("id");
-  $(".credentials").hide();
-  $(".team_management").hide();
-  $(".user_management").hide();
-  $(button_id).show();
+$('#logout').click(function(event) {
+  event.preventDefault;
+  $.ajax({
+    type: "GET",
+    datatype: "json",
+    url: "/user/logout"
+  })
 });
