@@ -57,6 +57,19 @@ router.post('/visits', function(req, res, next) {
 });
 
 
+////// Get visits for a given job ///////
+
+router.get('/jobVisits/:jobId', function(req, res, next) {
+  if (req.session.id) {
+    knex('visits')
+      .where('jobs_id', req.params.jobId)
+      .then(function(data) {
+        res.send(data);
+      })
+  }
+});
+
+
 ////// Gets a list of teams //////
 
 router.get('/teams', function(req, res, next) {
@@ -73,13 +86,22 @@ router.get('/teams', function(req, res, next) {
 
 ////// Get visits and jobs //////
 
-router.get('/listView', function(req, res, next) {
+router.post('/list', function(req, res, next) {
   if (req.session.id) {
-    knex('jobs')
-      .join('visits', 'jobs.id', 'visits.jobs_id')
-      .then(function(visits) {
-        res.send(visits);
-      })
+    if (req.body.team) {
+      knex('jobs')
+        .join('visits', 'jobs.id', 'visits.jobs_id')
+        .where('team_id', req.body.team)
+        .then(function(visits) {
+          res.send(visits);
+        });
+    } else {
+      knex('jobs')
+        .join('visits', 'jobs.id', 'visits.jobs_id')
+        .then(function(visits) {
+          res.send(visits);
+        });
+    }
   }
 });
 

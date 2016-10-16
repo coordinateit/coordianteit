@@ -56,16 +56,6 @@ $(".switch_map_list").change(function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-////// Filter page by team //////
-
-var teamFilter;
-$('#teams').change(function(clicked) {
-  teamFilter = $('#teams').find(":selected").val();
-  getVisits();
-  getJobs();
-});
-
-
 ////// Get team data from server ///////
 
 function getTeamList() {
@@ -87,6 +77,20 @@ function teamList(teams) {
     $('.teams').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
   }
 }
+
+
+////// Filter page by team //////
+
+var teamFilter;
+$('#teams').change(function(clicked) {
+  teamFilter = $('#teams').find(":selected").val();
+  getVisits();
+  getJobs();
+  getListData();
+  $("#calendar").show();
+  $("#create_form").hide();
+  $(".switch_calendar_job").prop("checked", true);
+});
 
 
 
@@ -216,11 +220,12 @@ function setMarkers(jobs) {
 
 ////// Get list data from server ///////
 
-function getListData(){
+function getListData() {
   $.ajax({
-    type: 'GET',
+    type: 'POST',
     dataType: 'json',
-    url: '/user/listView',
+    data: {team: teamFilter},
+    url: '/user/list',
     success: function(data) {
       visitList(data);
     }
@@ -231,6 +236,7 @@ function getListData(){
 ////// Add data to list ///////
 
 function visitList(data) {
+  $(".list").empty();
   for (var i = 0; i < data.length; i++) {
     let date = new Date(parseInt(data[i].start));
     let meridiem = 'am';
@@ -248,6 +254,20 @@ function visitList(data) {
   }
 }
 
+function parseTime(input) {
+  let date = new Date(parseInt(input));
+  let meridiem = 'am';
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  if (hours > 12) {
+    meridiem = 'pm';
+    hours -= 12;
+  }
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  return time = hours + ":" + minutes + " " + meridiem;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -256,7 +276,7 @@ function visitList(data) {
 
 
 ////// Get data for a specific job //////
-
+var currentJob;
 function getJob(id) {
   var url = '/user/job/' + id;
   $.ajax({
@@ -264,6 +284,7 @@ function getJob(id) {
     datatype: 'json',
     url: url
   }).then(function(data) {
+    currentJob = data.id;
     showJob(data);
   });
 }
@@ -292,35 +313,93 @@ function showJob(job) {
   let priority = document.getElementById('priority');
   priority.value = job.priority;
   $('#notes').val(job.notes);
-  // Toggle visit list / visit form
-  $("#create_visit").hide();
-  $("#visit_list").show();
-  $('#create_job_button').text('Edit Job');
+
+  // Toggle visit list / visit form, get visits for job
+  $.ajax({
+    type: "GET",
+    dataType: "json",
+    url: "/user/jobVisits/" + job.id,
+    success: function(data) {
+      $("#create_visit").hide();
+      $("#visit_list").show();
+      $('#create_job_button').text('Edit Job');
+      $('.visit_list').empty();
+      for (var i = 0; i < data.length; i++) {
+        visitAppend(data[i]);
+      }
+    }
+  })
+}
+
+function visitAppend(visit) {
+  let start = new Date(parseInt(visit.start));
+  let startTime = parseTime(visit.start);
+  let endTime = parseTime(visit.end);
+  $('.visit_list').append(
+    `<tr>
+      <td>${start.toDateString()}</td>
+      <td>${startTime}</td>
+      <td>${endTime}</td>
+      <td>${visit.visit_type}</td>
+      <td>${visit.team_id}</td>
+    </tr>`);
 }
 
 ////// Clear job form //////
 
-  $('#clear').click(function(){
-    $('#create_job').find('input:text, select, textarea').val('');
-    $('#create_job_button').text('Create Job');
-    $("#create_visit").show();
-    $("#visit_list").hide();
+$('#clear').click(function(){
+  $('#create_job').find('input:text, select, textarea').val('');
+  $('#create_job_button').text('Create Job');
+  $("#create_visit").show();
+  $("#visit_list").hide();
+});
+
+
+////// Add visit //////
+
+$('#addVisit').click(function() {
+  $("#create_visit").show();
+  $("#visit_list").hide();
+});
+
+$('#visitSubmit').click(function(event) {
+  event.preventDefault();
+  let data = {
+    jobs_id: currentJob,
+    visit_type: $('#visit_type').val(),
+    date: $('#visit_date').val(),
+    start: $('#visit_start').val(),
+    end: $('#visit_end').val(),
+    team_id: $('#visit_team').val(),
+    notes: $('#visit_notes').val()
+  };
+  $.ajax({
+    type: "POST",
+    dataType: "json",
+    data: data,
+    url: "/user/postVisit",
+    success: function(visit) {
+      $("#create_visit").hide();
+      $("#visit_list").show();
+      visitAppend(visit);
+    }
   });
+});
 
 
-  ////// Display search results //////
+////// Display search results //////
 
-  if (localStorage.search) {
-    let id = JSON.parse(window.localStorage.search);
-    getVisit(id);
-    window.localStorage.search = null;
-  }
+if (window.localStorage.search) {
+  let id = JSON.parse(window.localStorage.search);
+  getVisit(id);
+  localStorage.removeItem('search');
+}
 
 
 
-  ////////////////////////////////////////////////////////////////////////////////
-  //                                    PROFILE                                 //
-  ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                    PROFILE                                 //
+////////////////////////////////////////////////////////////////////////////////
 
 
 ////// Profile Button Div Switch /////
