@@ -72,7 +72,7 @@ function getTeamList() {
 
 function teamList(teams) {
   for (var i = 0; i < teams.length; i++) {
-    $('.teams').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
+    $('.teams').append(`<option value="${teams[i].id}">${teams[i].team_name}</option>`);
   }
 }
 

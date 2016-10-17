@@ -17,14 +17,27 @@ router.get('/users', function(req, res, next) {
 
 router.post('/postUser', function(req, res, next) {
   if (req.session.isadmin) {
+    if (!req.body.team_id) {
+      var team_id = null;
+    } else {
+      var team_id = req.body.team_id;
+    }
+    var email = req.body.email.toLowerCase();
     var password = bcrypt.hashSync(req.body.password, 8);
     knex('users')
+      .where('email', req.body.email)
+      .then(function(data) {
+        if (data.length) {
+          res.send('This email is already in use.')
+        }
+      });
+    knex('users')
       .insert({
-        email: req.body.email,
+        email: email,
         password: password,
         name: req.body.name,
         phone: req.body.phone,
-        team_id: req.body.team_id,
+        team_id: team_id,
         isadmin: req.body.isadmin
       }).then(function() {
         res.redirect('/admin.html')
