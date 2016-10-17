@@ -1,10 +1,15 @@
+$(document).ready(function(){
+  getListData();
+});
+
+
 ////// Get list data from server ///////
 
 function getListData(){
   $.ajax({
-    type: 'GET',
+    type: 'POST',
     dataType: 'json',
-    url: '/user/listView',
+    url: '/user/list',
     success: function(data) {
       makeList(data);
     }
@@ -31,8 +36,3 @@ function makeList(data) {
     $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
   }
 }
-
-
-$(document).ready(function(){
-  getListData();
-});
