@@ -86,13 +86,8 @@ function setIdArray(data) {
   listIds = data.map(function(i) {
     return i.id;
   })
+  window.localStorage.list = JSON.stringify(listIds);
 };
-
-
-$('#printableList').click(function() {
-  console.log(listIds);
-  window.localstorage.searchArray = listIds;
-})
 
 
 ////// Initialize map //////

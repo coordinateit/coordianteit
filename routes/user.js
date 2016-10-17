@@ -109,6 +109,27 @@ router.post('/list', function(req, res, next) {
 
 ////// Get job by ID //////
 
+router.post('/printlist', function(req, res, next) {
+  if (req.session.id) {
+    var ids = JSON.parse(req.body.list)
+    console.log(ids);
+    // knex('jobs')
+    //   .join('visits', 'jobs_id', 'jobs.id')
+    //   .where('team_id', req.body.team)
+    //
+    knex('jobs')
+      .join('visits', 'jobs_id', 'jobs.id')
+      // .whereIn('visit_id', ids)
+      .then(function(data) {
+        console.log(data);
+        res.send(data);
+      });
+  }
+});
+
+
+////// Get job by ID //////
+
 router.get('/job/:id', function(req, res, next) {
   if (req.session.id) {
     knex('jobs')
@@ -381,7 +402,6 @@ router.post('/password', function(req, res, next) {
   knex('users')
     .where('email', req.body.email)
     .then(function(data) {
-      console.log(data);
       if (!data.length) {
         res.send('Please enter a valid login.')
       } else if (bcrypt.compareSync(req.body.old_password, data[0].password)) {
