@@ -143,6 +143,8 @@ function getVisit(id) {
     dataType: 'json',
     url: '/user/visit/' + id,
     success: function(data) {
+      currentJob = data.jobs_id;
+      console.log(data);
       showJob(data);
     }
   });
@@ -219,22 +221,35 @@ function setMarkers(jobs) {
 ////// Get list data from server ///////
 
 function getListData() {
+  var today = Date.now();
   $.ajax({
     type: 'POST',
     dataType: 'json',
-    data: {team: teamFilter},
+    data: {team: teamFilter, day: today},
     url: '/user/list',
     success: function(data) {
       visitList(data);
+      setIdArray(data);
     }
   });
 }
+
+
+////// Make an array of ids for list view //////
+
+function setIdArray(data) {
+  var listIds = data.map(function(i) {
+    return i.id;
+  })
+  window.localStorage.list = JSON.stringify(listIds);
+};
 
 
 ////// Add data to list ///////
 
 function visitList(data) {
   $(".list").empty();
+  $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Visit type</th><th>Address</th><th>Phone Number</th></tr>");
   for (var i = 0; i < data.length; i++) {
     let date = new Date(parseInt(data[i].start));
     let meridiem = 'am';
@@ -264,7 +279,7 @@ function parseTime(input) {
   if (minutes < 10) {
     minutes = "0" + minutes;
   }
-  return time = hours + ":" + minutes + " " + meridiem;
+  return hours + ":" + minutes + " " + meridiem;
 }
 
 
@@ -283,6 +298,7 @@ function getJob(id) {
     url: url
   }).then(function(data) {
     currentJob = data.id;
+    console.log(data);
     showJob(data);
   });
 }
@@ -303,7 +319,6 @@ $('#update_job_button').click(function(event) {
     city: $('#city').val(),
     state: $('#state').val(),
     zip: $('#zip').val(),
-    team_id: $('#team_id').val(),
     priority: $('#priority').val(),
     job_type: $('#job_type').val(),
     notes: $('#notes').val()
@@ -313,8 +328,8 @@ $('#update_job_button').click(function(event) {
     dataType: "json",
     data: data,
     url: "/user/updateJob",
-    success: function(data) {
-      showJob(data)
+    success: function() {
+      window.location = '/dashboard.html';
     }
   });
 });
@@ -338,8 +353,6 @@ function showJob(job) {
   let state = document.getElementById('state');
   state.value = job.state;
   $('#zip').val(job.zip);
-  let team = document.getElementById('jobTeam');
-  team.value = job.team_id;
   let priority = document.getElementById('priority');
   priority.value = job.priority;
   $('#job_type').val(job.job_type);
@@ -349,13 +362,14 @@ function showJob(job) {
   $.ajax({
     type: "GET",
     dataType: "json",
-    url: "/user/jobVisits/" + job.id,
+    url: "/user/jobVisits/" + currentJob,
     success: function(data) {
       $("#create_visit").hide();
       $("#visit_list").show();
       $('#create_job_button').hide();
       $('#update_job_button').show();
       $('.visit_list').empty();
+      $('.visit_list').append('<tr><th>Date</th><th>Start Time</th><th>End Time</th><th>Visit Type</th><th>Team</th></tr>');
       for (var i = 0; i < data.length; i++) {
         visitAppend(data[i]);
       }
