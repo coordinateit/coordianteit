@@ -21,6 +21,7 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "intern": "^3.3.1"
   }
 }
