@@ -71,6 +71,7 @@
       <!-- Calendar -->
       <div id="calendar"></div>
 
+
       <div id="create_form">
         <!-- Create Job Form -->
         <form id="create_job" action="/user/postJob" method="POST">
@@ -122,7 +123,7 @@
               <div class="form-group">
                 <label for="state">State</label>
                 <select id="state" class="form-control" name="state">
-                  <option value="">State</option>
+                  <option value=""></option>
                   <option value="AL">Alabama</option>
                   <option value="AK">Alaska</option>
                   <option value="AZ">Arizona</option>
@@ -185,10 +186,11 @@
               </div>
             </div>
           </div>
+
           <div class="row">
             <div class="col-md-5">
               <div class="job-type">
-                <label for="job_type">Job Type</label>
+                <label for="job-type">Job Type</label>
                 <input type="text" id="job_type" class="form-control" name="job_type" placeholder="Job Type">
               </div>
             </div>
@@ -196,7 +198,6 @@
               <div class="form-group">
                 <label for="team">Team</label>
                 <select id="team" class="form-control teams" name="team">
-                  <option value="">Team</option>
                   <!-- Teams appended from dashboard.js makeList() -->
                 </select>
               </div>
@@ -205,7 +206,6 @@
               <div class="form-group">
                 <label for="priority">Priority</label>
                 <select id="priority" class="form-control" name="priority">
-                  <option value="">Priority</option>
                   <option value="1">High</option>
                   <option value="2">Medium</option>
                   <option value="3">Low</option>
@@ -214,119 +214,50 @@
             </div>
           </div>
 
-          <!-- Old Create Visit Form/List -->
-          <!-- <form id="create_visit">
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label for="visit_date">Visit Date</label>
-                    <input type="date" id="visit_date" class="form-control" name="visit_date" >
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label for="start_time">Start Time</label>
-                    <input type="time" id="visit_start" class="form-control" name="start_time">
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label for="end_time">End Time</label>
-                    <input type="time" id="visit_end" class="form-control" name="end_time">
-                  </div>
-                </div>
-              </div>
-                <div class = "row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="visit_type">Visit Type</label>
-                      <input type="text" id="visit_type" name="visit-type" class="form-control" placeholder="Visit Type">
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="team">Team</label>
-                      <select id="visit_team" class="form-control teams" name="team">
-                        <option value="">Team</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="visit-notes">Visit Notes</label>
-                  <textarea name="notes" class="form-control" placeholder="Add your visit notes here"></textarea>
-                </div>
-              <button type="button" id="visitSubmit" class="btn btn-primary">Create Visit</button>
-            </form>
-
-            <div id="visit_list" class="table-responsive">
-              <table class="visit_list table table-striped">
-                <tr>
-                  <th>Date</th>
-                  <th>Start Time</th>
-                  <th>End Time</th>
-                  <th>Visit Type</th>
-                  <th>Team</th>
-                </tr>
-              </table>
-              <button type="submit" id="addVisit" class="btn btn-primary">Add Visit</button>
           <div class="form-group">
             <label for="notes">Job Notes</label>
             <textarea name="notes" id="notes" class="form-control" placeholder="Add your job notes here"></textarea>
           </div>
             <button type="submit" id="create_job_button" class="btn btn-primary">Create Job</button>
             <button type="button" id="update_job_button" class="btn btn-primary">Edit Job</button>
-            <button type="reset" class="btn btn-primary clear">Clear Form</button>
-        </form> -->
+            <button type="reset" id="clear_job" class="btn btn-primary">Clear Form</button>
+        </form>
 
         <!-- Create Visit Form/List -->
-        <form id="create_visit">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="visit_date">Visit Date</label>
-                <input name="visit_date" type="date" id="visit_date" class="form-control">
+        <form id="create_visit" method="POST">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="visit_date">Visit Date</label>
+                  <input type="date" id="visit_date" class="form-control" name="visit_date" >
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="visit-type">Visit Type</label>
+                  <input type="text" id="visit_type" name="visit_type" class="form-control" placeholder="Visit Type">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="start_time">Start Time</label>
+                  <input type="time" id="visit_start" class="form-control" name="start_time">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="end-time">End Time</label>
+                  <input type="time" id="visit_end" class="form-control" name="end_time">
+                </div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="start_time">Start Time</label>
-                <input name="start_time" type="time" id="visit_start" class="form-control">
-              </div>
+            <div class="form-group">
+              <label for="visit-notes">Visit Notes</label>
+              <textarea name="notes" id="visit_notes" class="form-control" placeholder="Add your visit notes here"></textarea>
             </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="end_time">End Time</label>
-                <input name="end_time" type="time" id="visit_end" class="form-control">
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="visit_type">Visit Type</label>
-                <input name="visit_type" type="text" id="visit_type"  class="form-control" placeholder="Visit Type">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="team">Team</label>
-                <select id="visit_team" class="form-control teams" name="team">
-                  <option value="">Team</option>
-                  <!-- Teams appended from dashboard.js makeList() -->
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="visit-notes">Visit Notes</label>
-            <textarea name="visit-notes" class="form-control" placeholder="Add your visit notes here"></textarea>
-          </div>
-          <button type="button" id="visitSubmit" class="btn btn-primary">Create Visit</button>
-          <button type="button" id="update_job_button" class="btn btn-primary">Edit Job</button>
-          <button type="reset" class="btn btn-primary clear">Clear Form</button>
-        </form>
+            <button type="button" id="visitSubmit" class="btn btn-primary">Create Visit</button>
+            <button type="button" id="clear_visit" class="btn btn-primary">Clear Form</button>
+          </form>
 
           <!-- Visit List -->
           <div id="visit_list" class="table-responsive">

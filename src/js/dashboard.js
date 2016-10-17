@@ -378,11 +378,17 @@ function visitAppend(visit) {
 
 ////// Clear job form //////
 
-$('.clear').click(function(){
+$('#clear_job').click(function(){
   $('#create_job').find('input:text, select, textarea').val('');
   $('#create_job_button').text('Create Job');
   $("#create_visit").show();
   $("#visit_list").hide();
+});
+
+////// Clear visit form //////
+
+$('#clear_visit').click(function(){
+  $('#create_visit').find('input:text, select, textarea').val('');
 });
 
 
