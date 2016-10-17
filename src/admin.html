@@ -38,7 +38,7 @@
           <li><a href="dashboard.html">Dashboard</a></li>
           <li><a href="search.html">Search Visits</a></li>
           <li><a href="user.html">Profile</a></li>
-          <li><a href="#">Log Out</a></li>
+          <li><a href="index.html" id="logout">Log Out</a></li>
         </ul>
       </div><!--/.navbar-collapse -->
     </div>
@@ -82,7 +82,7 @@
             </div>
             <div class="form-group">
               <label for="retype_password">Retype New Password</label>
-              <input type="text" class="form-control" name="retype_password" placeholder="Retype New Password">
+              <input type="password" class="form-control" name="retype_password" placeholder="Retype New Password">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </fieldset>
@@ -95,17 +95,14 @@
   <section class="user_management">
     <div class="row">
       <div class="col-md-3">
-        <form action="">
+        <form action="/admin/postUser" method="POST">
           <fieldset>
             <legend>Create User</legend>
             <div class="form-group">
-              <label for="first_name">First Name</label>
-              <input type="text" class="form-control" name="first_name" placeholder="First Name">
+              <label for="first_name">Name</label>
+              <input type="text" class="form-control" name="name" placeholder="Name">
             </div>
-            <div class="form-group">
-              <label for="last_name">Last Name</label>
-              <input type="text" class="form-control" name="last_name" placeholder="Last Name">
-            </div>
+
             <div class="form-group">
               <label for="phone">Phone</label>
               <input type="text" class="form-control" name="phone" placeholder="phone">
@@ -130,13 +127,12 @@
         </form>
       </div>
       <div class="col-md-9">
-        <table class="table table-striped table-responsive">
+        <table id="allUsers" class="table table-striped table-responsive">
           <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Name</th>
             <th>E-mail</th>
             <th>Phone</th>
-            <th>User Type</th>
+            <th>Admin</th>
           </tr>
         </table>
       </div>
@@ -147,7 +143,7 @@
   <section class="team_management">
     <div class="row">
       <div class="col-md-4">
-        <form action="">
+        <form action="/admin/postTeam" method="POST">
           <fieldset>
             <legend>Create Team</legend>
             <div class="form-group">
@@ -165,25 +161,22 @@
           <div class="form-group">
             <fieldset>
               <legend>Select Team</legend>
-              <select name="select_team" class="form-control">
-                <option value="">Team</option>
-                <option value="team1">Team 1</option>
-                <option value="team1">Team 2</option>
-                <option value="team1">Team 3</option>
+              <select name="select_team" id="teams" class="form-control">
+                <option value="">All Teams</option>
+
               </select>
             </fieldset>
           </div>
         </form>
         <h3 class="topspacing">Team Members</h3>
-        <table class="table table-striped table-responsive">
+        <table id="teamMembers" class="table table-striped table-responsive">
           <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Name</th>
             <th>Phone</th>
           </tr>
         </table>
         <h3 class="topspacing">Vehicle</h3>
-        <p class="lead">F-150</p>
+        <p id="truck" class="lead"></p>
       </div>
       <div class="col-md-8">
 
@@ -227,7 +220,8 @@
 
 <script src='https://code.jquery.com/jquery-2.2.3.min.js' integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=' crossorigin='anonymous'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src='js/dashboard.js'></script>
+<!-- <script src='js/dashboard.js'></script> -->
+<script src='js/profile.js'></script>
 
 <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap' async></script>
 

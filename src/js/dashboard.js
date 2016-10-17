@@ -38,18 +38,6 @@ $(".switch_map_list").change(function() {
 });
 
 
-// function testLogin() {
-//   $.ajax({
-//     type: 'GET',
-//     dataType: 'json',
-//     url: '/user/test',
-//     success: function(user) {
-//       $('#testLogin').text(user.email);
-//     }
-//   });
-// }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                    TEAMS                                   //
@@ -391,7 +379,7 @@ function visitAppend(visit) {
 
 ////// Clear job form //////
 
-$('#clear').click(function(){
+$('.clear').click(function(){
   $('#create_job').find('input:text, select, textarea').val('');
   $('#create_job_button').text('Create Job');
   $("#create_visit").show();
