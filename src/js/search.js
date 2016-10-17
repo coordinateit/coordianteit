@@ -94,6 +94,7 @@ function setIdArray(data) {
 
 var map;
 var markers = [];
+var infowindows = [];
 var position = JSON.parse(window.localStorage.position);
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -127,12 +128,14 @@ function setMarkers(visits) {
       title: visits[i].customer_name
     });
     marker.addListener('click', function() {
+      for (var i = 0; i < infowindows.length; i++) {
+        infowindows[i].close();
+      }
       infowindow.open(map, marker);
-    });
-    marker.addListener('click', function() {
       window.localStorage.search = JSON.stringify(marker.id)
     });
     markers.push(marker);
+    infowindows.push(infowindow);
   }
 }
 
