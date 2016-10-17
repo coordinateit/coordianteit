@@ -198,6 +198,7 @@
               <div class="form-group">
                 <label for="team">Team</label>
                 <select id="team" class="form-control teams" name="team">
+                  <option value="">Team</option>
                   <!-- Teams appended from dashboard.js makeList() -->
                 </select>
               </div>
@@ -206,6 +207,7 @@
               <div class="form-group">
                 <label for="priority">Priority</label>
                 <select id="priority" class="form-control" name="priority">
+                  <option value="">Priority</option>
                   <option value="1">High</option>
                   <option value="2">Medium</option>
                   <option value="3">Low</option>
@@ -226,28 +228,39 @@
         <!-- Create Visit Form/List -->
         <form id="create_visit" method="POST">
             <div class="row">
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="form-group">
                   <label for="visit_date">Visit Date</label>
                   <input type="date" id="visit_date" class="form-control" name="visit_date" >
                 </div>
               </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <label for="visit-type">Visit Type</label>
-                  <input type="text" id="visit_type" name="visit_type" class="form-control" placeholder="Visit Type">
-                </div>
-              </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="form-group">
                   <label for="start_time">Start Time</label>
                   <input type="time" id="visit_start" class="form-control" name="start_time">
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="form-group">
                   <label for="end-time">End Time</label>
                   <input type="time" id="visit_end" class="form-control" name="end_time">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="visit-type">Visit Type</label>
+                  <input type="text" id="visit_type" name="visit_type" class="form-control" placeholder="Visit Type">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="team">Team</label>
+                  <select id="team" class="form-control teams" name="team">
+                    <option value="">Team</option>
+                    <!-- Teams appended from dashboard.js makeList() -->
+                  </select>
                 </div>
               </div>
             </div>
