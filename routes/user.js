@@ -311,8 +311,8 @@ router.post('/search', function(req, res, next) {
       }
     }
     function searchQuery() {
-      knex('visits')
-        .join('jobs', 'visits.jobs_id', 'jobs.id')
+      knex('jobs')
+        .join('visits', 'jobs.id', 'visits.jobs_id')
         .where(function() {
           if (search.customer_name) {
             this.where('customer_name', search.customer_name)

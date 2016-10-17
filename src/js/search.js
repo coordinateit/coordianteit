@@ -74,17 +74,25 @@ function getSearch(search) {
     success: function(data) {
       setMarkers(data);
       visitList(data);
-      setIds(data);
+      setIdArray(data);
     }
   })
 }
 
 
 ////// Make an array of ids for list view //////
-
-function setStorage() {
-
+var listIds = [];
+function setIdArray(data) {
+  listIds = data.map(function(i) {
+    return i.id;
+  })
 };
+
+
+$('#printableList').click(function() {
+  console.log(listIds);
+  window.localstorage.searchArray = listIds;
+})
 
 
 ////// Initialize map //////
@@ -195,9 +203,3 @@ function parseTime(input) {
   }
   return time = hours + ":" + minutes + " " + meridiem;
 }
-
-
-
-$('#printableList').click(function() {
-  window.localstorage.searchArray = [];
-})
