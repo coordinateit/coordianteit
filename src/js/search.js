@@ -1,3 +1,5 @@
+"use strict";
+
 $(document).ready(function() {
   getTeamList();
 });
@@ -72,16 +74,19 @@ function getSearch(search) {
     success: function(data) {
       setMarkers(data);
       visitList(data);
-      setIds(data);
+      setIdArray(data);
     }
   })
 }
 
 
 ////// Make an array of ids for list view //////
-
-function setStorage() {
-
+var listIds = [];
+function setIdArray(data) {
+  listIds = data.map(function(i) {
+    return i.id;
+  })
+  window.localStorage.list = JSON.stringify(listIds);
 };
 
 
@@ -193,9 +198,3 @@ function parseTime(input) {
   }
   return time = hours + ":" + minutes + " " + meridiem;
 }
-
-
-
-$('#printableList').click(function() {
-  window.localstorage.searchArray = [];
-})

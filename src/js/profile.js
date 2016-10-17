@@ -1,3 +1,5 @@
+"use strict";
+
 ////// Check credentials when page loads //////
 
 $(document).ready(function(){

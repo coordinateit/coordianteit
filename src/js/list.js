@@ -1,3 +1,5 @@
+"use strict";
+
 $(document).ready(function(){
   getListData();
 });
@@ -9,7 +11,8 @@ function getListData(){
   $.ajax({
     type: 'POST',
     dataType: 'json',
-    url: '/user/list',
+    data: {list: window.localStorage.list},
+    url: '/user/printlist',
     success: function(data) {
       makeList(data);
     }

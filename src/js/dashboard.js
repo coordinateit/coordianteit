@@ -1,3 +1,4 @@
+"use strict";
 
 ////// Invoke these functions when page loads //////
 
@@ -337,7 +338,7 @@ function showJob(job) {
   let state = document.getElementById('state');
   state.value = job.state;
   $('#zip').val(job.zip);
-  let team = document.getElementById('team');
+  let team = document.getElementById('jobTeam');
   team.value = job.team_id;
   let priority = document.getElementById('priority');
   priority.value = job.priority;

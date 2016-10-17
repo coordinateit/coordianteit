@@ -1,3 +1,5 @@
+"use strict";
+
 var express = require('express');
 var router = express.Router();
 var knex = require('../db/knex');
@@ -101,6 +103,27 @@ router.post('/list', function(req, res, next) {
           res.send(visits);
         });
     }
+  }
+});
+
+
+////// Get job by ID //////
+
+router.post('/printlist', function(req, res, next) {
+  if (req.session.id) {
+    var ids = JSON.parse(req.body.list)
+    console.log(ids);
+    // knex('jobs')
+    //   .join('visits', 'jobs_id', 'jobs.id')
+    //   .where('team_id', req.body.team)
+    //
+    knex('jobs')
+      .join('visits', 'jobs_id', 'jobs.id')
+      // .whereIn('visit_id', ids)
+      .then(function(data) {
+        console.log(data);
+        res.send(data);
+      });
   }
 });
 
@@ -309,8 +332,8 @@ router.post('/search', function(req, res, next) {
       }
     }
     function searchQuery() {
-      knex('visits')
-        .join('jobs', 'visits.jobs_id', 'jobs.id')
+      knex('jobs')
+        .join('visits', 'jobs.id', 'visits.jobs_id')
         .where(function() {
           if (search.customer_name) {
             this.where('customer_name', search.customer_name)
@@ -379,7 +402,6 @@ router.post('/password', function(req, res, next) {
   knex('users')
     .where('email', req.body.email)
     .then(function(data) {
-      console.log(data);
       if (!data.length) {
         res.send('Please enter a valid login.')
       } else if (bcrypt.compareSync(req.body.old_password, data[0].password)) {
