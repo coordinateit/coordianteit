@@ -6,7 +6,6 @@ $(document).ready(function(){
   getTeamList();
   initCalendar();
   getVisits();
-  // testLogin();
 });
 
 

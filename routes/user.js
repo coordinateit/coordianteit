@@ -288,20 +288,25 @@ router.post('/search', function(req, res, next) {
     // If radius specified
     function checkRadius() {
       if (search.radius) {
-        let address = search.address + ", " + search.city + ", " + search.state + ", " + search.zip;
-        geocoder.geocode(address, function(err, data) {
-          if (!err) {
-            lat = data.results[0].geometry.location.lat;
-            lng = data.results[0].geometry.location.lng;
-            searchQuery();
-          } else {
-            res.send('Invalid address.');
-          }
-        });
-        search.address = null;
-        search.city = null;
-        search.state = null;
-        search.zip = null;
+        if (search.address && search.city && search.state && search.zip) {
+          console.log(search);
+          let address = search.address + ", " + search.city + ", " + search.state + ", " + search.zip;
+          geocoder.geocode(address, function(err, data) {
+            if (!err) {
+              lat = data.results[0].geometry.location.lat;
+              lng = data.results[0].geometry.location.lng;
+              searchQuery();
+            } else {
+              res.send('Invalid address.');
+            }
+          });
+          search.address = null;
+          search.city = null;
+          search.state = null;
+          search.zip = null;
+        } else {
+          res.send('To search by radius, please enter a full address.')
+        }
       } else {
         searchQuery();
       }

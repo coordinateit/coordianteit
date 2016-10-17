@@ -1,3 +1,22 @@
+$(document).ready(function() {
+  getTeamList();
+});
+
+/////// Toggle map / list //////
+
+$(".switch_map_list").change(function() {
+  var userinput = $(this);
+  if (userinput.prop("checked")){
+    $("#map").show();
+    $("#list").hide();
+  } else {
+    $("#map").hide();
+    $("#list").show();
+  }
+});
+
+
+////// Send search parameters to server //////
 
 $('#searchSubmit').click(function(event) {
   event.preventDefault();
@@ -38,6 +57,7 @@ $('#searchSubmit').click(function(event) {
   if ($('#notes').val()) {
     search.notes = $('#notes').val();
   }
+  console.log(search);
   getSearch(search);
 });
 
@@ -112,5 +132,28 @@ function setMarkers(visits) {
       window.localStorage.search = JSON.stringify(marker.id)
     });
     markers.push(marker);
+  }
+}
+
+
+///// Get team data from server ///////
+
+function getTeamList() {
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/teams',
+    success: function(data) {
+      teamList(data);
+    }
+  });
+}
+
+
+////// Populate team lists //////
+
+function teamList(teams) {
+  for (var i = 0; i < teams.length; i++) {
+    $('#team').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
   }
 }

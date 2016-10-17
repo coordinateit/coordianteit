@@ -11,7 +11,6 @@ $(document).ready(function(){
 ////// Check for admin access and redirect //////
 
 function authenticate() {
-  console.log(window.location);
   $.ajax({
     type: "GET",
     datatype: "json",
