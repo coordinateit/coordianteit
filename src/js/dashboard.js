@@ -1,3 +1,4 @@
+"use strict"
 
 ////// Invoke these functions when page loads //////
 
