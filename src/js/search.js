@@ -57,7 +57,7 @@ $('#searchSubmit').click(function(event) {
   if ($('#notes').val()) {
     search.notes = $('#notes').val();
   }
-  console.log(search);
+
   getSearch(search);
 });
 
