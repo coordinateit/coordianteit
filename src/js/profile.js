@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 ////// Check credentials when page loads //////
 
