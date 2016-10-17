@@ -81,9 +81,9 @@ function getSearch(search) {
 
 
 ////// Make an array of ids for list view //////
-var listIds = [];
+
 function setIdArray(data) {
-  listIds = data.map(function(i) {
+  var listIds = data.map(function(i) {
     return i.id;
   })
   window.localStorage.list = JSON.stringify(listIds);

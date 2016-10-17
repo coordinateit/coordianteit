@@ -89,20 +89,24 @@ router.get('/teams', function(req, res, next) {
 
 router.post('/list', function(req, res, next) {
   if (req.session.id) {
-    if (req.body.team) {
       knex('jobs')
         .join('visits', 'jobs.id', 'visits.jobs_id')
-        .where('team_id', req.body.team)
+        .where(function() {
+          if (req.body.team) {
+            this.where('team_id', req.body.team);
+          }
+        })
+        .where(function() {
+          if (req.body.day) {
+            var date = new Date(parseInt(req.body.day));
+            var start = date.setHours(0,0,0,0);
+            var end = date.setHours(24,0,0,0);
+            this.whereBetween('start', [start, end]);
+          }
+        })
         .then(function(visits) {
           res.send(visits);
         });
-    } else {
-      knex('jobs')
-        .join('visits', 'jobs.id', 'visits.jobs_id')
-        .then(function(visits) {
-          res.send(visits);
-        });
-    }
   }
 });
 
@@ -112,16 +116,10 @@ router.post('/list', function(req, res, next) {
 router.post('/printlist', function(req, res, next) {
   if (req.session.id) {
     var ids = JSON.parse(req.body.list)
-    console.log(ids);
-    // knex('jobs')
-    //   .join('visits', 'jobs_id', 'jobs.id')
-    //   .where('team_id', req.body.team)
-    //
     knex('jobs')
       .join('visits', 'jobs_id', 'jobs.id')
-      // .whereIn('visit_id', ids)
+      .whereIn('visits.id', ids)
       .then(function(data) {
-        console.log(data);
         res.send(data);
       });
   }
@@ -188,7 +186,6 @@ router.post('/postJob', function(req, res, next) {
         state: req.body.state,
         zip: req.body.zip,
         job_type: req.body.jobtype,
-        team_id: req.body.team_id,
         priority: req.body.priority,
         notes: req.body.notes
       })
@@ -232,7 +229,6 @@ router.post('/updateJob', function(req, res, next) {
           state: req.body.state,
           zip: req.body.zip,
           job_type: req.body.jobtype,
-          team_id: req.body.team_id,
           priority: req.body.priority,
           notes: req.body.notes
         })
@@ -242,7 +238,6 @@ router.post('/updateJob', function(req, res, next) {
             .where('id', id[0])
             .first()
             .then(function(job) {
-              console.log(job);
               res.send(job);
             })
         });
