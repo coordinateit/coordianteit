@@ -164,7 +164,7 @@ router.post('/postJob', function(req, res, next) {
     if (!req.body.customer_name) {
       res.send('Please add customer name.')
     }
-    if (!err) {
+    if (!err && data.results[0]) {
       lat = data.results[0].geometry.location.lat;
       lng = data.results[0].geometry.location.lng;
       insert();
@@ -287,7 +287,7 @@ router.post('/postVisit', function(req, res, next) {
 router.post('/search', function(req, res, next) {
   if (req.session.id) {
     var search = JSON.parse(req.body.search);
-    var lat, lng, fromDate, toDate;
+    var lat, lng, fromDate, toDate, radius;
     checkDates();
     function checkDates() {
       if (search.from && search.to) {
@@ -386,6 +386,7 @@ router.get('/authorize', function(req, res, next) {
 
 router.get('/logout', function(req, res, next) {
   req.session = null;
+  res.send();
 });
 
 router.post('/password', function(req, res, next) {

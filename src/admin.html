@@ -127,9 +127,9 @@
             </div>
             <div class="form-group">
               <label for="team">Team</label>
-              <select id="team" class="form-control teams" name="team">
+              <select class="form-control teams" name="team">
                 <option value="">Team</option>
-                <!-- Teams appended from dashboard.js makeList() -->
+                <!-- Teams appended from profile.js teamList() -->
               </select>
             </div>
             <button type="submit" class="btn btn-primary">Create User</button>
@@ -171,9 +171,9 @@
           <div class="form-group">
             <fieldset>
               <legend>Select Team</legend>
-              <select name="select_team" id="teams" class="form-control">
+              <select name="select_team" id="teamselect" class="form-control teams">
                 <option value="">All Teams</option>
-
+                <!-- Teams appended from profile.js teamList() -->
               </select>
             </fieldset>
           </div>
