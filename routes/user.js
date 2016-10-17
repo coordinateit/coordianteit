@@ -390,6 +390,7 @@ router.get('/logout', function(req, res, next) {
 });
 
 router.post('/password', function(req, res, next) {
+  console.log("go");
   if (req.body.new_password !== req.body.retype_password) {
     res.send('Passwords do not match.')
   } else {
