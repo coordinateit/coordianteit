@@ -143,6 +143,8 @@ function getVisit(id) {
     dataType: 'json',
     url: '/user/visit/' + id,
     success: function(data) {
+      currentJob = data.jobs_id;
+      console.log(data);
       showJob(data);
     }
   });
@@ -296,6 +298,7 @@ function getJob(id) {
     url: url
   }).then(function(data) {
     currentJob = data.id;
+    console.log(data);
     showJob(data);
   });
 }
@@ -359,7 +362,7 @@ function showJob(job) {
   $.ajax({
     type: "GET",
     dataType: "json",
-    url: "/user/jobVisits/" + job.id,
+    url: "/user/jobVisits/" + currentJob,
     success: function(data) {
       $("#create_visit").hide();
       $("#visit_list").show();
