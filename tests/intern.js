@@ -42,7 +42,7 @@ define({
 	},
 
 	// Unit test suite(s) to run in each browser
-	// suites: [ 'tests/unit/test1' ],
+	suites: [ 'tests/unit/test1' ],
 
 	// Functional test suite(s) to execute against each browser once unit tests are completed
 	functionalSuites: [ 'tests/functional/index' ],
