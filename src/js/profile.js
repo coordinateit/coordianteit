@@ -3,7 +3,7 @@
 ////// Check credentials when page loads //////
 
 $(document).ready(function(){
-  authenticate();
+  authorize();
   getUsers();
   getTeamList();
   getListData();
@@ -12,7 +12,7 @@ $(document).ready(function(){
 
 ////// Check for admin access and redirect //////
 
-function authenticate() {
+function authorize() {
   $.ajax({
     type: "GET",
     datatype: "json",
@@ -234,3 +234,16 @@ function visitList(data) {
     $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
   }
 }
+
+
+$('#logout').click(function(event) {
+  event.preventDefault;
+  $.ajax({
+    type: "GET",
+    datatype: "json",
+    url: "/user/logout",
+    success: function() {
+      window.location = "/";
+    }
+  })
+});
