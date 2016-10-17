@@ -395,7 +395,8 @@ function visitAppend(visit) {
 
 $('#clear_job').click(function(){
   $('#create_job').find('input:text, select, textarea').val('');
-  $('#create_job_button').text('Create Job');
+  $('#create_job_button').show();
+  $('#update_job_button').hide();
   $("#create_visit").show();
   $("#visit_list").hide();
 });
@@ -453,6 +454,9 @@ $('#logout').click(function(event) {
   $.ajax({
     type: "GET",
     datatype: "json",
-    url: "/user/logout"
+    url: "/user/logout",
+    success: function() {
+      window.location = "/";
+    }
   })
 });

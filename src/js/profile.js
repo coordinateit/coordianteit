@@ -6,7 +6,7 @@ $(document).ready(function(){
   authenticate();
   getUsers();
   getTeamList();
-  getListData()
+  getListData();
 });
 
 
@@ -39,7 +39,6 @@ function getUsers() {
     url: "/admin/users",
     success: function(data) {
       for (var i = 0; i < data.length; i++) {
-        $('#teamMembers').append(`<tr><td>${data[i].name}</td><td>${data[i].phone_number}</td></tr>`)
         $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone_number}</td><td>${data[i].isadmin}</td></tr>`)
       }
     }
@@ -73,7 +72,7 @@ function getTeamList() {
 
 function teamList(teams) {
   for (var i = 0; i < teams.length; i++) {
-    $('#teams').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
+    $('.teams').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
   }
 }
 
@@ -81,8 +80,9 @@ function teamList(teams) {
 ////// Filter page by team //////
 
 var teamFilter;
-$('#teams').change(function(clicked) {
-  teamFilter = $('#teams').find(":selected").val();
+$('#teamselect').change(function(clicked) {
+  teamFilter = $('#teamselect').find(":selected").val();
+  console.log(teamFilter);
   getJobs();
   getListData();
   getTeam();
@@ -96,8 +96,28 @@ function getTeam() {
     url: "/admin/team/" + teamFilter,
     success: function(data) {
       $('#truck').text(data.vehicle)
+      getTeamMembers(data.id)
     }
   })
+}
+
+function getTeamMembers(team) {
+  $.ajax({
+    type: "GET",
+    datatype: "json",
+    url: "/admin/teamMembers/" + team,
+    success: function(data) {
+      showTeamMembers(data);
+    }
+  })
+}
+
+function showTeamMembers(teamMembers) {
+  $('#teamMembers').empty();
+  $('#teamMembers').append('<tr><th>Name</th><th>Phone</th></tr>');
+  for (var i = 0; i < teamMembers.length; i++) {
+    $('#teamMembers').append(`<tr><td>${teamMembers[i].name}</td><td>${teamMembers[i].phone_number}</td></tr>`);
+  }
 }
 
 

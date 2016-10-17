@@ -58,4 +58,15 @@ router.get('/team/:id', function(req, res, next) {
   }
 });
 
+
+router.get('/teamMembers/:teamId', function(req, res, next) {
+  if (req.session.isadmin) {
+    knex('users')
+      .where('team_id', req.params.teamId)
+      .then(function(data) {
+        res.send(data);
+      })
+  }
+});
+
 module.exports = router;
