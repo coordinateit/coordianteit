@@ -270,9 +270,7 @@ router.post('/search', function(req, res, next) {
   if (req.session.id) {
     var search = JSON.parse(req.body.search);
     var lat, lng, fromDate, toDate;
-
     checkDates();
-
     function checkDates() {
       if (search.from && search.to) {
         fromDate = new Date(search.from);
@@ -284,34 +282,32 @@ router.post('/search', function(req, res, next) {
         checkRadius();
       }
     }
-
     // If radius specified
     function checkRadius() {
       if (search.radius) {
         if (search.address && search.city && search.state && search.zip) {
-          console.log(search);
           let address = search.address + ", " + search.city + ", " + search.state + ", " + search.zip;
           geocoder.geocode(address, function(err, data) {
             if (!err) {
               lat = data.results[0].geometry.location.lat;
               lng = data.results[0].geometry.location.lng;
+              search.address = null;
+              search.city = null;
+              search.state = null;
+              search.zip = null;
+              radius = parseInt(search.radius);
               searchQuery();
             } else {
-              res.send('Invalid address.');
+              res.send({error: 'Invalid address.'});
             }
           });
-          search.address = null;
-          search.city = null;
-          search.state = null;
-          search.zip = null;
         } else {
-          res.send('To search by radius, please enter a full address.')
+          res.send({error: 'To search by radius, please enter a full address.'});
         }
       } else {
         searchQuery();
       }
     }
-
     function searchQuery() {
       knex('visits')
         .join('jobs', 'visits.jobs_id', 'jobs.id')
@@ -353,16 +349,16 @@ router.post('/search', function(req, res, next) {
           }
         }).andWhere(function() {
           if (search.radius) {
-            this.where('lat', '<', (lat + search.radius/200))
-              .andWhere('lat', '>', (lat - search.radius/200))
-              .andWhere('lng', '<', (lng + search.radius/200))
-              .andWhere('lng', '>', (lng - search.radius/200))
+            this.where('lat', '<', (lat + radius/200))
+              .andWhere('lat', '>', (lat - radius/200))
+              .andWhere('lng', '<', (lng + radius/200))
+              .andWhere('lng', '>', (lng - radius/200))
           }
         })
         .then(function(data) {
           res.send(data);
         })
-    }
+  }
   }
 });
 

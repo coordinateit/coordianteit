@@ -57,10 +57,11 @@ $('#searchSubmit').click(function(event) {
   if ($('#notes').val()) {
     search.notes = $('#notes').val();
   }
-  console.log(search);
   getSearch(search);
 });
 
+
+////// Query database for search items //////
 
 function getSearch(search) {
   $.ajax({
@@ -70,9 +71,18 @@ function getSearch(search) {
     url: "/user/search",
     success: function(data) {
       setMarkers(data);
+      visitList(data);
+      setIds(data);
     }
   })
 }
+
+
+////// Make an array of ids for list view //////
+
+function setStorage() {
+
+};
 
 
 ////// Initialize map //////
@@ -85,20 +95,6 @@ function initMap() {
     center: position,
     zoom: 11,
     fullscreenControl: true
-  });
-}
-
-
-////// Get jobs from server //////
-
-function getJobs(bounds) {
-  $.ajax({
-    type: 'POST',
-    data: {bounds: JSON.stringify(bounds)},
-    dataType: 'json',
-    url: '/user/jobs'
-  }).then(function(jobs) {
-
   });
 }
 
@@ -157,3 +153,49 @@ function teamList(teams) {
     $('#team').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
   }
 }
+
+
+////// Add data to list ///////
+
+function visitList(data) {
+  console.log(data);
+  $(".list").empty();
+  $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>");
+  for (var i = 0; i < data.length; i++) {
+    let date = new Date(parseInt(data[i].start));
+    let meridiem = 'am';
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    if (hours > 12) {
+      meridiem = 'pm';
+      hours -= 12;
+    }
+    if (minutes < 10) {
+      minutes = "0" + minutes;
+    }
+    let time = hours + ":" + minutes + " " + meridiem;
+    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
+  }
+}
+
+
+function parseTime(input) {
+  let date = new Date(parseInt(input));
+  let meridiem = 'am';
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  if (hours > 12) {
+    meridiem = 'pm';
+    hours -= 12;
+  }
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  return time = hours + ":" + minutes + " " + meridiem;
+}
+
+
+
+$('#printableList').click(function() {
+  window.localstorage.searchArray = [];
+})
