@@ -24,7 +24,7 @@ form:nth-child(2) {
   margin-top: 20px;
 }
 
-h1, h2 {
+h1 {
   margin-top: 0px;
 }
 
@@ -75,6 +75,10 @@ h2 {
   height: 65vh;
   margin: auto;
   width: 45vw;
+}
+
+#update_job_button{
+  display: none;
 }
 
 #visit_list {
