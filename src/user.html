@@ -52,23 +52,27 @@
   <section class="credentials">
     <div class="row">
       <div class="col-md-4 col-md-offset-4">
+        <h3>User Login Information</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
         <form action="/user/password" method="POST">
           <fieldset>
-            <legend>Update Login</legend>
             <div class="form-group">
-              <label for="email">E-Mail</label>
+              <label>E-Mail</label>
               <input type="text" class="form-control" name="email" placeholder="e-mail@domain.com">
             </div>
             <div class="form-group">
-              <label for="old_password">Old Password</label>
+              <label>Old Password</label>
               <input type="password" class="form-control" name="old_password" placeholder="Old Password">
             </div>
             <div class="form-group">
-              <label for="new_password">New Password</label>
+              <label>New Password</label>
               <input type="password" class="form-control" name="new_password" placeholder="New Password">
             </div>
             <div class="form-group">
-              <label for="retype_password">Retype New Password</label>
+              <label>Retype New Password</label>
               <input type="password" class="form-control" name="retype_password" placeholder="Retype New Password">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
