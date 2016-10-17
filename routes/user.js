@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var knex = require('../db/knex');
 var geocoder = require('geocoder');
+var bcrypt = require('bcrypt');
 
 
 ////// Gets jobs based on map position, optionally filtered by team //////
@@ -361,27 +362,39 @@ router.post('/search', function(req, res, next) {
 });
 
 router.get('/authorize', function(req, res, next) {
-  if (req.session.isadmin) {
-    console.log("admin");
-    res.redirect('/admin.html');
-  }
+  res.send(req.session.isadmin);
 });
 
 router.get('/logout', function(req, res, next) {
   req.session = null;
 });
 
-
-// router.get('/test', function(req, res, next) {
-//   if (req.session.id) {
-//     knex('users')
-//       .where({id: req.session.id})
-//       .first()
-//       .then(function(user) {
-//         res.send({email: user.email});
-//       });
-//   }
-// });
+router.post('/password', function(req, res, next) {
+  if (req.body.new_password !== req.body.retype_password) {
+    res.send('Passwords do not match.')
+  } else {
+    var password = bcrypt.hashSync(req.body.new_password, 8);
+  }
+  knex('users')
+    .where('email', req.body.email)
+    .then(function(data) {
+      console.log(data);
+      if (!data.length) {
+        res.send('Please enter a valid login.')
+      } else if (bcrypt.compareSync(req.body.old_password, data[0].password)) {
+        knex('users')
+          .where('email', req.body.email)
+          .first()
+          .update({
+            password: password
+          }).then(function() {
+            res.redirect('/dashboard.html')
+          });
+      } else {
+        res.send('Please enter a valid login.');
+      }
+    })
+});
 
 
 module.exports = router;

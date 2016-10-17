@@ -52,7 +52,7 @@
   <section class="credentials">
     <div class="row">
       <div class="col-md-4 col-md-offset-4">
-        <form action="">
+        <form action="/user/password" method="POST">
           <fieldset>
             <legend>Update Login</legend>
             <div class="form-group">
@@ -69,7 +69,7 @@
             </div>
             <div class="form-group">
               <label for="retype_password">Retype New Password</label>
-              <input type="text" class="form-control" name="retype_password" placeholder="Retype New Password">
+              <input type="password" class="form-control" name="retype_password" placeholder="Retype New Password">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </fieldset>
