@@ -41,12 +41,15 @@ section {
 
 /******<< Search Styles >>******/
 
+.nodisplay {
+  display: none;
+}
+
 .topspacing {
   margin-top: 40px;
 }
 
 #list {
-  display: none;
   margin: auto;
   overflow: auto;
 }

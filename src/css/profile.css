@@ -42,7 +42,7 @@ section {
 
 /******<< Section Styles >>******/
 
-.credentials, .user_management, .hide {
+.nodisplay {
   display: none;
 }
 
@@ -55,7 +55,6 @@ section {
 }
 
 #list {
-  display: none;
   overflow: auto;
 }
 

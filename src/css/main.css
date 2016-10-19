@@ -39,6 +39,10 @@ td:first-child {
   width: 500px;
 }
 
+.nodisplay {
+  display: none;
+}
+
 /******<< Nav Styles >>******/
 
 nav p {
@@ -55,8 +59,4 @@ nav p {
 #dummysignin {
   background-color: #aaa;
   color: #fff;
-}
-
-#signin {
-  display: none;
 }
