@@ -55,18 +55,17 @@ h2 {
   float:right;
 }
 
+.nodisplay {
+  display: none;
+}
+
 .team-dropdown {
   display: inline-block;
   margin-left: 60px;
   vertical-align: middle;
 }
 
-#create_form {
-  display: none;
-}
-
 #list {
-  display: none;
   margin: auto;
   overflow: auto;
 }
@@ -77,11 +76,6 @@ h2 {
   width: 45vw;
 }
 
-#update_job_button{
-  display: none;
-}
-
 #visit_list {
-  display: none;
   margin-top: 20px;
 }
