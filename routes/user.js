@@ -15,10 +15,21 @@ router.post('/jobs', function(req, res, next) {
     var south = JSON.parse(req.body.bounds).south;
     var east = JSON.parse(req.body.bounds).east;
     var west = JSON.parse(req.body.bounds).west;
-    if (req.body.team) {
       knex('jobs')
         .join('visits', 'jobs_id', 'jobs.id')
-        .where('team_id', req.body.team)
+        .where(function() {
+          if (req.body.team) {
+            this.where('team_id', req.body.team)
+          }
+        })
+        .andWhere(function() {
+          if (req.body.date) {
+            var date = new Date(parseInt(req.body.date));
+            let start = date.setHours(0,0,0,0);
+            let end = date.setHours(24,0,0,0);
+            this.whereBetween('start', [start, end]);
+          }
+        })
         .andWhere('lat', '<', north)
         .andWhere('lat', '>', south)
         .andWhere('lng', '<', east)
@@ -26,16 +37,6 @@ router.post('/jobs', function(req, res, next) {
         .then(function(jobs) {
           res.send(jobs);
         })
-    } else {
-      knex('jobs')
-        .where('lat', '<', north)
-        .andWhere('lat', '>', south)
-        .andWhere('lng', '<', east)
-        .andWhere('lng', '>', west)
-        .then(function(jobs) {
-          res.send(jobs);
-        })
-    }
   }
 });
 

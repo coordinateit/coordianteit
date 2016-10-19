@@ -181,9 +181,10 @@ function initMap() {
 ////// Get jobs from server //////
 
 function getJobs() {
+  var date = Date.now();
   $.ajax({
     type: 'POST',
-    data: {bounds: JSON.stringify(bounds), team: teamFilter},
+    data: {bounds: JSON.stringify(bounds), date: date, team: teamFilter},
     dataType: 'json',
     url: '/user/jobs'
   }).then(function(jobs) {
@@ -201,8 +202,9 @@ function setMarkers(jobs) {
   markers = [];
   for (var i = 0; i < jobs.length; i++) {  // Set new markers
     let content = `<h4>${jobs[i].customer_name}</h4>
-                    <p>${jobs[i].job_type}</p>
-                    <br>
+                    <p>${jobs[i].job_type} </p>
+                    <a href="dashboard.html">Edit Job</a>
+                    <br><br>
                     <h5>Visits:</h5>`
     let infowindow;
     $.ajax({
@@ -212,7 +214,8 @@ function setMarkers(jobs) {
       success: function(data) {
         for (var i = 0; i < data.length; i++) {
           let start = parseTime(data[i].start);
-          content += `<p>${data[i].visit_type}: ${start}</p>`
+          let date = parseDate(data[i].start);
+          content += `<p>${data[i].visit_type}: ${start} - ${date}</p>`
         }
         infowindow = new google.maps.InfoWindow({
           content: content
@@ -220,7 +223,6 @@ function setMarkers(jobs) {
         infowindows.push(infowindow);
       }
     });
-
     let marker = new google.maps.Marker({
       position: {lat: parseFloat(jobs[i].lat), lng: parseFloat(jobs[i].lng)},
       map: map,
@@ -228,11 +230,12 @@ function setMarkers(jobs) {
       title: jobs[i].customer_name
     });
     marker.addListener('click', function() {
-      currentJob = marker.id;
       for (var i = 0; i < infowindows.length; i++) {
         infowindows[i].close();
       }
       infowindow.open(map, marker);
+      window.localStorage.search = JSON.stringify(marker.id)
+      currentJob = marker.id;
     });
     markers.push(marker);
   }
@@ -309,21 +312,13 @@ function visitList(data) {
   $(".list").empty();
   $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Visit type</th><th>Address</th><th>Phone Number</th></tr>");
   for (var i = 0; i < data.length; i++) {
-    let date = new Date(parseInt(data[i].start));
-    let meridiem = 'am';
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    if (hours > 12) {
-      meridiem = 'pm';
-      hours -= 12;
-    }
-    if (minutes < 10) {
-      minutes = "0" + minutes;
-    }
-    let time = hours + ":" + minutes + " " + meridiem;
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
+    let time = parseTime(data[i].start)
+    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].visit_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
   }
 }
+
+
+////// Set time to 1:00 pm format //////
 
 function parseTime(input) {
   let date = new Date(parseInt(input));
@@ -341,12 +336,23 @@ function parseTime(input) {
 }
 
 
+////// Set date to Sat, Oct 10 format //////
+
+function parseDate(input) {
+  let date = new Date(parseInt(input));
+  let dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return dayNames[date.getDay()] + ", " + monthNames[date.getMonth()] + " " + date.getDate().toString();
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                    FORM                                    //
 ////////////////////////////////////////////////////////////////////////////////
 
 
 ////// Get data for a specific job //////
+
 var currentJob;
 function getJob(id) {
   var url = '/user/job/' + id;
@@ -437,12 +443,12 @@ function showJob(job) {
 }
 
 function visitAppend(visit) {
-  let start = new Date(parseInt(visit.start));
+  let date = parseDate(visit.start);
   let startTime = parseTime(visit.start);
   let endTime = parseTime(visit.end);
   $('.visit_list').append(
     `<tr>
-      <td>${start.toDateString()}</td>
+      <td>${date}</td>
       <td>${startTime}</td>
       <td>${endTime}</td>
       <td>${visit.visit_type}</td>
