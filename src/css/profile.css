@@ -42,7 +42,7 @@ section {
 
 /******<< Section Styles >>******/
 
-.credentials, .user_management {
+.credentials, .user_management, .hide {
   display: none;
 }
 
