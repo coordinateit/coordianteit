@@ -25,8 +25,8 @@ router.post('/jobs', function(req, res, next) {
         .andWhere(function() {
           if (req.body.date) {
             var date = new Date(parseInt(req.body.date));
-            let start = date.setHours(0,0,0,0);
-            let end = date.setHours(24,0,0,0);
+            let start = date.setHours(-96,0,0,0);
+            let end = date.setHours(96,0,0,0);
             this.whereBetween('start', [start, end]);
           }
         })

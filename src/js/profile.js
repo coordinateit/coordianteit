@@ -39,7 +39,7 @@ function getUsers() {
     url: "/admin/users",
     success: function(data) {
       for (var i = 0; i < data.length; i++) {
-        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone_number}</td><td>${data[i].isadmin}</td></tr>`)
+        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone_number}</td><td>${data[i].isadmin}</td><td><button type="button" id="visitSubmit" class="btn btn-primary btn-xs">Edit</button></td></tr>`)
       }
     }
   })

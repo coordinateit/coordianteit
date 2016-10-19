@@ -203,7 +203,7 @@ function setMarkers(jobs) {
   for (var i = 0; i < jobs.length; i++) {  // Set new markers
     let content = `<h4>${jobs[i].customer_name}</h4>
                     <p>${jobs[i].job_type} </p>
-                    <a href="dashboard.html">Edit Job</a>
+                    <a href="dashboard.html">View / Edit</a>
                     <br><br>
                     <h5>Visits:</h5>`
     let infowindow;
@@ -230,17 +230,17 @@ function setMarkers(jobs) {
       title: jobs[i].customer_name
     });
     marker.addListener('click', function() {
+      map.panTo(position);
       for (var i = 0; i < infowindows.length; i++) {
         infowindows[i].close();
       }
-      infowindow.open(map, marker);
+      // infowindow.open(map, marker);
       window.localStorage.search = JSON.stringify(marker.id)
       currentJob = marker.id;
     });
     markers.push(marker);
   }
 }
-
 
 
 $('#job_lookup').click(function() {
@@ -256,9 +256,11 @@ $('#job_lookup').click(function() {
       data: data,
       url: "/user/geocode",
       success: function(coords) {
+        let image = "../img/focus-marker.png"
         lookupMarker = new google.maps.Marker({
           position: coords,
           map: map,
+          icon: image,
           title: "New job",
           animation: google.maps.Animation.DROP
         });
