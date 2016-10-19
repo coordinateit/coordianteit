@@ -282,6 +282,23 @@ router.post('/postVisit', function(req, res, next) {
 });
 
 
+////// Address lookup //////
+
+router.post('/geocode', function(req, res, next) {
+  if (req.session.id) {
+    let address = req.body.address + ", " + req.body.city + ", " + req.body.state + ", " + req.body.zip
+    geocoder.geocode(address, function(err, data) {
+      if (!err) {
+        let coords = {lat: data.results[0].geometry.location.lat, lng: data.results[0].geometry.location.lng};
+        res.send(coords);
+      } else {
+        res.send('Invalid address.')
+      }
+    });
+  }
+});
+
+
 ////// Search jobs //////
 
 router.post('/search', function(req, res, next) {
