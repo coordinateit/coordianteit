@@ -108,6 +108,8 @@ function initMap() {
 ////// Display jobs on map //////
 
 function setMarkers(visits) {
+  let coords = {lat: parseFloat(visits[0].lat), lng: parseFloat(visits[0].lng)};
+  map.panTo(coords);
   for (var i = 0; i < markers.length; i++) {  // Clear markers
     markers[i].setMap(null);
   }
@@ -166,7 +168,6 @@ function teamList(teams) {
 ////// Add data to list ///////
 
 function visitList(data) {
-  console.log(data);
   $(".list").empty();
   $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>");
   for (var i = 0; i < data.length; i++) {

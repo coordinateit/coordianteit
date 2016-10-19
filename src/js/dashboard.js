@@ -144,7 +144,6 @@ function getVisit(id) {
     url: '/user/visit/' + id,
     success: function(data) {
       currentJob = data.jobs_id;
-      console.log(data);
       showJob(data);
     }
   });
@@ -161,6 +160,8 @@ function getVisit(id) {
 
 var map;
 var markers = [];
+var infowindows = [];
+var lookupMarker;
 var bounds;
 var position = JSON.parse(window.localStorage.position);
 function initMap() {
@@ -173,6 +174,7 @@ function initMap() {
     bounds = map.getBounds();
     getJobs(bounds);
   });
+
 }
 
 
@@ -198,6 +200,27 @@ function setMarkers(jobs) {
   }
   markers = [];
   for (var i = 0; i < jobs.length; i++) {  // Set new markers
+    let content = `<h4>${jobs[i].customer_name}</h4>
+                    <p>${jobs[i].job_type}</p>
+                    <br>
+                    <h5>Visits:</h5>`
+    let infowindow;
+    $.ajax({
+      type: "GET",
+      dataType: "json",
+      url: "/user/jobVisits/" + jobs[i].id,
+      success: function(data) {
+        for (var i = 0; i < data.length; i++) {
+          let start = parseTime(data[i].start);
+          content += `<p>${data[i].visit_type}: ${start}</p>`
+        }
+        infowindow = new google.maps.InfoWindow({
+          content: content
+        });
+        infowindows.push(infowindow);
+      }
+    });
+
     let marker = new google.maps.Marker({
       position: {lat: parseFloat(jobs[i].lat), lng: parseFloat(jobs[i].lng)},
       map: map,
@@ -205,12 +228,47 @@ function setMarkers(jobs) {
       title: jobs[i].customer_name
     });
     marker.addListener('click', function() {
-      getJob(marker.id)
+      currentJob = marker.id;
+      for (var i = 0; i < infowindows.length; i++) {
+        infowindows[i].close();
+      }
+      infowindow.open(map, marker);
     });
     markers.push(marker);
   }
 }
 
+
+
+$('#job_lookup').click(function() {
+  let address = $('#address').val();
+  let city = $('#city').val();
+  let state = $('#state').val();
+  let zip = $('#zip').val();
+  if (address && city && state && zip) {
+    let data = {address: address, city: city, state: state, zip: zip}
+    $.ajax({
+      type: "POST",
+      datatype: "json",
+      data: data,
+      url: "/user/geocode",
+      success: function(coords) {
+        lookupMarker = new google.maps.Marker({
+          position: coords,
+          map: map,
+          title: "New job",
+          animation: google.maps.Animation.DROP
+        });
+        map.panTo(coords);
+      }
+    })
+  }
+});
+
+
+$('.infoShowJob').click(function() {
+  getJob(currentJob);
+});
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -298,7 +356,6 @@ function getJob(id) {
     url: url
   }).then(function(data) {
     currentJob = data.id;
-    console.log(data);
     showJob(data);
   });
 }
@@ -357,6 +414,8 @@ function showJob(job) {
   priority.value = job.priority;
   $('#job_type').val(job.job_type);
   $('#notes').val(job.notes);
+  let coords = {lat: parseFloat(job.lat), lng: parseFloat(job.lng)};
+  map.panTo(coords);
 
   // Toggle visit list / visit form, get visits for job
   $.ajax({
