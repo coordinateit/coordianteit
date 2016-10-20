@@ -183,7 +183,10 @@ function visitList(data) {
       minutes = "0" + minutes;
     }
     let time = hours + ":" + minutes + " " + meridiem;
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
+    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time +
+                        "</td><td>" + data[i].job_type + "</td><td>" + data[i].address +
+                        "</td><td>" + data[i].phone_number + "</td></tr>"
+                      );
   }
 }
 

@@ -79,3 +79,7 @@ h2 {
 #visit_list {
   margin-top: 20px;
 }
+
+#saveVisitSubmit {
+  display: none;
+}
