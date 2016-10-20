@@ -190,8 +190,14 @@ router.post('/postJob', function(req, res, next) {
         priority: req.body.priority,
         notes: req.body.notes
       })
-      .then(function() {
-        res.redirect('/dashboard.html');
+      .returning('id')
+      .then(function(id) {
+        knex('jobs')
+          .where('id', id[0])
+          .first()
+          .then(function(job) {
+            res.send(job);
+          })
       });
   }
 });
@@ -229,7 +235,7 @@ router.post('/updateJob', function(req, res, next) {
           city: req.body.city,
           state: req.body.state,
           zip: req.body.zip,
-          job_type: req.body.jobtype,
+          job_type: req.body.job_type,
           priority: req.body.priority,
           notes: req.body.notes
         })
@@ -278,6 +284,37 @@ router.post('/postVisit', function(req, res, next) {
               res.send(visit);
             })
         });
+    }
+  }
+});
+
+
+////// Update visit //////
+
+router.post('/updateVisit', function(req, res, next) {
+  if (req.session.id) {
+    var start, end;
+    if (req.body.date && req.body.start && req.body.end) {
+      start = Date.parse(req.body.date + ', ' + req.body.start);
+      end = Date.parse(req.body.date + ', ' + req.body.end);
+      updateVisit();
+    } else {
+      res.send('Invalid date and time.')
+    }
+    function updateVisit() {
+      knex('visits')
+        .where('id', req.body.id)
+        .update({
+          jobs_id: req.body.jobs_id,
+          visit_type: req.body.visit_type,
+          start: start,
+          end: end,
+          team_id: req.body.team_id,
+          notes: req.body.notes
+        })
+        .then(function() {
+          res.send({});
+        })
     }
   }
 });
@@ -398,6 +435,15 @@ router.post('/search', function(req, res, next) {
   }
 });
 
+router.get('/deleteVisit/:id', function(req, res, next) {
+  knex('visits')
+    .where('id', req.params.id)
+    .del()
+    .then(function() {
+      res.redirect('/dashboard.html');
+    });
+});
+
 router.get('/authorize', function(req, res, next) {
   res.send(req.session.isadmin);
 });
@@ -408,7 +454,6 @@ router.get('/logout', function(req, res, next) {
 });
 
 router.post('/password', function(req, res, next) {
-  console.log("go");
   if (req.body.new_password !== req.body.retype_password) {
     res.send('Passwords do not match.')
   } else {

@@ -212,7 +212,7 @@
             <label for="notes">Job Notes</label>
             <textarea name="notes" id="notes" class="form-control" placeholder="Add your job notes here"></textarea>
           </div>
-            <button type="submit" id="create_job_button" class="btn btn-primary">Create Job</button>
+            <button type="button" id="create_job_button" class="btn btn-primary">Create Job</button>
             <button type="button" id="update_job_button" class="nodisplay btn btn-primary">Save</button>
             <button type="button" id="deleteJobs" class="hide btn btn-danger">Delete</button>
             <button type="button" id="job_lookup" class="btn btn-primary">Job Lookup</button>
@@ -263,7 +263,7 @@
               <textarea name="notes" id="visit_notes" class="form-control" placeholder="Add your visit notes here"></textarea>
             </div>
             <button type="button" id="visitSubmit" class="btn btn-primary">Create Visit</button>
-            <button type="button" id="saveSubmit" class="hidden btn btn-primary">Save</button>
+            <button type="button" id="saveVisitSubmit" class="btn btn btn-primary">Save</button>
             <button type="button" id="visit_lookup" class="btn btn-primary">Visit Lookup</button>
             <button type="button" id="clear_visit" class="btn btn-primary">Clear Form</button>
           </form>
@@ -277,6 +277,8 @@
                 <th>End Time</th>
                 <th>Visit Type</th>
                 <th>Team</th>
+                <th></th>
+                <th></th>
               </tr>
             </table>
             <button type="submit" id="addVisit" class="btn btn-primary">Add Visit</button>

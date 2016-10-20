@@ -162,7 +162,9 @@ var map;
 var markers = [];
 var infowindows = [];
 var lookupMarker;
+var newJobMarker;
 var bounds;
+var globalDate = Date.now();
 var position = JSON.parse(window.localStorage.position);
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -172,7 +174,7 @@ function initMap() {
   });
   map.addListener('tilesloaded', function() {
     bounds = map.getBounds();
-    getJobs(bounds);
+    getJobs();
   });
 
 }
@@ -181,10 +183,9 @@ function initMap() {
 ////// Get jobs from server //////
 
 function getJobs() {
-  var date = Date.now();
   $.ajax({
     type: 'POST',
-    data: {bounds: JSON.stringify(bounds), date: date, team: teamFilter},
+    data: {bounds: JSON.stringify(bounds), date: globalDate, team: teamFilter},
     dataType: 'json',
     url: '/user/jobs'
   }).then(function(jobs) {
@@ -210,7 +211,7 @@ function setMarkers(jobs) {
     $.ajax({
       type: "GET",
       dataType: "json",
-      url: "/user/jobVisits/" + jobs[i].id,
+      url: "/user/jobVisits/" + jobs[i].jobs_id,
       success: function(data) {
         for (var i = 0; i < data.length; i++) {
           let start = parseTime(data[i].start);
@@ -230,11 +231,14 @@ function setMarkers(jobs) {
       title: jobs[i].customer_name
     });
     marker.addListener('click', function() {
-      map.panTo(position);
+      map.panTo(marker.position);
       for (var i = 0; i < infowindows.length; i++) {
         infowindows[i].close();
       }
-      // infowindow.open(map, marker);
+      window.setTimeout(showInfowindow, 300);
+      function showInfowindow() {
+        infowindow.open(map, marker);
+      }
       window.localStorage.search = JSON.stringify(marker.id)
       currentJob = marker.id;
     });
@@ -268,6 +272,12 @@ $('#job_lookup').click(function() {
       }
     })
   }
+});
+
+$('#visit_lookup').click(function() {
+  let date = new Date($('#visit_date').val());
+  globalDate = date.getTime();
+  getJobs();
 });
 
 
@@ -315,7 +325,7 @@ function visitList(data) {
   $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Visit type</th><th>Address</th><th>Phone Number</th></tr>");
   for (var i = 0; i < data.length; i++) {
     let time = parseTime(data[i].start)
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].visit_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
+    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].visit_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + '</td></tr>');
   }
 }
 
@@ -371,6 +381,46 @@ function getJob(id) {
 
 ////// Post job //////
 
+$('#create_job_button').click(function(event) {
+  event.preventDefault();
+  let data = {
+    customer_name: $('#customer_name').val(),
+    po_number: $('#po_number').val(),
+    email: $('#email').val(),
+    po_number: $('#po_number').val(),
+    phone_number: $('#phone_number').val(),
+    address: $('#address').val(),
+    city: $('#city').val(),
+    state: $('#state').val(),
+    zip: $('#zip').val(),
+    priority: $('#priority').val(),
+    job_type: $('#job_type').val(),
+    notes: $('#notes').val()
+  }
+  $.ajax({
+    type: "POST",
+    dataType: "json",
+    data: data,
+    url: "/user/postJob",
+    success: function(data) {
+      showJob(data);
+      console.log(data);
+      newJobMarker = new google.maps.Marker({
+        position: {lat: parseFloat(data.lat), lng: parseFloat(data.lng)},
+        map: map,
+        title: data.customer_name,
+        animation: google.maps.Animation.DROP
+      });
+      if (lookupMarker) {
+        lookupMarker.setMap(null);
+      }
+    }
+  });
+});
+
+
+////// Update job //////
+
 $('#update_job_button').click(function(event) {
   event.preventDefault();
   let data = {
@@ -393,8 +443,8 @@ $('#update_job_button').click(function(event) {
     dataType: "json",
     data: data,
     url: "/user/updateJob",
-    success: function() {
-      window.location = '/dashboard.html';
+    success: function(data) {
+      showJob(data);
     }
   });
 });
@@ -424,22 +474,26 @@ function showJob(job) {
   $('#notes').val(job.notes);
   let coords = {lat: parseFloat(job.lat), lng: parseFloat(job.lng)};
   map.panTo(coords);
+  getJobVisits();
+}
 
+function getJobVisits() {
   // Toggle visit list / visit form, get visits for job
   $.ajax({
     type: "GET",
     dataType: "json",
     url: "/user/jobVisits/" + currentJob,
     success: function(data) {
-      $("#create_visit").hide();
-      $("#visit_list").show();
+      $('#create_visit').hide();
+      $('#visit_list').show();
       $('#create_job_button').hide();
       $('#update_job_button').show();
       $('.visit_list').empty();
-      $('.visit_list').append('<tr><th>Date</th><th>Start Time</th><th>End Time</th><th>Visit Type</th><th>Team</th></tr>');
+      $('.visit_list').append('<tr><th>Date</th><th>Start Time</th><th>End Time</th><th>Visit Type</th><th>Team</th><th></th><th></th></tr>');
       for (var i = 0; i < data.length; i++) {
         visitAppend(data[i]);
       }
+      visitEditListen();
     }
   })
 }
@@ -455,8 +509,78 @@ function visitAppend(visit) {
       <td>${endTime}</td>
       <td>${visit.visit_type}</td>
       <td>${visit.team_id}</td>
-    </tr>`);
+      <td><button type="button" id="${visit.id}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
+      <td><a href="/user/deleteVisit/${visit.id}"><button type="button" id="visitDelete" class="btn btn-danger btn-xs">Delete</button></a></td>
+    </tr>`
+  );
 }
+
+
+////// Listen for visit edit click //////
+
+function visitEditListen() {
+  $('.visitEdit').click(function(event) {
+    editVisit(parseInt(event.target.id));
+  });
+}
+
+
+////// Send for visit
+var currentVisit;
+function editVisit(id) {
+  currentVisit = id;
+  $.ajax({
+    type: "GET",
+    datatype: "json",
+    url: "/user/visit/" + id,
+    success: function(data) {
+      showVisit(data);
+    }
+  })
+}
+
+
+////// Show visit in visit form //////
+
+function showVisit(visit) {
+  let start = new Date(parseInt(visit.start));
+  let end = new Date(parseInt(visit.end));
+  let dd = start.getDate();
+  let MM = start.getMonth() + 1;
+  if (dd.toString().length < 2) {
+    dd = "0" + dd;
+  }
+  if (MM.toString().length < 2) {
+    MM = "0" + MM;
+  }
+  let yyyy = start.getFullYear();
+  let date = yyyy + "-" + MM + "-" + dd;
+  let startTime = setTime(start);
+  let endTime = setTime(end);
+  function setTime(time) {
+    let hh = time.getHours();
+    let mm = time.getMinutes();
+    if (hh.toString().length < 2) {
+      hh = "0" + hh;
+    }
+    if (mm.toString().length < 2) {
+      mm = "0" + mm;
+    }
+    return hh + ":" + mm;
+  }
+  $('#visit_type').val(visit.visit_type);
+  $('#visit_notes').val(visit.notes);
+  $('#visit_date').val(date);
+  $('#visit_start').val(startTime);
+  $('#visit_end').val(endTime);
+  let team = document.getElementById('visit_team');
+  team.value = visit.team_id;
+  $("#create_visit").show();
+  $("#visit_list").hide();
+  $("#saveVisitSubmit").show();
+  $("#visitSubmit").hide();
+}
+
 
 ////// Clear job form //////
 
@@ -464,14 +588,25 @@ $('#clear_job').click(function(){
   $('#create_job').find('input:text, select, textarea').val('');
   $('#create_job_button').show();
   $('#update_job_button').hide();
-  $("#create_visit").show();
-  $("#visit_list").hide();
+  $("#create_visit").hide();
+  $("#visit_list").show();
+  if (lookupMarker) {
+    lookupMarker.setMap(null);
+  }
 });
+
 
 ////// Clear visit form //////
 
 $('#clear_visit').click(function(){
   $('#create_visit').find('input:text, select, textarea').val('');
+  $('#visit_date').val(null);
+  $('#visit_start').val(null);
+  $('#visit_end').val(null);
+  $("#saveVisitSubmit").hide();
+  $("#visitSubmit").show();
+  $("#create_visit").hide();
+  $("#visit_list").show();
 });
 
 
@@ -481,6 +616,9 @@ $('#addVisit').click(function() {
   $("#create_visit").show();
   $("#visit_list").hide();
 });
+
+
+////// Submit new visit //////
 
 $('#visitSubmit').click(function(event) {
   event.preventDefault();
@@ -502,6 +640,33 @@ $('#visitSubmit').click(function(event) {
       $("#create_visit").hide();
       $("#visit_list").show();
       visitAppend(visit);
+    }
+  });
+});
+
+
+////// Update visit //////
+
+$('#saveVisitSubmit').click(function(event) {
+  event.preventDefault();
+  let data = {
+    id: currentVisit,
+    visit_type: $('#visit_type').val(),
+    date: $('#visit_date').val(),
+    start: $('#visit_start').val(),
+    end: $('#visit_end').val(),
+    team_id: $('#visit_team').val(),
+    notes: $('#visit_notes').val()
+  };
+  $.ajax({
+    type: "POST",
+    dataType: "json",
+    data: data,
+    url: "/user/updateVisit",
+    success: function(visit) {
+      $("#create_visit").hide();
+      $("#visit_list").show();
+      getJobVisits();
     }
   });
 });
