@@ -33,18 +33,78 @@ function authorize() {
 ////// Get all users //////
 
 function getUsers() {
+  $('#allUsers').empty();
+  $('#allUsers').append('<tr><th>Name</th><th>E-mail</th><th>Phone</th><th>Admin</th><th></th><th></th></tr>');
   $.ajax({
     type: "GET",
     datatype: "json",
     url: "/admin/users",
     success: function(data) {
       for (var i = 0; i < data.length; i++) {
-        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone_number}</td><td>${data[i].isadmin}</td><td><button type="button" id="visitSubmit" class="btn btn-primary btn-xs">Edit</button></td></tr>`)
+        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone_number}</td><td>${data[i].isadmin}</td><td><button type="button" id="${data[i].id}" class="btn btn-primary btn-xs userEdit">Edit</button></td><td><a href="/admin/deleteUser/${data[i].id}"><button type="button" class="btn btn-danger btn-xs userDelete">Delete</button></a></td></tr>`)
       }
+      userEditListen();
     }
   })
 }
 
+
+////// Listen for edit user click //////
+
+function userEditListen() {
+  $('.userEdit').click(function() {
+    getUser(parseInt(event.target.id));
+  })
+}
+
+
+////// Get user from database //////
+function getUser(id) {
+  $.ajax({
+    type: "GET",
+    datatype: "json",
+    url: "/admin/user/" + id,
+    success: function(data) {
+      showUser(data);
+    }
+  });
+}
+
+
+////// Populate user form //////
+
+function showUser(user) {
+  $('#user_name').val(user.name);
+  $('#user_phone').val(user.phone);
+  $('#user_email').val(user.email);
+  let team = document.getElementById('user_team_id');
+  team.value = user.team_id;
+  let isadmin = document.getElementById('user_isadmin');
+  isadmin.value = user.isadmin;
+  $('#create_user').hide();
+  $('#save_user').show();
+
+  ////// Update user //////
+  $('#save_user').click(function() {
+    let data = {
+      name: $('#user_name').val(),
+      email: $('#user_email').val(),
+      password: $('#user_password').val(),
+      phone: $('#user_phone').val(),
+      team_id: $('#user_team_id').val(),
+      isadmin: $('#user_isadmin').val(),
+    }
+    $.ajax({
+      type: "POST",
+      datatype: "json",
+      data: data,
+      url: "/admin/updateUser/" + user.id,
+      success: function() {
+        getUsers();
+      }
+    })
+  });
+}
 
 
 ////// Profile Button Div Switch /////
@@ -56,6 +116,7 @@ $(".menu button").on("click", function(){
   $(".user_management").hide();
   $(button_id).show();
 });
+
 
 
 function getTeamList() {
@@ -70,10 +131,11 @@ function getTeamList() {
 }
 
 
+
 function teamList(teams) {
   for (var i = 0; i < teams.length; i++) {
     $('.teams').append(`<option value="${teams[i].id}">${teams[i].team_name}</option>`);
-  }
+  };
 }
 
 
@@ -82,11 +144,12 @@ function teamList(teams) {
 var teamFilter;
 $('#teamselect').change(function(clicked) {
   teamFilter = $('#teamselect').find(":selected").val();
-  console.log(teamFilter);
   getJobs();
   getListData();
   getTeam();
 });
+
+
 
 
 function getTeam() {
@@ -98,8 +161,9 @@ function getTeam() {
       $('#truck').text(data.vehicle)
       getTeamMembers(data.id)
     }
-  })
+  });
 }
+
 
 function getTeamMembers(team) {
   $.ajax({
@@ -109,8 +173,9 @@ function getTeamMembers(team) {
     success: function(data) {
       showTeamMembers(data);
     }
-  })
+  });
 }
+
 
 function showTeamMembers(teamMembers) {
   $('#teamMembers').empty();
@@ -119,6 +184,20 @@ function showTeamMembers(teamMembers) {
     $('#teamMembers').append(`<tr><td>${teamMembers[i].name}</td><td>${teamMembers[i].phone_number}</td></tr>`);
   }
 }
+
+
+
+$('#delete-team').click(function() {
+  $.ajax({
+    type: "GET",
+    datatype: "json",
+    url: "/admin/deleteTeam/" + teamFilter,
+    success: function() {
+      console.log("User has been deleted");
+    }
+  });
+});
+
 
 
 $(".switch_map_list").change(function() {
@@ -196,7 +275,7 @@ function setMarkers(jobs) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//                                    MAP                                     //
+//                                    LIST                                    //
 ////////////////////////////////////////////////////////////////////////////////
 
 

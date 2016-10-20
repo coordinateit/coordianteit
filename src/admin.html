@@ -96,45 +96,43 @@
 
   <!-- User Management -->
   <section class="user_management nodisplay">
-    <h3>Create Team</h3>
+    <h3>Create User</h3>
     <div class="row">
       <div class="col-md-3">
         <form action="/admin/postUser" method="POST">
           <fieldset>
             <div class="form-group">
               <label>Name</label>
-              <input type="text" class="form-control" name="name" placeholder="Name">
+              <input type="text" id="user_name" class="form-control" name="name" placeholder="Name">
             </div>
-
             <div class="form-group">
               <label>Phone</label>
-              <input type="text" class="form-control" name="phone" placeholder="phone">
+              <input type="text" id="user_phone" class="form-control" name="phone" placeholder="phone">
             </div>
             <div class="form-group">
               <label>E-Mail</label>
-              <input type="text" class="form-control" name="email" placeholder="e-mail@domain.com">
+              <input type="text" id="user_email" class="form-control" name="email" placeholder="e-mail@domain.com">
             </div>
             <div class="form-group">
               <label>Password</label>
-              <input type="password" class="form-control" name="password" placeholder="Password">
+              <input type="password" id="user_password" class="form-control" name="password" placeholder="Password">
             </div>
             <div class="form-group">
               <label>User Type</label>
-              <select name="isadmin" class="form-control">
+              <select name="isadmin" id="user_isadmin" class="form-control">
                 <option value="false">User</option>
                 <option value="true">Admin</option>
               </select>
             </div>
             <div class="form-group">
               <label for="team">Team</label>
-              <select class="form-control teams" name="team_id">
+              <select class="form-control teams" id="user_team_id" name="team_id">
                 <option value="">Team</option>
                 <!-- Teams appended from profile.js teamList() -->
               </select>
             </div>
-            <button type="submit" class="btn btn-primary">Create User</button>
-            <button type="submit" class="hide btn btn-primary">Save</button>
-            <button type="button" id="delete-user" class="hide btn btn-danger">Delete</button>
+            <button type="submit" id="create_user" class="btn btn-primary">Create User</button>
+            <button type="button" id="save_user" class="btn btn-primary">Save</button>
           </fieldset>
         </form>
       </div>
@@ -145,6 +143,7 @@
             <th>E-mail</th>
             <th>Phone</th>
             <th>Admin</th>
+            <th></th>
             <th></th>
           </tr>
         </table>

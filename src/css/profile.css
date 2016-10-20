@@ -62,3 +62,7 @@ section {
   height: 65vh;
   width: 65vw;
 }
+
+#save_user {
+  display: none;
+}
