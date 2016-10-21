@@ -73,6 +73,7 @@ function teamList(teams) {
 var teamFilter;
 $('#teams').change(function(clicked) {
   teamFilter = $('#teams').find(":selected").val();
+  console.log(teamFilter);
   getVisits();
   getJobs(Date.now());
   getListData();
@@ -118,6 +119,7 @@ function initCalendar() {
 ////// Get visits from server //////
 
 function getVisits() {
+  console.log(teamFilter);
   $.ajax({
     type: 'POST',
     dataType: 'json',
