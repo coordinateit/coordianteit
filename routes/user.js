@@ -254,21 +254,12 @@ router.post('/updateJob', function(req, res, next) {
 
 router.post('/postVisit', function(req, res, next) {
   if (req.session.id) {
-    var start, end;
-    if (req.body.date && req.body.start && req.body.end) {
-      start = Date.parse(req.body.date + ', ' + req.body.start);
-      end = Date.parse(req.body.date + ', ' + req.body.end);
-      insertVisit();
-    } else {
-      res.send('Invalid date and time.')
-    }
-    function insertVisit() {
       knex('visits')
         .insert({
           jobs_id: req.body.jobs_id,
           visit_type: req.body.visit_type,
-          start: start,
-          end: end,
+          start: req.body.start,
+          end: req.body.end,
           team_id: req.body.team_id,
           notes: req.body.notes
         })
@@ -282,7 +273,6 @@ router.post('/postVisit', function(req, res, next) {
             })
         });
     }
-  }
 });
 
 
@@ -290,31 +280,20 @@ router.post('/postVisit', function(req, res, next) {
 
 router.post('/updateVisit', function(req, res, next) {
   if (req.session.id) {
-    var start, end;
-    if (req.body.date && req.body.start && req.body.end) {
-      start = Date.parse(req.body.date + ', ' + req.body.start);
-      end = Date.parse(req.body.date + ', ' + req.body.end);
-      updateVisit();
-    } else {
-      res.send('Invalid date and time.')
-    }
-    function updateVisit() {
       knex('visits')
         .where('id', req.body.id)
         .update({
           visit_type: req.body.visit_type,
-          start: start,
-          end: end,
+          start: req.body.start,
+          end: req.body.end,
           team_id: req.body.team_id,
           notes: req.body.notes
         })
         .returning('jobs_id')
         .then(function(data) {
-          console.log(data);
           res.send(data);
         })
     }
-  }
 });
 
 

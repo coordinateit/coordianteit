@@ -531,12 +531,16 @@ function showJob(job) {
 
 $('#visitSubmit').click(function() {
   console.log(currentJob);
+  let date = $('#visit_date').val();
+  let start = $('#visit_start').val();
+  let newStart = Date.parse(date + ', ' + start);
+  let end = $('#visit_end').val();
+  let newEnd = Date.parse(date + ', ' + end);
   let data = {
     jobs_id: currentJob,
     visit_type: $('#visit_type').val(),
-    date: $('#visit_date').val(),
-    start: $('#visit_start').val(),
-    end: $('#visit_end').val(),
+    start: newStart,
+    end: newEnd,
     team_id: $('#visit_team').val(),
     notes: $('#visit_notes').val()
   };
@@ -664,15 +668,20 @@ function showVisit(visit) {
   $("#visitSubmit").hide();
 
   $('#saveVisitSubmit').click(function() {
+    let date = $('#visit_date').val();
+    let start = $('#visit_start').val();
+    let newStart = Date.parse(date + ', ' + start);
+    let end = $('#visit_end').val();
+    let newEnd = Date.parse(date + ', ' + end);
     let data = {
       id: visit.id,
       visit_type: $('#visit_type').val(),
-      date: $('#visit_date').val(),
-      start: $('#visit_start').val(),
-      end: $('#visit_end').val(),
+      start: newStart,
+      end: newEnd,
       team_id: $('#visit_team').val(),
       notes: $('#visit_notes').val()
     };
+    console.log(data);
     $.ajax({
       type: "POST",
       dataType: "json",
