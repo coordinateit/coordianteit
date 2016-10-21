@@ -62,7 +62,9 @@ function getTeamList() {
 ////// Populate team lists //////
 
 function teamList(teams) {
+  console.log(teams);
   for (var i = 0; i < teams.length; i++) {
+    console.log(teams[i]);
     $('.teams').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
   }
 }
