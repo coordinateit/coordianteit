@@ -287,11 +287,13 @@ $('#visit_lookup').click(function() {
 ////// Get list data from server ///////
 
 function getListData() {
-  var today = Date.now();
+  var date = new Date(parseInt(Date.now()));
+  var start = date.setHours(0,0,0,0);
+  var end = date.setHours(24,0,0,0);
   $.ajax({
     type: 'POST',
     dataType: 'json',
-    data: {team: teamFilter, day: today},
+    data: {team: teamFilter, start: start, end: end},
     url: '/user/list',
     success: function(data) {
       visitList(data);
