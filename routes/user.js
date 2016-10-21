@@ -100,8 +100,8 @@ router.post('/list', function(req, res, next) {
         .where(function() {
           if (req.body.day) {
             var date = new Date(parseInt(req.body.day));
-            var start = date.setHours(0,0,0,0);
-            var end = date.setHours(24,0,0,0);
+            var start = date.setHours(-96,0,0,0);
+            var end = date.setHours(96,0,0,0);
             this.whereBetween('start', [start, end]);
           }
         })

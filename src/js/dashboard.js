@@ -189,6 +189,7 @@ function getJobs() {
     dataType: 'json',
     url: '/user/jobs'
   }).then(function(jobs) {
+    console.log(jobs);
     setMarkers(jobs);
   });
 }
@@ -302,25 +303,20 @@ function getListData() {
     url: '/user/list',
     success: function(data) {
       visitList(data);
-      setIdArray(data);
     }
   });
 }
 
 
-////// Make an array of ids for list view //////
+////// Add data to list ///////
 
-function setIdArray(data) {
+function visitList(data) {
+  ////// Make an array of ids for list view //////
   var listIds = data.map(function(i) {
     return i.id;
   })
   window.localStorage.list = JSON.stringify(listIds);
-};
 
-
-////// Add data to list ///////
-
-function visitList(data) {
   $(".list").empty();
   $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Visit type</th><th>Address</th><th>Phone Number</th></tr>");
   for (var i = 0; i < data.length; i++) {
@@ -381,8 +377,7 @@ function getJob(id) {
 
 ////// Post job //////
 
-$('#create_job_button').click(function(event) {
-  event.preventDefault();
+$('#create_job_button').click(function() {
   let data = {
     customer_name: $('#customer_name').val(),
     po_number: $('#po_number').val(),
@@ -405,6 +400,8 @@ $('#create_job_button').click(function(event) {
     success: function(data) {
       showJob(data);
       console.log(data);
+      $('#create_job_button').hide();
+      $('#update_job_button').show();
       newJobMarker = new google.maps.Marker({
         position: {lat: parseFloat(data.lat), lng: parseFloat(data.lng)},
         map: map,
@@ -474,15 +471,21 @@ function showJob(job) {
   $('#notes').val(job.notes);
   let coords = {lat: parseFloat(job.lat), lng: parseFloat(job.lng)};
   map.panTo(coords);
-  getJobVisits();
+  if (job.jobs_id) {
+    getJobVisits(job.jobs_id);
+    visitSubmitListen(job.jobs_id);
+  } else {
+    getJobVisits(job.id);
+    visitSubmitListen(job.id);
+  }
 }
 
-function getJobVisits() {
+function getJobVisits(jobId) {
   // Toggle visit list / visit form, get visits for job
   $.ajax({
     type: "GET",
     dataType: "json",
-    url: "/user/jobVisits/" + currentJob,
+    url: "/user/jobVisits/" + jobId,
     success: function(data) {
       $('#create_visit').hide();
       $('#visit_list').show();
@@ -513,6 +516,7 @@ function visitAppend(visit) {
       <td><a href="/user/deleteVisit/${visit.id}"><button type="button" id="visitDelete" class="btn btn-danger btn-xs">Delete</button></a></td>
     </tr>`
   );
+  visitEditListen();
 }
 
 
@@ -588,8 +592,8 @@ $('#clear_job').click(function(){
   $('#create_job').find('input:text, select, textarea').val('');
   $('#create_job_button').show();
   $('#update_job_button').hide();
-  $("#create_visit").hide();
-  $("#visit_list").show();
+  $("#create_visit").show();
+  $("#visit_list").hide();
   if (lookupMarker) {
     lookupMarker.setMap(null);
   }
@@ -620,56 +624,55 @@ $('#addVisit').click(function() {
 
 ////// Submit new visit //////
 
-$('#visitSubmit').click(function(event) {
-  event.preventDefault();
-  let data = {
-    jobs_id: currentJob,
-    visit_type: $('#visit_type').val(),
-    date: $('#visit_date').val(),
-    start: $('#visit_start').val(),
-    end: $('#visit_end').val(),
-    team_id: $('#visit_team').val(),
-    notes: $('#visit_notes').val()
-  };
-  $.ajax({
-    type: "POST",
-    dataType: "json",
-    data: data,
-    url: "/user/postVisit",
-    success: function(visit) {
-      $("#create_visit").hide();
-      $("#visit_list").show();
-      visitAppend(visit);
-    }
+function visitSubmitListen(jobId) {
+  $('#visitSubmit').click(function() {
+    let data = {
+      jobs_id: jobId,
+      visit_type: $('#visit_type').val(),
+      date: $('#visit_date').val(),
+      start: $('#visit_start').val(),
+      end: $('#visit_end').val(),
+      team_id: $('#visit_team').val(),
+      notes: $('#visit_notes').val()
+    };
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      data: data,
+      url: "/user/postVisit",
+      success: function(visit) {
+        $("#create_visit").hide();
+        $("#visit_list").show();
+        visitAppend(visit);
+        getListData();
+      }
+    });
   });
-});
 
-
-////// Update visit //////
-
-$('#saveVisitSubmit').click(function(event) {
-  event.preventDefault();
-  let data = {
-    id: currentVisit,
-    visit_type: $('#visit_type').val(),
-    date: $('#visit_date').val(),
-    start: $('#visit_start').val(),
-    end: $('#visit_end').val(),
-    team_id: $('#visit_team').val(),
-    notes: $('#visit_notes').val()
-  };
-  $.ajax({
-    type: "POST",
-    dataType: "json",
-    data: data,
-    url: "/user/updateVisit",
-    success: function(visit) {
-      $("#create_visit").hide();
-      $("#visit_list").show();
-      getJobVisits();
-    }
+  ////// Update visit //////
+  $('#saveVisitSubmit').click(function() {
+    let data = {
+      id: currentVisit,
+      visit_type: $('#visit_type').val(),
+      date: $('#visit_date').val(),
+      start: $('#visit_start').val(),
+      end: $('#visit_end').val(),
+      team_id: $('#visit_team').val(),
+      notes: $('#visit_notes').val()
+    };
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      data: data,
+      url: "/user/updateVisit",
+      success: function(visit) {
+        $("#create_visit").hide();
+        $("#visit_list").show();
+        getJobVisits();
+      }
+    });
   });
-});
+}
 
 
 ////// Display search results //////
