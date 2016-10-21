@@ -25,8 +25,8 @@ router.post('/jobs', function(req, res, next) {
         .andWhere(function() {
           if (req.body.date) {
             var date = new Date(parseInt(req.body.date));
-            let start = date.setHours(-96,0,0,0);
-            let end = date.setHours(96,0,0,0);
+            let start = date.setHours(0,0,0,0);
+            let end = date.setHours(168,0,0,0);
             this.whereBetween('start', [start, end]);
           }
         })
@@ -100,8 +100,8 @@ router.post('/list', function(req, res, next) {
         .where(function() {
           if (req.body.day) {
             var date = new Date(parseInt(req.body.day));
-            var start = date.setHours(-96,0,0,0);
-            var end = date.setHours(96,0,0,0);
+            var start = date.setHours(0,0,0,0);
+            var end = date.setHours(24,0,0,0);
             this.whereBetween('start', [start, end]);
           }
         })
@@ -186,7 +186,7 @@ router.post('/postJob', function(req, res, next) {
         city: req.body.city,
         state: req.body.state,
         zip: req.body.zip,
-        job_type: req.body.jobtype,
+        job_type: req.body.job_type,
         priority: req.body.priority,
         notes: req.body.notes
       })
@@ -305,15 +305,16 @@ router.post('/updateVisit', function(req, res, next) {
       knex('visits')
         .where('id', req.body.id)
         .update({
-          jobs_id: req.body.jobs_id,
           visit_type: req.body.visit_type,
           start: start,
           end: end,
           team_id: req.body.team_id,
           notes: req.body.notes
         })
-        .then(function() {
-          res.send({});
+        .returning('jobs_id')
+        .then(function(data) {
+          console.log(data);
+          res.send(data);
         })
     }
   }
