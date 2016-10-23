@@ -171,22 +171,27 @@ router.post('/postJob', function(req, res, next) {
     }
   });
   function insert() {
+    let data = {
+      lat: lat,
+      lng: lng,
+      customer_name: req.body.customer_name,
+      email: req.body.email,
+      phone_number: req.body.phone_number,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      zip: req.body.zip,
+      job_type: req.body.job_type,
+      notes: req.body.notes
+    }
+    if (req.body.priority) {
+      data.priority = req.body.priority
+    }
+    if (req.body.po_number) {
+      data.po_number = req.body.po_number
+    }
     knex('jobs')
-      .insert({
-        lat: lat,
-        lng: lng,
-        customer_name: req.body.customer_name,
-        po_number: req.body.po_number,
-        email: req.body.email,
-        phone_number: req.body.phone_number,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        zip: req.body.zip,
-        job_type: req.body.job_type,
-        priority: req.body.priority,
-        notes: req.body.notes
-      })
+      .insert(data)
       .returning('id')
       .then(function(id) {
         knex('jobs')
@@ -254,25 +259,28 @@ router.post('/updateJob', function(req, res, next) {
 
 router.post('/postVisit', function(req, res, next) {
   if (req.session.id) {
-      knex('visits')
-        .insert({
-          jobs_id: req.body.jobs_id,
-          visit_type: req.body.visit_type,
-          start: req.body.start,
-          end: req.body.end,
-          team_id: req.body.team_id,
-          notes: req.body.notes
-        })
-        .returning('id')
-        .then(function(id) {
-          knex('visits')
-            .where('id', id[0])
-            .first()
-            .then(function(visit) {
-              res.send(visit);
-            })
-        });
+    let data = {
+      jobs_id: req.body.jobs_id,
+      visit_type: req.body.visit_type,
+      start: req.body.start,
+      end: req.body.end,
+      notes: req.body.notes
     }
+    if (req.body.team_id) {
+      data.team_id = req.body.team_id
+    }
+    knex('visits')
+      .insert(data)
+      .returning('id')
+      .then(function(id) {
+        knex('visits')
+          .where('id', id[0])
+          .first()
+          .then(function(visit) {
+            res.send(visit);
+          })
+      });
+  }
 });
 
 
@@ -280,20 +288,24 @@ router.post('/postVisit', function(req, res, next) {
 
 router.post('/updateVisit', function(req, res, next) {
   if (req.session.id) {
-      knex('visits')
-        .where('id', req.body.id)
-        .update({
-          visit_type: req.body.visit_type,
-          start: req.body.start,
-          end: req.body.end,
-          team_id: req.body.team_id,
-          notes: req.body.notes
-        })
-        .returning('jobs_id')
-        .then(function(data) {
-          res.send(data);
-        })
+    let data = {
+      jobs_id: req.body.jobs_id,
+      visit_type: req.body.visit_type,
+      start: req.body.start,
+      end: req.body.end,
+      notes: req.body.notes
     }
+    if (req.body.team_id) {
+      data.team_id = req.body.team_id
+    }
+    knex('visits')
+      .where('id', req.body.id)
+      .update(data)
+      .returning('jobs_id')
+      .then(function(data) {
+        res.send(data);
+      })
+  }
 });
 
 
@@ -358,57 +370,101 @@ router.post('/search', function(req, res, next) {
         searchQuery();
       }
     }
+
     function searchQuery() {
-      knex('jobs')
-        .join('visits', 'jobs.id', 'visits.jobs_id')
-        .where(function() {
-          if (search.customer_name) {
-            this.where('customer_name', search.customer_name)
-          }
-        }).andWhere(function() {
-          if (search.po) {
-            this.where('po', search.po)
-          }
-        }).andWhere(function() {
-          if (search.priority) {
-            this.where('priority', search.priority)
-          }
-        }).andWhere(function() {
-          if (search.team_id) {
-            this.where('team_id', search.team_id)
-          }
-        }).andWhere(function() {
-          if (search.from && search.to) {
-            this.whereBetween('start', [fromDate, toDate])
-          }
-        }).andWhere(function() {
-          if (search.address) {
-            this.where('address', search.address)
-          }
-        }).andWhere(function() {
-          if (search.city) {
-            this.where('city', search.city)
-          }
-        }).andWhere(function() {
-          if (search.state) {
-            this.where('state', search.state)
-          }
-        }).andWhere(function() {
-          if (search.zip) {
-            this.where('zip', search.zip)
-          }
-        }).andWhere(function() {
-          if (search.radius) {
-            this.where('lat', '<', (lat + radius/200))
-              .andWhere('lat', '>', (lat - radius/200))
-              .andWhere('lng', '<', (lng + radius/200))
-              .andWhere('lng', '>', (lng - radius/200))
-          }
-        })
-        .then(function(data) {
-          res.send(data);
-        })
-  }
+      if (!search.team_id && !search.from && !search.to) {
+        knex('jobs')
+          .where(function() {
+            if (search.customer_name) {
+              this.where('customer_name', search.customer_name)
+            }
+          }).andWhere(function() {
+            if (search.po) {
+              this.where('po', search.po)
+            }
+          }).andWhere(function() {
+            if (search.priority) {
+              this.where('priority', search.priority)
+            }
+          }).andWhere(function() {
+            if (search.address) {
+              this.where('address', search.address)
+            }
+          }).andWhere(function() {
+            if (search.city) {
+              this.where('city', search.city)
+            }
+          }).andWhere(function() {
+            if (search.state) {
+              this.where('state', search.state)
+            }
+          }).andWhere(function() {
+            if (search.zip) {
+              this.where('zip', search.zip)
+            }
+          }).andWhere(function() {
+            if (search.radius) {
+              this.where('lat', '<', (lat + radius/200))
+                .andWhere('lat', '>', (lat - radius/200))
+                .andWhere('lng', '<', (lng + radius/200))
+                .andWhere('lng', '>', (lng - radius/200))
+            }
+          })
+          .then(function(data) {
+            res.send({type: "job", data: data});
+          });
+      } else {
+        knex('jobs')
+          .join('visits', 'jobs.id', 'visits.jobs_id')
+          .where(function() {
+            if (search.customer_name) {
+              this.where('customer_name', search.customer_name)
+            }
+          }).andWhere(function() {
+            if (search.po) {
+              this.where('po', search.po)
+            }
+          }).andWhere(function() {
+            if (search.priority) {
+              this.where('priority', search.priority)
+            }
+          }).andWhere(function() {
+            if (search.team_id) {
+              this.where('team_id', search.team_id)
+            }
+          }).andWhere(function() {
+            if (search.from && search.to) {
+              this.whereBetween('start', [fromDate, toDate])
+            }
+          }).andWhere(function() {
+            if (search.address) {
+              this.where('address', search.address)
+            }
+          }).andWhere(function() {
+            if (search.city) {
+              this.where('city', search.city)
+            }
+          }).andWhere(function() {
+            if (search.state) {
+              this.where('state', search.state)
+            }
+          }).andWhere(function() {
+            if (search.zip) {
+              this.where('zip', search.zip)
+            }
+          }).andWhere(function() {
+            if (search.radius) {
+              this.where('lat', '<', (lat + radius/200))
+                .andWhere('lat', '>', (lat - radius/200))
+                .andWhere('lng', '<', (lng + radius/200))
+                .andWhere('lng', '>', (lng - radius/200))
+            }
+          })
+          .then(function(data) {
+            res.send({type: "visit", data: data});
+          });
+      }
+    }
   }
 });
 

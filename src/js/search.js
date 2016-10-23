@@ -83,7 +83,7 @@ function getSearch(search) {
 ////// Make an array of ids for list view //////
 
 function setIdArray(data) {
-  var listIds = data.map(function(i) {
+  var listIds = data.data.map(function(i) {
     return i.id;
   })
   window.localStorage.list = JSON.stringify(listIds);
@@ -107,34 +107,34 @@ function initMap() {
 
 ////// Display jobs on map //////
 
-function setMarkers(visits) {
-  let coords = {lat: parseFloat(visits[0].lat), lng: parseFloat(visits[0].lng)};
+function setMarkers(data) {
+  let coords = {lat: parseFloat(data.data[0].lat), lng: parseFloat(data.data[0].lng)};
   map.panTo(coords);
   for (var i = 0; i < markers.length; i++) {  // Clear markers
     markers[i].setMap(null);
   }
   markers = [];
-  for (var i = 0; i < visits.length; i++) {  // Set new markers
-    let content = `<h5>${visits[i].customer_name}</h5>
-                    <p>Job Type: ${visits[i].job_type}</p>
-                    <p>Visit Type: ${visits[i].visit_type}</p>
-                    <p>Team: ${visits[i].team_id}</p>
-                    <a href="dashboard.html">View Visit</a>`
+  for (var i = 0; i < data.data.length; i++) {  // Set new markers
+    let content = `<h5>${data.data[i].customer_name}</h5>
+                    <p>Job Type: ${data.data[i].job_type}</p>
+                    <p>Visit Type: ${data.data[i].visit_type}</p>
+                    <p>Team: ${data.data[i].team_id}</p>
+                    <a href="dashboard.html">View Job/Visits</a>`
     let infowindow = new google.maps.InfoWindow({
       content: content
     });
     let marker = new google.maps.Marker({
-      position: {lat: parseFloat(visits[i].lat), lng: parseFloat(visits[i].lng)},
+      position: {lat: parseFloat(data.data[i].lat), lng: parseFloat(data.data[i].lng)},
       map: map,
-      id: visits[i].id,
-      title: visits[i].customer_name
+      id: data.data[i].id,
+      title: data.data[i].customer_name
     });
     marker.addListener('click', function() {
       for (var i = 0; i < infowindows.length; i++) {
         infowindows[i].close();
       }
       infowindow.open(map, marker);
-      window.localStorage.search = JSON.stringify(marker.id)
+      window.localStorage.search = JSON.stringify({id: marker.id, type: data.type});
     });
     markers.push(marker);
     infowindows.push(infowindow);
@@ -170,8 +170,8 @@ function teamList(teams) {
 function visitList(data) {
   $(".list").empty();
   $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>");
-  for (var i = 0; i < data.length; i++) {
-    let date = new Date(parseInt(data[i].start));
+  for (var i = 0; i < data.data.length; i++) {
+    let date = new Date(parseInt(data.data[i].start));
     let meridiem = 'am';
     let hours = date.getHours();
     let minutes = date.getMinutes();
@@ -183,9 +183,9 @@ function visitList(data) {
       minutes = "0" + minutes;
     }
     let time = hours + ":" + minutes + " " + meridiem;
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time +
-                        "</td><td>" + data[i].job_type + "</td><td>" + data[i].address +
-                        "</td><td>" + data[i].phone_number + "</td></tr>"
+    $(".list").append("<tr><td>" + data.data[i].team_id + "</td><td>" + time +
+                        "</td><td>" + data.data[i].job_type + "</td><td>" + data.data[i].address +
+                        "</td><td>" + data.data[i].phone_number + "</td></tr>"
                       );
   }
 }
