@@ -7,6 +7,7 @@ $(document).ready(function(){
   getTeamList();
   initCalendar();
   getVisits();
+  $('#calendar').fullCalendar('refetchEvents');
 });
 
 
@@ -74,7 +75,7 @@ var teamFilter;
 $('#teams').change(function(clicked) {
   teamFilter = $('#teams').find(":selected").val();
   getVisits();
-  getJobs(Date.now());
+  getJobs();
   getListData();
   $("#calendar").show();
   $("#create_form").hide();
@@ -165,6 +166,7 @@ var infowindows = [];
 var lookupMarker;
 var newJobMarker;
 var bounds;
+var currentDate = Date.now();
 var position = JSON.parse(window.localStorage.position);
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -174,17 +176,17 @@ function initMap() {
   });
   map.addListener('tilesloaded', function() {
     bounds = map.getBounds();
-    getJobs(Date.now());
+    getJobs();
   });
 }
 
 
 ////// Get jobs from server //////
 
-function getJobs(date) {
+function getJobs() {
   $.ajax({
     type: 'POST',
-    data: {bounds: JSON.stringify(bounds), date: date, team: teamFilter},
+    data: {bounds: JSON.stringify(bounds), date: currentDate, team: teamFilter},
     dataType: 'json',
     url: '/user/jobs'
   }).then(function(jobs) {
@@ -214,8 +216,9 @@ function setMarkers(jobs) {
       success: function(data) {
         for (var i = 0; i < data.length; i++) {
           let start = parseTime(data[i].start);
+          let end = parseTime(data[i].end);
           let date = parseDate(data[i].start);
-          content += `<p>${data[i].visit_type}: ${start} - ${date}</p>`
+          content += `<p>${data[i].visit_type}: ${start} - ${end}, ${date}</p>`
         }
         infowindow = new google.maps.InfoWindow({
           content: content
@@ -230,15 +233,11 @@ function setMarkers(jobs) {
       title: jobs[i].customer_name
     });
     marker.addListener('click', function() {
-      map.panTo(marker.position);
       for (var i = 0; i < infowindows.length; i++) {
         infowindows[i].close();
       }
-      window.setTimeout(showInfowindow, 500);
-      function showInfowindow() {
-        infowindow.open(map, marker);
-      }
-      window.localStorage.search = JSON.stringify(marker.id)
+      infowindow.open(map, marker);
+      window.localStorage.search = JSON.stringify({id: marker.id, type: "visit"});
     });
     markers.push(marker);
   }
@@ -274,7 +273,10 @@ $('#job_lookup').click(function() {
 
 $('#visit_lookup').click(function() {
   let date = new Date($('#visit_date').val());
-  getJobs(date.getTime());
+  currentDate = date.getTime();
+  currentDate -= 345600000;
+  console.log(currentDate);
+  getJobs();
 });
 
 
@@ -466,71 +468,16 @@ function showJob(job) {
   let coords = {lat: parseFloat(job.lat), lng: parseFloat(job.lng)};
   map.panTo(coords);
   if (job.jobs_id) {
-    // if (visitSubmit.listening) {
-    //   visitSubmit.removeListener();
-    // }
     getJobVisits(job.jobs_id);
     currentJob = job.jobs_id;
-    // visitSubmit.addListener(job.jobs_id);
   } else {
-    // if (visitSubmit.listening) {
-    //   visitSubmit.removeListener();
-    // }
     getJobVisits(job.id);
     currentJob = job.id;
-    // visitSubmit.addListener(job.id);
   }
 }
 
-//
-// var visitSubmit = {
-//   jobId: null,
-//   listening: false,
-//   submit: document.getElementById('visitSubmit'),
-//   addListener: function(jobId) {
-//     console.log("listener added");
-//     console.log(jobId);
-//     this.submit.addEventListener('click', this.submitVisit);
-//     this.listening = true;
-//     this.jobId = jobId;
-//     console.log(this.jobId);
-//   },
-//   removeListener: function() {
-//     this.submit.removeEventListener('click', this.submitVisit);
-//     this.listening = false;
-//     console.log("Listener removed");
-//   },
-//   submitVisit: function() {
-//     console.log(this);
-//     let data = {
-//       jobs_id: this.jobId,
-//       visit_type: $('#visit_type').val(),
-//       date: $('#visit_date').val(),
-//       start: $('#visit_start').val(),
-//       end: $('#visit_end').val(),
-//       team_id: $('#visit_team').val(),
-//       notes: $('#visit_notes').val()
-//     };
-//     console.log(data);
-//     $.ajax({
-//       type: "POST",
-//       dataType: "json",
-//       data: data,
-//       url: "/user/postVisit",
-//       success: function(visit) {
-//         $("#create_visit").hide();
-//         $("#visit_list").show();
-//         visitAppend(visit);
-//         getListData();
-//         clearVisit();
-//       }
-//     });
-//   }
-// };
-
 
 $('#visitSubmit').click(function() {
-  console.log(currentJob);
   let date = $('#visit_date').val();
   let start = $('#visit_start').val();
   let newStart = Date.parse(date + ', ' + start);
@@ -544,7 +491,6 @@ $('#visitSubmit').click(function() {
     team_id: $('#visit_team').val(),
     notes: $('#visit_notes').val()
   };
-  console.log(data);
   $.ajax({
     type: "POST",
     dataType: "json",
@@ -556,6 +502,9 @@ $('#visitSubmit').click(function() {
       visitAppend(visit);
       getListData();
       clearVisit();
+      currentDate = Date.now();
+      getJobs();
+      $('#calendar').fullCalendar('refetchEvents');
     }
   });
 });
@@ -681,7 +630,6 @@ function showVisit(visit) {
       team_id: $('#visit_team').val(),
       notes: $('#visit_notes').val()
     };
-    console.log(data);
     $.ajax({
       type: "POST",
       dataType: "json",
@@ -690,8 +638,11 @@ function showVisit(visit) {
       success: function(jobId) {
         $("#create_visit").hide();
         $("#visit_list").show();
+        currentDate = Date.now();
+        getJobs();
         getJobVisits(jobId[0]);
         clearVisit();
+        $('#calendar').fullCalendar('refetchEvents');
       }
     });
   });
@@ -744,8 +695,12 @@ $('#addVisit').click(function() {
 ////// Display search results //////
 
 if (window.localStorage.search) {
-  let id = JSON.parse(window.localStorage.search);
-  getVisit(id);
+  let search = JSON.parse(window.localStorage.search);
+  if (search.type === "visit") {
+    getVisit(search.id);
+  } else if (search.type === "job") {
+    getJob(search.id);
+  }
   localStorage.removeItem('search');
 }
 
