@@ -6,7 +6,6 @@ $(document).ready(function(){
 
 
 ////// Get list data from server ///////
-
 function getListData(){
   $.ajax({
     type: 'POST',
@@ -21,7 +20,6 @@ function getListData(){
 
 
 ////// Add data to list ///////
-
 function makeList(data) {
   for (var i = 0; i < data.length; i++) {
     let date = new Date(parseInt(data[i].start));

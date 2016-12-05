@@ -5,7 +5,6 @@ $(document).ready(function() {
 });
 
 /////// Toggle map / list //////
-
 $(".switch_map_list").change(function() {
   var userinput = $(this);
   if (userinput.prop("checked")){
@@ -19,7 +18,6 @@ $(".switch_map_list").change(function() {
 
 
 ////// Send search parameters to server //////
-
 $('#searchSubmit').click(function(event) {
   event.preventDefault();
   let search = {};
@@ -64,7 +62,6 @@ $('#searchSubmit').click(function(event) {
 
 
 ////// Query database for search items //////
-
 function getSearch(search) {
   $.ajax({
     type: "POST",
@@ -81,7 +78,6 @@ function getSearch(search) {
 
 
 ////// Make an array of ids for list view //////
-
 function setIdArray(data) {
   var listIds = data.data.map(function(i) {
     return i.id;
@@ -91,7 +87,6 @@ function setIdArray(data) {
 
 
 ////// Initialize map //////
-
 var map;
 var markers = [];
 var infowindows = [];
@@ -106,7 +101,6 @@ function initMap() {
 
 
 ////// Display jobs on map //////
-
 function setMarkers(data) {
   let coords = {lat: parseFloat(data.data[0].lat), lng: parseFloat(data.data[0].lng)};
   map.panTo(coords);
@@ -143,7 +137,6 @@ function setMarkers(data) {
 
 
 ///// Get team data from server ///////
-
 function getTeamList() {
   $.ajax({
     type: 'GET',
@@ -157,7 +150,6 @@ function getTeamList() {
 
 
 ////// Populate team lists //////
-
 function teamList(teams) {
   for (var i = 0; i < teams.length; i++) {
     $('#team').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
@@ -166,7 +158,6 @@ function teamList(teams) {
 
 
 ////// Add data to list ///////
-
 function visitList(data) {
   $(".list").empty();
   $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>");

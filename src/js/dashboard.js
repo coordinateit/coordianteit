@@ -1,7 +1,6 @@
 "use strict";
 
 ////// Invoke these functions when page loads //////
-
 $(document).ready(function(){
   getListData();
   getTeamList();
@@ -12,7 +11,6 @@ $(document).ready(function(){
 
 
 ////// Calendar / Create Switch ///////
-
 $(".switch_calendar_job").change(function() {
   var userinput = $(this);
   if (userinput.prop("checked")){
@@ -27,7 +25,6 @@ $(".switch_calendar_job").change(function() {
 
 
 ////// Map / List Switch ///////
-
 $(".switch_map_list").change(function() {
   var userinput = $(this);
   if (userinput.prop("checked")){
@@ -47,7 +44,6 @@ $(".switch_map_list").change(function() {
 
 
 ////// Get team data from server ///////
-
 function getTeamList() {
   $.ajax({
     type: 'GET',
@@ -61,22 +57,17 @@ function getTeamList() {
 
 
 ////// Populate team lists //////
-
 function teamList(teams) {
-  console.log(teams);
   for (var i = 0; i < teams.length; i++) {
-    console.log(teams[i]);
     $('.teams').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
   }
 }
 
 
 ////// Filter page by team //////
-
 var teamFilter;
 $('#teams').change(function(clicked) {
   teamFilter = $('#teams').find(":selected").val();
-  console.log(teamFilter);
   getVisits();
   getJobs();
   getListData();
@@ -93,7 +84,6 @@ $('#teams').change(function(clicked) {
 
 
 ////// Initialize calendar and display visits //////
-
 function initCalendar() {
   $('#calendar').fullCalendar({
     eventClick: function(event) {
@@ -120,9 +110,7 @@ function initCalendar() {
 
 
 ////// Get visits from server //////
-
 function getVisits() {
-  console.log(teamFilter);
   $.ajax({
     type: 'POST',
     dataType: 'json',
@@ -143,7 +131,6 @@ function getVisits() {
 
 
 ////// Get visit and associated job //////
-
 function getVisit(id) {
   $.ajax({
     type: 'GET',
@@ -163,7 +150,6 @@ function getVisit(id) {
 
 
 ////// Initialize map using current position //////
-
 var map;
 var markers = [];
 var infowindows = [];
@@ -186,7 +172,6 @@ function initMap() {
 
 
 ////// Get jobs from server //////
-
 function getJobs() {
   $.ajax({
     type: 'POST',
@@ -200,7 +185,6 @@ function getJobs() {
 
 
 ////// Display jobs on map //////
-
 function setMarkers(jobs) {
   for (var i = 0; i < markers.length; i++) {  // Clear markers
     markers[i].setMap(null);
@@ -248,6 +232,7 @@ function setMarkers(jobs) {
 }
 
 
+////// Displays job location //////
 $('#job_lookup').click(function() {
   let address = $('#address').val();
   let city = $('#city').val();
@@ -275,11 +260,12 @@ $('#job_lookup').click(function() {
   }
 });
 
+
+////// Displays visit time //////
 $('#visit_lookup').click(function() {
   let date = new Date($('#visit_date').val());
   currentDate = date.getTime();
   currentDate -= 345600000;
-  console.log(currentDate);
   getJobs();
 });
 
@@ -291,7 +277,6 @@ $('#visit_lookup').click(function() {
 
 
 ////// Get list data from server ///////
-
 function getListData() {
   var date = new Date(parseInt(Date.now()));
   var start = date.setHours(0,0,0,0);
@@ -309,16 +294,15 @@ function getListData() {
 
 
 ////// Add data to list ///////
-
 function visitList(data) {
-  ////// Make an array of ids for list view //////
+  // Make an array of ids for list view
   var listIds = data.map(function(i) {
     return i.id;
   })
   window.localStorage.list = JSON.stringify(listIds);
-
   $(".list").empty();
-  $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Visit type</th><th>Address</th><th>Phone Number</th></tr>");
+  $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Visit type</th><th>Address</th><th>Phone Number
+  </th></tr>");
   for (var i = 0; i < data.length; i++) {
     let time = parseTime(data[i].start)
     $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].visit_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + '</td></tr>');
@@ -327,7 +311,6 @@ function visitList(data) {
 
 
 ////// Set time to 1:00 pm format //////
-
 function parseTime(input) {
   let date = new Date(parseInt(input));
   let meridiem = 'am';
@@ -345,7 +328,6 @@ function parseTime(input) {
 
 
 ////// Set date to Sat, Oct 10 format //////
-
 function parseDate(input) {
   let date = new Date(parseInt(input));
   let dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -360,7 +342,6 @@ function parseDate(input) {
 
 
 ////// Get data for a specific job //////
-
 function getJob(id) {
   var url = '/user/job/' + id;
   $.ajax({
@@ -374,20 +355,16 @@ function getJob(id) {
 
 
 ////// Post job //////
-
 $('#create_job_button').click(function() {
-  console.log($('#job_type').val());
   let data = {
     customer_name: $('#customer_name').val(),
-    po_number: $('#po_number').val(),
     email: $('#email').val(),
-    po_number: $('#po_number').val(),
-    phone_number: $('#phone_number').val(),
+    phone_1: $('#phone_1').val(),
+    phone_2: $('#phone_2').val(),
     address: $('#address').val(),
     city: $('#city').val(),
     state: $('#state').val(),
     zip: $('#zip').val(),
-    priority: $('#priority').val(),
     job_type: $('#job_type').val(),
     notes: $('#notes').val()
   }
@@ -398,6 +375,7 @@ $('#create_job_button').click(function() {
     data: data,
     url: "/user/postJob",
     success: function(data) {
+      console.log(data);
       showJob(data);
       $('#create_job_button').hide();
       $('#update_job_button').show();
@@ -421,15 +399,13 @@ function updateJobListen(jobId) {
     let data = {
       id: jobId,
       customer_name: $('#customer_name').val(),
-      po_number: $('#po_number').val(),
       email: $('#email').val(),
-      po_number: $('#po_number').val(),
-      phone_number: $('#phone_number').val(),
+      phone_1: $('#phone_1').val(),
+      phone_2: $('#phone_2').val(),
       address: $('#address').val(),
       city: $('#city').val(),
       state: $('#state').val(),
       zip: $('#zip').val(),
-      priority: $('#priority').val(),
       job_type: $('#job_type').val(),
       notes: $('#notes').val()
     }
@@ -447,7 +423,6 @@ function updateJobListen(jobId) {
 
 
 ////// Show job in form //////
-
 var currentJob;
 function showJob(job) {
   // Toggle calendar / job form
@@ -456,17 +431,14 @@ function showJob(job) {
   $(".switch_calendar_job").prop("checked", false);
   // Populate job form
   $('#customer_name').val(job.customer_name);
-  $('#po_number').val(job.po_number);
   $('#email').val(job.email);
-  $('#po_number').val(job.po_number);
-  $('#phone_number').val(job.phone_number);
+  $('#phone_1').val(job.phone_1);
+  $('#phone_2').val(job.phone_2);
   $('#address').val(job.address);
   $('#city').val(job.city);
   let state = document.getElementById('state');
   state.value = job.state;
   $('#zip').val(job.zip);
-  let priority = document.getElementById('priority');
-  priority.value = job.priority;
   $('#job_type').val(job.job_type);
   $('#notes').val(job.notes);
   let coords = {lat: parseFloat(job.lat), lng: parseFloat(job.lng)};
@@ -514,9 +486,6 @@ $('#visitSubmit').click(function() {
 });
 
 
-
-
-
 function getJobVisits(jobId) {
   // Toggle visit list / visit form, get visits for job
   $.ajax({
@@ -539,6 +508,7 @@ function getJobVisits(jobId) {
   })
 }
 
+
 function visitAppend(visit) {
   let date = parseDate(visit.start);
   let startTime = parseTime(visit.start);
@@ -559,7 +529,6 @@ function visitAppend(visit) {
 
 
 ////// Listen for visit edit click //////
-
 function visitEditListen() {
   $('.visitEdit').click(function(event) {
     editVisit(parseInt(event.target.id));
@@ -581,7 +550,6 @@ function editVisit(id) {
 
 
 ////// Show visit in visit form //////
-
 function showVisit(visit) {
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
@@ -654,7 +622,6 @@ function showVisit(visit) {
 
 
 ////// Clear job form //////
-
 $('#clear_job').click(function(){
   $('#create_job').find('input:text, select, textarea').val('');
   $('#create_job_button').show();
@@ -668,7 +635,6 @@ $('#clear_job').click(function(){
 
 
 ////// Clear visit form //////
-
 $('#clear_visit').click(function(){
   clearVisit();
 });
@@ -686,18 +652,13 @@ function clearVisit() {
 
 
 ////// Add visit //////
-
 $('#addVisit').click(function() {
   $("#create_visit").show();
   $("#visit_list").hide();
 });
 
 
-
-
-
 ////// Display search results //////
-
 if (window.localStorage.search) {
   let search = JSON.parse(window.localStorage.search);
   if (search.type === "visit") {

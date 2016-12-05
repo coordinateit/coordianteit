@@ -1,5 +1,4 @@
 "use strict";
-
 var express = require('express');
 var router = express.Router();
 var knex = require('../db/knex');
@@ -8,15 +7,14 @@ var bcrypt = require('bcrypt');
 
 
 ////// Gets jobs based on map position, optionally filtered by team //////
-
 router.post('/jobs', function(req, res, next) {
   if (req.session.id) {
     var north = JSON.parse(req.body.bounds).north;
     var south = JSON.parse(req.body.bounds).south;
     var east = JSON.parse(req.body.bounds).east;
     var west = JSON.parse(req.body.bounds).west;
-      knex('jobs')
-        .join('visits', 'jobs_id', 'jobs.id')
+      knex('customers')
+        .join('visits', 'customers_id', 'customers.id')
         .where(function() {
           if (req.body.team) {
             this.where('team_id', req.body.team)
@@ -34,15 +32,14 @@ router.post('/jobs', function(req, res, next) {
         .andWhere('lat', '>', south)
         .andWhere('lng', '<', east)
         .andWhere('lng', '>', west)
-        .then(function(jobs) {
-          res.send(jobs);
+        .then(function(customers) {
+          res.send(customers);
         })
   }
 });
 
 
 ////// Gets visits //////
-
 router.post('/visits', function(req, res, next) {
   if (req.session.id) {
     if (req.body.team) {
@@ -62,11 +59,10 @@ router.post('/visits', function(req, res, next) {
 
 
 ////// Get visits for a given job ///////
-
 router.get('/jobVisits/:jobId', function(req, res, next) {
   if (req.session.id) {
     knex('visits')
-      .where('jobs_id', req.params.jobId)
+      .where('customers_id', req.params.jobId)
       .then(function(data) {
         res.send(data);
       })
@@ -75,7 +71,6 @@ router.get('/jobVisits/:jobId', function(req, res, next) {
 
 
 ////// Gets a list of teams //////
-
 router.get('/teams', function(req, res, next) {
   if (req.session.id) {
     knex('teams')
@@ -87,11 +82,10 @@ router.get('/teams', function(req, res, next) {
 
 
 ////// Get visits and jobs //////
-
 router.post('/list', function(req, res, next) {
   if (req.session.id) {
-      knex('jobs')
-        .join('visits', 'jobs.id', 'visits.jobs_id')
+      knex('customers')
+        .join('visits', 'customers.id', 'visits.customers_id')
         .where(function() {
           if (req.body.team) {
             this.where('team_id', req.body.team);
@@ -110,12 +104,11 @@ router.post('/list', function(req, res, next) {
 
 
 ////// Get job by ID //////
-
 router.post('/printlist', function(req, res, next) {
   if (req.session.id) {
     var ids = JSON.parse(req.body.list)
-    knex('jobs')
-      .join('visits', 'jobs_id', 'jobs.id')
+    knex('customers')
+      .join('visits', 'customers_id', 'customers.id')
       .whereIn('visits.id', ids)
       .then(function(data) {
         res.send(data);
@@ -125,25 +118,23 @@ router.post('/printlist', function(req, res, next) {
 
 
 ////// Get job by ID //////
-
 router.get('/job/:id', function(req, res, next) {
   if (req.session.id) {
-    knex('jobs')
-      .where({id: req.params.id})
+    knex('customers')
+      .where({ id: req.params.id })
       .first()
-      .then(function(job) {
-        res.send(job);
+      .then(function(customer) {
+        res.send(customer);
       })
   }
 });
 
 
 ////// Get visit by ID //////
-
 router.get('/visit/:id', function(req, res, next) {
   if (req.session.id) {
-    knex('jobs')
-      .join('visits', 'jobs_id', 'jobs.id')
+    knex('customers')
+      .join('visits', 'customers_id', 'customers.id')
       .where('visits.id', req.params.id)
       .first()
       .then(function(visit) {
@@ -154,7 +145,6 @@ router.get('/visit/:id', function(req, res, next) {
 
 
 ////// Post new job //////
-
 router.post('/postJob', function(req, res, next) {
   var lat, lng;
   var address = req.body.address + ', ' + req.body.city + ', ' + req.body.state + ', ' + req.body.zip;
@@ -176,12 +166,12 @@ router.post('/postJob', function(req, res, next) {
       lng: lng,
       customer_name: req.body.customer_name,
       email: req.body.email,
-      phone_number: req.body.phone_number,
+      phone_1: req.body.phone_1,
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,
       zip: req.body.zip,
-      job_type: req.body.job_type,
+      customer_type: req.body.job_type,
       notes: req.body.notes
     }
     if (req.body.priority) {
@@ -190,15 +180,15 @@ router.post('/postJob', function(req, res, next) {
     if (req.body.po_number) {
       data.po_number = req.body.po_number
     }
-    knex('jobs')
+    knex('customers')
       .insert(data)
       .returning('id')
       .then(function(id) {
-        knex('jobs')
+        knex('customers')
           .where('id', id[0])
           .first()
-          .then(function(job) {
-            res.send(job);
+          .then(function(customer) {
+            res.send(customer);
           })
       });
   }
@@ -206,7 +196,6 @@ router.post('/postJob', function(req, res, next) {
 
 
 ////// Update existing job //////
-
 router.post('/updateJob', function(req, res, next) {
   if (req.session.id) {
     var lat, lng;
@@ -224,30 +213,28 @@ router.post('/updateJob', function(req, res, next) {
       }
     });
     function update() {
-      knex('jobs')
+      knex('customers')
         .where('id', req.body.id)
         .update({
           lat: lat,
           lng: lng,
           customer_name: req.body.customer_name,
-          po_number: req.body.po_number,
           email: req.body.email,
           phone_number: req.body.phone_number,
           address: req.body.address,
           city: req.body.city,
           state: req.body.state,
           zip: req.body.zip,
-          job_type: req.body.job_type,
-          priority: req.body.priority,
+          customer_type: req.body.job_type,
           notes: req.body.notes
         })
         .returning('id')
         .then(function(id) {
-          knex('jobs')
+          knex('customers')
             .where('id', id[0])
             .first()
-            .then(function(job) {
-              res.send(job);
+            .then(function(customer) {
+              res.send(customer);
             })
         });
     }
@@ -256,11 +243,10 @@ router.post('/updateJob', function(req, res, next) {
 
 
 ////// Post visit //////
-
 router.post('/postVisit', function(req, res, next) {
   if (req.session.id) {
     let data = {
-      jobs_id: req.body.jobs_id,
+      customers_id: req.body.jobs_id,
       visit_type: req.body.visit_type,
       start: req.body.start,
       end: req.body.end,
@@ -285,11 +271,10 @@ router.post('/postVisit', function(req, res, next) {
 
 
 ////// Update visit //////
-
 router.post('/updateVisit', function(req, res, next) {
   if (req.session.id) {
     let data = {
-      jobs_id: req.body.jobs_id,
+      customers_id: req.body.jobs_id,
       visit_type: req.body.visit_type,
       start: req.body.start,
       end: req.body.end,
@@ -301,7 +286,7 @@ router.post('/updateVisit', function(req, res, next) {
     knex('visits')
       .where('id', req.body.id)
       .update(data)
-      .returning('jobs_id')
+      .returning('customers_id')
       .then(function(data) {
         res.send(data);
       })
@@ -310,7 +295,6 @@ router.post('/updateVisit', function(req, res, next) {
 
 
 ////// Address lookup //////
-
 router.post('/geocode', function(req, res, next) {
   if (req.session.id) {
     let address = req.body.address + ", " + req.body.city + ", " + req.body.state + ", " + req.body.zip
@@ -327,7 +311,6 @@ router.post('/geocode', function(req, res, next) {
 
 
 ////// Search jobs //////
-
 router.post('/search', function(req, res, next) {
   if (req.session.id) {
     var search = JSON.parse(req.body.search);
@@ -373,18 +356,10 @@ router.post('/search', function(req, res, next) {
 
     function searchQuery() {
       if (!search.team_id && !search.from && !search.to) {
-        knex('jobs')
+        knex('customers')
           .where(function() {
             if (search.customer_name) {
               this.where('customer_name', search.customer_name)
-            }
-          }).andWhere(function() {
-            if (search.po) {
-              this.where('po', search.po)
-            }
-          }).andWhere(function() {
-            if (search.priority) {
-              this.where('priority', search.priority)
             }
           }).andWhere(function() {
             if (search.address) {
@@ -411,22 +386,14 @@ router.post('/search', function(req, res, next) {
             }
           })
           .then(function(data) {
-            res.send({type: "job", data: data});
+            res.send({ type: "job", data: data });
           });
       } else {
-        knex('jobs')
-          .join('visits', 'jobs.id', 'visits.jobs_id')
+        knex('customers')
+          .join('visits', 'customers.id', 'visits.customers_id')
           .where(function() {
             if (search.customer_name) {
               this.where('customer_name', search.customer_name)
-            }
-          }).andWhere(function() {
-            if (search.po) {
-              this.where('po', search.po)
-            }
-          }).andWhere(function() {
-            if (search.priority) {
-              this.where('priority', search.priority)
             }
           }).andWhere(function() {
             if (search.team_id) {

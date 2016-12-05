@@ -1,9 +1,9 @@
 "use strict";
-
 var express = require('express');
 var router = express.Router();
 var knex = require('../db/knex');
 var bcrypt = require('bcrypt');
+
 
 router.get('/users', function(req, res, next) {
   if (req.session.isadmin) {
