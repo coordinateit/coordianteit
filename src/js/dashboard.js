@@ -89,6 +89,12 @@ function initCalendar() {
     eventClick: function(event) {
       getVisit(event._id);
     },
+    dayClick: function(date) {
+      $('#calendar').fullCalendar('gotoDate', date);
+      $('#calendar').fullCalendar('changeView', 'agendaDay');
+      // Set currentDate to date clicked
+      // currentDate = date._d.getTime();
+    },
     eventMouseover: function() {
       document.body.style.cursor = "pointer";
     },
@@ -97,7 +103,7 @@ function initCalendar() {
     },
     header: {
         left: 'title',
-        center: 'month,agendaDay',
+        center: 'month,agendaWeek,agendaDay',
         right: 'prev,next today myCustomButton'
     },
     views: {
