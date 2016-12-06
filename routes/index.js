@@ -1,11 +1,11 @@
 "use strict";
-
 var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcrypt');
 var knex = require('../db/knex');
 
-// QUERY DATABASE FOR USER INFO, START COOKIE SESSION IF VALID
+
+////// Query database for user info, start cookie session if valid //////
 router.post('/login', function(req, res, next) {
   knex('users')
     .where({email: req.body.email})
@@ -24,9 +24,11 @@ router.post('/login', function(req, res, next) {
   });
 });
 
+
 router.post('/signout', function(req, res, next) {
   req.session = null;
   res.redirect('/');
 });
+
 
 module.exports = router;

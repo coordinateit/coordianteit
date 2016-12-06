@@ -1,7 +1,6 @@
 "use strict";
 
 ////// Check credentials when page loads //////
-
 $(document).ready(function(){
   authorize();
   getUsers();
@@ -11,7 +10,6 @@ $(document).ready(function(){
 
 
 ////// Check for admin access and redirect //////
-
 function authorize() {
   $.ajax({
     type: "GET",
@@ -31,7 +29,6 @@ function authorize() {
 
 
 ////// Get all users //////
-
 function getUsers() {
   $('#allUsers').empty();
   $('#allUsers').append('<tr><th>Name</th><th>E-mail</th><th>Phone</th><th>Admin</th><th></th><th></th></tr>');
@@ -50,7 +47,6 @@ function getUsers() {
 
 
 ////// Listen for edit user click //////
-
 function userEditListen() {
   $('.userEdit').click(function() {
     getUser(parseInt(event.target.id));
@@ -72,7 +68,6 @@ function getUser(id) {
 
 
 ////// Populate user form //////
-
 function showUser(user) {
   $('#user_name').val(user.name);
   $('#user_phone').val(user.phone);
@@ -108,7 +103,6 @@ function showUser(user) {
 
 
 ////// Profile Button Div Switch /////
-
 $(".menu button").on("click", function(){
   var button_id = "." + $(this).attr("id");
   $(".credentials").hide();
@@ -140,7 +134,6 @@ function teamList(teams) {
 
 
 ////// Filter page by team //////
-
 var teamFilter;
 $('#teamselect').change(function(clicked) {
   teamFilter = $('#teamselect').find(":selected").val();
@@ -148,8 +141,6 @@ $('#teamselect').change(function(clicked) {
   getListData();
   getTeam();
 });
-
-
 
 
 function getTeam() {
@@ -186,7 +177,6 @@ function showTeamMembers(teamMembers) {
 }
 
 
-
 $('#delete-team').click(function() {
   $.ajax({
     type: "GET",
@@ -197,7 +187,6 @@ $('#delete-team').click(function() {
     }
   });
 });
-
 
 
 $(".switch_map_list").change(function() {
@@ -213,14 +202,12 @@ $(".switch_map_list").change(function() {
 
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                    MAP                                     //
 ////////////////////////////////////////////////////////////////////////////////
 
 
 ////// Initialize map using current position //////
-
 var map;
 var markers = [];
 var bounds;
@@ -239,7 +226,6 @@ function initMap() {
 
 
 ////// Get jobs from server //////
-
 function getJobs() {
   $.ajax({
     type: 'POST',
@@ -253,7 +239,6 @@ function getJobs() {
 
 
 ////// Display jobs on map //////
-
 function setMarkers(jobs) {
   for (var i = 0; i < markers.length; i++) {  // Clear markers
     markers[i].setMap(null);
@@ -293,7 +278,6 @@ function getListData() {
 
 
 ////// Add data to list ///////
-
 function visitList(data) {
   $(".list").empty();
   $(".list").append('<tr><th>Team</th><th>Start Time</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>')
