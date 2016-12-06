@@ -83,3 +83,7 @@ h2 {
 #saveVisitSubmit {
   display: none;
 }
+
+.createform {
+  margin: 3rem 20rem;
+}
