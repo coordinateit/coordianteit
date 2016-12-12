@@ -110,7 +110,8 @@ function initCalendar() {
         agendaDay: {
             titleFormat: 'MMMM Do'
         }
-    }
+    },
+    defaultView: 'agendaWeek'
   });
 }
 
@@ -199,7 +200,7 @@ function setMarkers(jobs) {
   for (var i = 0; i < jobs.length; i++) {  // Set new markers
     let content = `<h4>${jobs[i].customer_name}</h4>
                     <p>${jobs[i].job_type} </p>
-                    <a href="dashboard.html">View / Edit</a>
+                    <a href="dashboard">View / Edit</a>
                     <br><br>
                     <h5>Visits:</h5>`
     let infowindow;
