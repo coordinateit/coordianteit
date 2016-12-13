@@ -103,7 +103,7 @@ router.post('/list', function(req, res, next) {
 });
 
 
-////// Get job by ID //////
+////// Get list //////
 router.post('/printlist', function(req, res, next) {
   if (req.session.id) {
     var ids = JSON.parse(req.body.list)
@@ -113,6 +113,19 @@ router.post('/printlist', function(req, res, next) {
       .then(function(data) {
         res.send(data);
       });
+  }
+});
+
+
+////// Customer lookup //////
+router.get('/customer/:id', function(req, res, next) {
+  if (req.session.id) {
+    knex('customers')
+      .where('id', req.params.id)
+      .then(function(data) {
+        console.log(data);
+        res.send(data)
+      })
   }
 });
 
@@ -140,6 +153,47 @@ router.get('/visit/:id', function(req, res, next) {
       .then(function(visit) {
         res.send(visit)
       });
+  }
+});
+
+
+////// Post new customer from Create Page //////
+router.post('/newcustomer', function(req, res, next) {
+  var lat, lng;
+  var address = req.body.address + ', ' + req.body.city + ', ' + req.body.state + ', ' + req.body.zip;
+  geocoder.geocode(address, function(err, data) {
+    if (!err && data.results[0]) {
+      lat = data.results[0].geometry.location.lat;
+      lng = data.results[0].geometry.location.lng;
+      insert();
+    } else {
+      res.send('Invalid address.')
+    }
+  });
+  function insert() {
+    let data = {
+      lat: lat,
+      lng: lng,
+      customer_name: req.body.customer_name,
+      phone_1: req.body.phone_1,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      zip: req.body.zip,
+    }
+    knex('customers')
+      .insert(data)
+      .returning('id')
+      .then(function(id) {
+        res.redirect()
+        // knex('customers')
+        //   .where('id', id[0])
+        //   .first()
+        //   .then(function(customer) {
+        //     console.log(customer);
+        //     res.send(customer);
+        //   })
+      })
   }
 });
 
@@ -174,12 +228,6 @@ router.post('/postJob', function(req, res, next) {
       zip: req.body.zip,
       customer_type: req.body.job_type,
       notes: req.body.notes
-    }
-    if (req.body.priority) {
-      data.priority = req.body.priority
-    }
-    if (req.body.po_number) {
-      data.po_number = req.body.po_number
     }
     knex('customers')
       .insert(data)
@@ -357,6 +405,7 @@ router.post('/search', function(req, res, next) {
     }
 
     function searchQuery() {
+      // If no visit data, search customers table only
       if (!search.team_id && !search.from && !search.to) {
         knex('customers')
           .where(function() {
@@ -391,6 +440,7 @@ router.post('/search', function(req, res, next) {
             res.send({ type: "job", data: data });
           });
       } else {
+        // If visit data, join customer/visit tables and search
         knex('customers')
           .join('visits', 'customers.id', 'visits.customers_id')
           .where(function() {

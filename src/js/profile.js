@@ -16,10 +16,10 @@ function authorize() {
     datatype: "json",
     url: "/user/authorize",
     success: function(data) {
-      if (data && window.location.pathname === "/admin.html") {
+      if (data && window.location.pathname === "/admin") {
         return;
       } else if (data) {
-        window.location = "/admin.html"
+        window.location = "/admin"
       } else {
         $(".credentials").show();
       }

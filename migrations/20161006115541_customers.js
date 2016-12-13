@@ -12,6 +12,8 @@ exports.up = function(knex, Promise) {
     table.string('state').notNullable();
     table.integer('zip').notNullable();
     table.string('customer_type');
+    table.string('referral');
+    table.boolean('isactive').notNullable().defaultsTo(true);
     table.string('notes', 5000);
   });
 };
