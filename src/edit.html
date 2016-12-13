@@ -42,73 +42,66 @@
   </nav> <!-- nav bar -->
 
   <header>
-    <h2>Today's Activities</h2>
-    <div class="team-dropdown">
-      <!-- Team Selection Dropdown -->
-      <div class="form-group">
-        <select id="teams" class="form-control teams">
-          <option value="">All Teams</option>
-          <!-- Teams appended from dashboard.js makeList() -->
-        </select>
-      </div>
-    </div>
+    <h2>View and Edit Customer Profile</h2>
   </header>
   <div class="dash-container">
 
-    <!-- Calendar - Form Container -->
+    <!-- Customer Profile - Visits Container -->
     <div class="cal-container">
-      <!-- Calendar - Create Job Switch -->
+      <!-- Customer Profile - Visits Switch -->
       <div>
         <label class="switch-light">
           <input class="switch_calendar_job" type="checkbox" checked="checked">
           <span class="well">
-            <span>Create Customer Profile</span>
-            <span>Calendar</span>
+            <span>Visits</span>
+            <span>Customer Profile</span>
             <a class="btn btn-primary"></a>
           </span>
         </label>
       </div>
 
-      <!-- Calendar -->
-      <div id="calendar"></div>
-
-
-      <div id="create_form" class="nodisplay">
+      <div id="create_form" >
         <!-- Create Job Form -->
         <form id="create_job" action="/user/postJob" method="POST">
 
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-10">
               <div class="form-group">
                 <label for="customer_name">Customer Name</label>
                 <input type="text" id="customer_name" name="customer_name" class="form-control" placeholder="Customer Name">
               </div>
             </div>
-            <!-- <div class="col-md-4">
+            <div class="col-md-2">
               <div class="form-group">
-                <label for="po_number">PO Number</label>
-                <input type="text" id="po_number" name="po_number" class="form-control" placeholder="PO Number">
+                <label for="status">Status</label>
+                <select id="status" class="form-control" name="status">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
               </div>
-            </div> -->
+            </div>
+          </div>
+
+          <div class="row">
             <div class="col-md-4">
               <div class="form-group">
                 <label for="phone_1">Phone Number 1</label>
                 <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="###-###-###">
               </div>
             </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-8">
-              <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="text" id="email" name="email" class="form-control" placeholder="name@domain.com">
-              </div>
-            </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label for="phone_2">Phone Number 2</label>
                 <input type="text" id="phone_number" name="phone_number" class="form-control" placeholder="###-###-###">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="text" id="email" name="email" class="form-control" placeholder="name@domain.com">
               </div>
             </div>
           </div>
@@ -195,10 +188,24 @@
           </div>
 
           <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-6">
               <div class="form-group">
                 <label>Customer Type</label>
-                <input type="text" id="job_type" class="form-control" name="job_type" placeholder="Customer Type">
+                  <select id="job_type" class="form-control" name="job-type">
+                    <option value="">Customer Type</option>
+                    <option value="EI">EI</option>
+                    <option value="EI_W">EI_W</option>
+                    <option value="EI_WM">EI_WM</option>
+                    <option value="WWI">WWI</option>
+                    <option value="DCS">DCS</option>
+                    <option value="GENERIC">GENERIC</option>
+                  </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Referral</label>
+                <input type="text" id="referral" class="form-control" name="referral" placeholder="Referral">
               </div>
             </div>
           </div>
@@ -220,8 +227,28 @@
             <button type="reset" id="clear_job" class="btn btn-primary">Clear Form</button>
         </form>
 
-        <!-- Create Visit Form/List -->
-        <form id="create_visit" method="POST">
+        <!-- Create Visit List/Form -->
+        <div id="create_visit_container" class="nodisplay">
+
+          <!-- Visit List -->
+          <div id="visit_list" class="table-responsive">
+            <table class="visit_list table table-striped">
+              <tr>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Visit Type</th>
+                <th>Team</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </table>
+            <button type="submit" id="addVisit" class="btn btn-primary">Add Visit</button>
+          </div>
+
+          <hr />
+
+          <form id="create_visit"  method="POST">
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
@@ -232,7 +259,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label>Start Time</label>
-                  <input type="time" id="visit_start" class="form-control" name="start_time" >
+                  <input type="time" id="visit_start" class="form-control" name="start_time" value="09:00">
                 </div>
               </div>
               <div class="col-md-4">
@@ -263,40 +290,27 @@
               <label>Visit Notes</label>
               <textarea name="notes" id="visit_notes" class="form-control" placeholder="Add your visit notes here"></textarea>
             </div>
-            <button type="button" id="visitSubmit" class="btn btn-primary">Create Visit</button>
-            <button type="button" id="saveVisitSubmit" class="btn btn btn-primary">Save</button>
-            <button type="button" id="visit_lookup" class="btn btn-primary">Visit Lookup</button>
-            <button type="button" id="clear_visit" class="btn btn-primary">Clear Form</button>
+            <button type="button" id="nearbyCustomers" class="btn btn-info">Nearby Customers</button>
+            <button type="button" id="nearbyCustomers" class="btn btn-info">Check Team Schedule</button>
+            <button type="button" id="visit_lookup" class="btn btn-info">Visit Lookup</button>
+            <button type="button" id="clear_visit" class="btn btn-danger">Clear Form</button>
+            <button type="button" id="saveVisitSubmit" class="btn btn btn-Success">Save</button>
+            <button type="button" id="visitSubmit" class="btn btn-success">Create Visit</button>
           </form>
-
-          <!-- Visit List -->
-          <div id="visit_list" class="nodisplay table-responsive">
-            <table class="visit_list table table-striped">
-              <tr>
-                <th>Date</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Visit Type</th>
-                <th>Team</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </table>
-            <button type="submit" id="addVisit" class="btn btn-primary">Add Visit</button>
-          </div>
+        </div>
       </div>
 
     </div> <!--cal-container-->
 
-    <!-- Map - List Container   -->
+    <!-- Map - Calendar Container   -->
     <div class="maplist-container">
 
-      <!-- Map - List Switch -->
+      <!-- Map - Calendar Switch -->
       <div>
         <label class="switch-light" onclick="">
           <input class="switch_map_list" type="checkbox" checked="checked">
           <span class="well">
-            <span>List</span>
+            <span>Calendar</span>
             <span>Map</span>
             <a class="btn btn-primary"></a>
           </span>
@@ -306,19 +320,9 @@
       <!-- Map -->
       <div id="map"></div>
 
-      <!-- List -->
-      <div id="list" class="nodisplay table-responsive">
-        <table class="list table table-striped">
-          <tr>
-            <th>Team</th>
-            <th>Start Time</th>
-            <th>Customer Type</th>
-            <th>Address</th>
-            <th>Phone</th>
-          </tr>
-        </table>
-        <a href="list" target="_blank">Printer Friendly Version</a>
-      </div>
+      <!-- Calendar -->
+      <div id="calendar"></div>
+
     </div>
     <footer>
       <hr>
@@ -330,7 +334,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.js'></script>
-  <script src='js/dashboard.js'></script>
+  <script src='js/edit.js'></script>
   <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap' async></script>
 
 </body>
