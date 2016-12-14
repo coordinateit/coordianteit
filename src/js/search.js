@@ -16,6 +16,18 @@ $(".switch_map_list").change(function() {
   }
 });
 
+////// Toggle basic / advanced //////
+$(".switch_basic_advanced").change(function() {
+  var userinput = $(this);
+  if (userinput.prop("checked")){
+    $("#basic").show();
+    $("#advanced").hide();
+  } else {
+    $("#basic").hide();
+    $("#advanced").show();
+  }
+});
+
 
 ////// Send search parameters to server //////
 $('#searchSubmit').click(function(event) {
