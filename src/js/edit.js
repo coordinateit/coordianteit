@@ -206,15 +206,15 @@ function setMarkers(jobs) {
   markers = [];
   for (var i = 0; i < jobs.length; i++) {  // Set new markers
     let content = `<h4>${jobs[i].customer_name}</h4>
-                    <p>${jobs[i].job_type} </p>
-                    <a href="dashboard">View / Edit</a>
+                    <p>${jobs[i].customer_type} </p>
+                    <a href="/edit/${jobs[i].customers_id}">View / Edit</a>
                     <br><br>
                     <h5>Visits:</h5>`
     let infowindow;
     $.ajax({
       type: "GET",
       dataType: "json",
-      url: "/user/jobVisits/" + jobs[i].jobs_id,
+      url: "/user/jobVisits/" + jobs[i].customers_id,
       success: function(data) {
         for (var i = 0; i < data.length; i++) {
           let start = parseTime(data[i].start);
