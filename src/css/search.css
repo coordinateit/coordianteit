@@ -26,9 +26,3 @@ section {
 .topspacing {
   margin-top: 40px;
 }
-
-#map {
-  height: 65vh;
-  margin: auto;
-  width: 65vw;
-}

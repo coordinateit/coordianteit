@@ -12,15 +12,14 @@ $("#create_job_button").click(function() {
   if (!data.customer_name || !data.phone_1 || !data.address || !data.city || !data.state || !data.zip) {
     $("#create_form").append("<h4>Please fill out all fields.</h4>");
   } else {
-    console.log(data);
     $.ajax({
       type: 'POST',
       dataType: 'json',
       data: data,
-      url: '/user/newcustomer'
-      // success: function(data) {
-      //   console.log(data);
-      // }
+      url: '/user/newcustomer',
+      success: function(customerId) {
+        window.location = `/edit/${customerId}`;
+      }
     })
   }
 });

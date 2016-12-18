@@ -9,10 +9,10 @@ var bcrypt = require('bcrypt');
 ////// Gets jobs based on map position, optionally filtered by team //////
 router.post('/jobs', function(req, res, next) {
   if (req.session.id) {
-    var north = JSON.parse(req.body.bounds).north;
-    var south = JSON.parse(req.body.bounds).south;
-    var east = JSON.parse(req.body.bounds).east;
-    var west = JSON.parse(req.body.bounds).west;
+    // var north = JSON.parse(req.body.bounds).north;
+    // var south = JSON.parse(req.body.bounds).south;
+    // var east = JSON.parse(req.body.bounds).east;
+    // var west = JSON.parse(req.body.bounds).west;
       knex('customers')
         .join('visits', 'customers_id', 'customers.id')
         .where(function() {
@@ -28,10 +28,10 @@ router.post('/jobs', function(req, res, next) {
             this.whereBetween('start', [start, end]);
           }
         })
-        .andWhere('lat', '<', north)
-        .andWhere('lat', '>', south)
-        .andWhere('lng', '<', east)
-        .andWhere('lng', '>', west)
+        // .andWhere('lat', '<', north)
+        // .andWhere('lat', '>', south)
+        // .andWhere('lng', '<', east)
+        // .andWhere('lng', '>', west)
         .then(function(customers) {
           res.send(customers);
         })
@@ -123,7 +123,6 @@ router.get('/customer/:id', function(req, res, next) {
     knex('customers')
       .where('id', req.params.id)
       .then(function(data) {
-        console.log(data);
         res.send(data)
       })
   }
@@ -185,14 +184,7 @@ router.post('/newcustomer', function(req, res, next) {
       .insert(data)
       .returning('id')
       .then(function(id) {
-        res.redirect()
-        // knex('customers')
-        //   .where('id', id[0])
-        //   .first()
-        //   .then(function(customer) {
-        //     console.log(customer);
-        //     res.send(customer);
-        //   })
+        res.send(id)
       })
   }
 });
@@ -244,8 +236,8 @@ router.post('/postJob', function(req, res, next) {
 });
 
 
-////// Update existing job //////
-router.post('/updateJob', function(req, res, next) {
+////// Update existing customer //////
+router.post('/updateCustomer', function(req, res, next) {
   if (req.session.id) {
     var lat, lng;
     var address = req.body.address + ', ' + req.body.city + ', ' + req.body.state + ', ' + req.body.zip;
@@ -253,12 +245,13 @@ router.post('/updateJob', function(req, res, next) {
       if (!req.body.customer_name) {
         res.send('Please add customer name.')
       }
-      if (!err) {
+      if (!err && data.results[0]) {
         lat = data.results[0].geometry.location.lat;
         lng = data.results[0].geometry.location.lng;
         update();
       } else {
-        res.send('Invalid address.')
+        console.log('invalid address');
+        res.send({error: "Invalid address"})
       }
     });
     function update() {
@@ -268,24 +261,18 @@ router.post('/updateJob', function(req, res, next) {
           lat: lat,
           lng: lng,
           customer_name: req.body.customer_name,
-          email: req.body.email,
           phone_1: req.body.phone_1,
           phone_2: req.body.phone_2,
+          email: req.body.email,
           address: req.body.address,
           city: req.body.city,
           state: req.body.state,
           zip: req.body.zip,
-          customer_type: req.body.job_type,
+          customer_type: req.body.customer_type,
+          referral: req.body.referral,
           notes: req.body.notes
-        })
-        .returning('id')
-        .then(function(id) {
-          knex('customers')
-            .where('id', id[0])
-            .first()
-            .then(function(customer) {
-              res.send(customer);
-            })
+        }).then(function(id) {
+          res.send({});
         });
     }
   }
@@ -324,7 +311,7 @@ router.post('/postVisit', function(req, res, next) {
 router.post('/updateVisit', function(req, res, next) {
   if (req.session.id) {
     let data = {
-      customers_id: req.body.jobs_id,
+      id: req.body.id,
       visit_type: req.body.visit_type,
       start: req.body.start,
       end: req.body.end,
@@ -487,12 +474,29 @@ router.post('/search', function(req, res, next) {
   }
 });
 
+router.get('/deleteCustomer/:id', function(req, res, next) {
+  knex('visits')
+    .where('customers_id', req.params.id)
+    .then(function(data) {
+      if (data.length) {
+        res.send({ error: "You must delete all visits associated with this customer first" })
+      } else {
+        knex('customers')
+        .where('id', req.params.id)
+        .del()
+        .then(function() {
+          res.send({});
+        });
+      }
+    })
+});
+
 router.get('/deleteVisit/:id', function(req, res, next) {
   knex('visits')
     .where('id', req.params.id)
     .del()
     .then(function() {
-      res.redirect('/dashboard.html');
+      res.send({});
     });
 });
 

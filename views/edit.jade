@@ -56,7 +56,6 @@ html(lang="en")
             span Customer Profile
             a(class="btn btn-primary")
 
-
       div(id="create_form")
         <!-- Create Job Form -->
         form(id="create_job", action="/user/postJob", method="POST")
@@ -65,46 +64,52 @@ html(lang="en")
             div(class="col-md-10")
               div(class="form-group")
                 label(for="customer_name") Customer Name
-                input(type="text", id="customer_name", name="customer_name", class="form-control", placeholder="Customer Name")
+                input(type="text", id="customer_name", name="customer_name", class="form-control", value=`${customer.customer_name}`)
                 
             div(class="col-md-2")
               div(class="form-group")
                 label(for="status") Status
                 select(id="status", class="form-control", name="status")
-                  option(value="active") Active
-                  option(value="inactive") Inactive
+                  option(value="true") Active
+                  option(value="false") Inactive
 
           div(class="row")
             div(class="col-md-4")
               div(class="form-group")
                 label(for="phone_1") Phone Number 1
-                input(type="text", id="phone_number", name="phone_number", class="form-control", placeholder="###-###-###")
+                input(type="text", id="phone_1", name="phone_1", class="form-control", placeholder="###-###-###", value=`${customer.phone_1}`)
                 
             div(class="col-md-4")
               div(class="form-group")
                 label(for="phone_2") Phone Number 2
-                input(type="text", id="phone_number", name="phone_number", class="form-control", placeholder="###-###-###")
+                if customer.phone_2
+                  input(type="text", id="phone_2", name="phone_2", class="form-control", value=`${customer.phone_2}`)
+                else
+                  input(type="text", id="phone_2", name="phone_2", class="form-control", placeholder="###-###-###")
 
           div(class="row")
             div(class="col-md-12")
               div(class="form-group")
                 label(for="email") E-mail
-                input(type="text", id="email", name="email", class="form-control", placeholder="name@domain.com")
+                if customer.email
+                  input(type="text", id="email", name="email", class="form-control", value=`${customer.email}`)
+                else
+                  input(type="text", id="email", name="email", class="form-control", placeholder="name@domain.com")
 
           div(class="form-group")
             label(for="address") Location
-            input(type="text", id="address", name="address", class="form-control", placeholder="Street Address")
+            input(type="text", id="address", name="address", class="form-control", value=`${customer.address}`)
 
           div(class="row")
             div(class="col-md-6")
               div(class="form-group")
                 label(for="city") City
-                input(type="text", id="city", name="city", class="form-control", placeholder="City")
+                input(type="text", id="city", name="city", class="form-control", value=`${customer.city}`)
 
             div(class="col-md-3")
               div(class="form-group")
                 label(for="state") State
-                select(id="state", class="form-control", name="state")
+                select(id="state", class="form-control", name="state", value="Colorado")
                   option(value="") State
                   option(value="AL") Alabama
                   option(value="AK") Alaska
@@ -161,10 +166,10 @@ html(lang="en")
             div(class="col-md-3")
               div(class="form-group")
                 label(for="zip") Zip
-                input(type="text", id="zip", name="zip", class="form-control", placeholder="Zip")
+                input(type="text", id="zip", name="zip", class="form-control", value=`${customer.zip}`)
 
           div(class="row")
-            div(class="col-md-6")
+            div(class="col-md-3")
               div(class="form-group")
                 label Customer Type
                   select(class="form-control")
@@ -179,19 +184,25 @@ html(lang="en")
             div(class="col-md-6")
               div(class="form-group")
                 label Referral
-                input(type="text", id="referral", class="form-control", name="referral", placeholder="Referral")
+                if customer.referral
+                  input(type="text", id="referral", name="referral", class="form-control", value=`${customer.referral}`)
+                else
+                  input(type="text", id="referral", class="form-control", name="referral", placeholder="Referral")
 
           div(class="row")
             div(class="col-md-12")
               div(class="form-group")
                 label(for="notes") Customer Notes
-                textarea(name="notes", id="notes", class="form-control", placeholder="Add your job notes here")
+                if customer.notes
+                  textarea(type="text", id="notes", name="notes", class="form-control") #{customer.notes}
+                else
+                  textarea(name="notes", id="notes", class="form-control", placeholder="Add your job notes here")
 
-            button(type="button", id="create_job_button", class="btn btn-primary") Create Customer
-            button(type="button", id="update_job_button", class="nodisplay btn btn-primary") Save
-            button(type="button", id="deleteJobs", class="hide btn btn-danger") Delete
-            button(type="button", id="job_lookup", class="btn btn-primary") Customer Lookup
-            button(type="reset", id="clear_job", class="btn btn-primary") Clear Form
+            //- button(type="button", id="create_job_button", class="btn btn-primary") Create Customer
+            button(type="button", id="update_customer_button", class="btn btn-primary") Save
+            button(type="button", id="deleteCustomer", class="btn btn-danger") Delete
+            //- button(type="button", id="job_lookup", class="btn btn-primary") Customer Lookup
+            //- button(type="reset", id="clear_job", class="btn btn-primary") Clear Form
 
         <!-- Create Visit List/Form -->
         div(id="create_visit_container" class="nodisplay")
@@ -207,7 +218,24 @@ html(lang="en")
                 th Team
                 th
                 th
-            button(type="submit", id="addVisit", class="btn btn-primary") Add Visit
+              if visits.length
+                - var i = 0;
+                each visit in visits
+                  - let start = new Date(parseInt(visit.start));
+                  - let end = new Date(parseInt(visit.end));
+                    tr
+                      td= visit.start
+                      td= visit.start
+                      td= visit.end
+                      td= visit.visit_type
+                      td= visit.team_id
+                      td
+                        button(type="button" id=`${i}` class="btn btn-primary btn-xs visitEdit") Edit
+                      td
+                        button(type="button" id=`${visit.id}` class="btn btn-danger btn-xs visitDelete") Delete
+                  - i++;
+                                    
+            //- button(type="submit", id="addVisit", class="btn btn-primary") Add Visit
 
           hr
 
@@ -249,7 +277,7 @@ html(lang="en")
             button(type="button", id="nearbyCustomers", class="btn btn-info") Check Team Schedule
             button(type="button", id="visit_lookup", class="btn btn-info") Visit Lookup
             button(type="button", id="clear_visit", class="btn btn-danger") Clear Form
-            button(type="button", id="saveVisitSubmit", class="btn btn btn-Success") Save
+            button(type="button", id="saveVisitSubmit", class="btn btn-Success") Save
             button(type="button", id="visitSubmit", class="btn btn-success") Create Visit
 
 
@@ -276,9 +304,13 @@ html(lang="en")
       p &copy; 2016 CoordinateIt, Inc.
 
   script(src='https://code.jquery.com/jquery-2.2.3.min.js', integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=', crossorigin='anonymous')
-  script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", crossorigin="anonymous")
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.js')
+  //- script const customer = customer.customer_name;
+  script const customer = !{ JSON.stringify(customer) };
+  script const visits = !{ JSON.stringify(visits) };
+  script(src='/js/calendar.js')
   script(src='/js/edit.js')
   script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap', async)
   

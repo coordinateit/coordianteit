@@ -14,9 +14,10 @@ form:nth-child(2) {
   margin-top: 20px;
 }
 
-/******<< Dashboard Styles >>******/
-
-
+#list {
+  margin: auto;
+  overflow: auto;
+}
 
 #map {
   height: 65vh;
