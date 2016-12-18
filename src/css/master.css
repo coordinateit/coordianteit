@@ -1,5 +1,5 @@
 /*
-Author: gooWee - gooWee@mail.com
+Author: gooWee - contact@goowee.io
 Author URI: http://www.goowee.io/
 */
 
@@ -28,8 +28,6 @@ h3 {
   margin-bottom: 40px;
 }
 
-
-
 /******<< Nav Styles >>******/
 
 .navbar {
@@ -37,7 +35,29 @@ h3 {
   padding-right: 10px;
 }
 
+.index nav p {
+  font-size: 2em;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.index .navbar {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#dummysignin {
+  background-color: #aaa;
+  color: #fff;
+}
+
 /******<< Section Styles >>******/
+
+section {
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
 
 #list {
   margin: auto;
@@ -48,7 +68,36 @@ h3 {
   display: none;
 }
 
+.topspacing {
+  margin-top: 40px;
+}
+
+/******<< Index Styles >>******/
+
+.index section {
+  margin-top: 80px;
+}
+
+.index span {
+  font-size: 30px;
+  margin: 40px 20px;
+}
+
+.index table {
+  margin: 40px auto;
+}
+
+.index td {
+  padding: 20px;
+  vertical-align: middle;
+}
+
+.index td:first-child {
+  text-align: center;
+}
+
 /******<< Dashboard Styles >>******/
+
 .cal-container, .maplist-container {
   margin: 2%;
   width: 46%;
@@ -61,7 +110,6 @@ h3 {
 .maplist-container {
   float:right;
 }
-
 
 .team-dropdown {
   display: inline-block;
@@ -79,4 +127,48 @@ h3 {
 
 .createform {
   margin: 3rem 20rem;
+}
+
+form:nth-child(2) {
+  margin-top: 20px;
+}
+
+/******<< Search Styles >>******/
+
+.search form {
+  margin-top: 40px;
+}
+
+/******<< Profile Styles >>******/
+
+#save_user {
+  display: none;
+}
+
+/******<< Map Styles >>******/
+
+#map {
+  height: 65vh;
+  margin: auto;
+  width: 45vw;
+}
+
+.search #map, .profile #map {
+  height: 65vh;
+  margin: auto;
+  width: 65vw;
+}
+
+/******<< List Styles >>******/
+
+#list {
+  margin: auto;
+  overflow: auto;
+}
+
+/******<< Footer Styles >>******/
+
+footer {
+  margin: 0 20px;
+  clear: both;
 }
