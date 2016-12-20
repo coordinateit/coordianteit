@@ -2,13 +2,10 @@
 
 ////// Invoke these functions when page loads //////
 $(document).ready(function(){
-  // getListData();
-  // getTeamList();
   initCalendar();
-  // getVisits();
   $('#calendar').hide();
-  $('#calendar').fullCalendar('refetchEvents');
   $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
+  $('#calendar').fullCalendar('addEventSource', calendarVisits);
 });
 
 ////// Make today's date default with timezone support ///////
@@ -96,10 +93,14 @@ $('#deleteCustomer').click(function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-////// Show visit in visit form //////
+////// Click edit to display visit in form //////
 $('.visitEdit').click(function(event) {
-  let visit = visits[event.target.id];
-  console.log(visit);
+  showVisit(event.target.id);
+});
+
+////// Show visit in visit form //////
+function showVisit(visitIndex) {
+  let visit = visits[visitIndex];
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let dd = start.getDate();
@@ -124,13 +125,12 @@ $('.visitEdit').click(function(event) {
   $('#visit_notes').val(visit.notes);
 
   $("#create_visit").show();
-  // $("#visit_list").hide();
   $("#saveVisitSubmit").show();
   $("#visitSubmit").hide();
   $('#saveVisitSubmit').click(function() {
     saveVisit(visit.id);
   });
-});
+}
 
 ////// Return pretty time string //////
 function setTime(time) {
@@ -199,6 +199,30 @@ $('.visitDelete').click(function(event) {
   }
 });
 
+////// When visit lookup is clicked //////
+$('#visit_lookup').click(function() {
+  console.log('looking up visits');
+});
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    CALENDAR                                //
+////////////////////////////////////////////////////////////////////////////////
+
+
+var calendarVisits = visits.map(function(visit, i) {
+  let start = new Date(parseInt(visit.start));
+  let end = new Date(parseInt(visit.end));
+  return { id: visit.id, title: visit.visit_type, start: start, end: end, index: i }
+});
+
+function visitClick(visitId, visitIndex) {
+  showVisit(visitIndex);
+  $("#create_job").hide();
+  $("#create_visit_container").show();
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +231,7 @@ $('.visitDelete').click(function(event) {
 
 
 ////// Customer Profile / Visits Switch ///////
-$(".switch_calendar_job").change(function() {
+$(".switch_visits_customer").change(function() {
   let userinput = $(this);
   if (userinput.prop("checked")){
     $("#create_job").show();
@@ -219,7 +243,7 @@ $(".switch_calendar_job").change(function() {
 });
 
 ////// Map / Calendar Switch ///////
-$(".switch_map_list").change(function() {
+$(".switch_map_calendar").change(function() {
   let userinput = $(this);
   if (userinput.prop("checked")){
     $("#map").show();

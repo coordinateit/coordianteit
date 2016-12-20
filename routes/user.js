@@ -310,6 +310,7 @@ router.post('/postVisit', function(req, res, next) {
 ////// Update visit //////
 router.post('/updateVisit', function(req, res, next) {
   if (req.session.id) {
+    console.log(req.body);
     let data = {
       id: req.body.id,
       visit_type: req.body.visit_type,
