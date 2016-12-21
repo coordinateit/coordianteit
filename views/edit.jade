@@ -274,7 +274,7 @@ html(lang="en")
               textarea(name="notes", id="visit_notes", class="form-control" placeholder="Add your visit notes here")
               
             button(type="button", id="nearbyCustomers", class="btn btn-info") Nearby Customers
-            button(type="button", id="nearbyCustomers", class="btn btn-info") Check Team Schedule
+            button(type="button", id="checkTeamSchedule", class="btn btn-info") Check Team Schedule
             button(type="button", id="clear_visit", class="btn btn-danger") Clear Form
             button(type="button", id="saveVisitSubmit", class="btn btn-Success") Save
             button(type="button", id="visitSubmit", class="btn btn-success") Create Visit
@@ -310,6 +310,7 @@ html(lang="en")
   script const customer = !{ JSON.stringify(customer) };
   script const visits = !{ JSON.stringify(visits) };
   script(src='/js/calendar.js')
+  script(src='/js/map.js')
   script(src='/js/edit.js')
   script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap', async)
   

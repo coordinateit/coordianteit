@@ -15,20 +15,45 @@ Date.prototype.toDateInputValue = (function() {
   return local.toJSON().slice(0,10);
 });
 
-////// Initialize map using customer position //////
-var map;
-function initMap() {
-  let position = { lat: parseFloat(customer.lat), lng: parseFloat(customer.lng) };
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: position,
-    zoom: 11,
-    fullscreenControl: true
-  });
-  let marker = new google.maps.Marker({
-    position: position,
-    map: map,
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    MAP                                     //
+////////////////////////////////////////////////////////////////////////////////
+
+
+//////  //////
+function getNearbyCustomers() {
+  let date = $('#visit_date').val();
+  let time = $('#visit_start').val();
+  let dateTime = Date.parse(date + ', ' + time);
+  let start = dateTime - 302400000;
+  let end = dateTime + 302400000;
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/customersByDates/' + start + '/' + end + '/' + null
+  }).then(function(customers) {
+    makeMarkers(customers);
   });
 }
+
+//////  //////
+function getTeamCustomers() {
+  let date = $('#visit_date').val();
+  let start = Date.parse(date);
+  let end = start + 86400000;
+  let team = $('#visit_team').val();
+  let url = '/user/customersByDates/' + start + '/' + end + '/' + team;
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: url
+  }).then(function(customers) {
+    makeMarkers(customers);
+  });
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,24 +92,6 @@ function initMap() {
       }
     });
   });
-
-////// Delete customer from database //////
-$('#deleteCustomer').click(function() {
-  if(window.confirm('Are you sure you want to delete this customer?')) {
-    $.ajax({
-      type: 'GET',
-      dataType: 'json',
-      url: `/user/deleteCustomer/${customer.id}`,
-      success: function(data) {
-        if (data.error) {
-          $('#create_form').prepend(`<h3 style="color: red">${data.error}</h3>`)
-        } else {
-          window.location = '/dashboard';
-        }
-      }
-    })
-  };
-});
 
 
 
@@ -173,19 +180,18 @@ function saveVisit(visitId) {
 
 ////// Clear visit form //////
 $('#clear_visit').click(function() {
-    // $('#create_visit').find('input:text, select, textarea').val('');
-    $('#visit_date').val(null);
-    $('#visit_start').val(null);
-    $('#visit_end').val(null);
-    $('#visit_type').val(null);
-    $('#visit_team').val(null);
-    $('#visit_notes').val(null);
-    $("#saveVisitSubmit").hide();
-    $("#visitSubmit").show();
-    // $("#create_visit").hide();
-    $("#visit_list").show();
+  $('#visit_date').val(null);
+  $('#visit_start').val(null);
+  $('#visit_end').val(null);
+  $('#visit_type').val(null);
+  $('#visit_team').val(null);
+  $('#visit_notes').val(null);
+  $("#saveVisitSubmit").hide();
+  $("#visitSubmit").show();
+  $("#visit_list").show();
 });
 
+/////// Prompts user for confirmation then deletes a visit //////
 $('.visitDelete').click(function(event) {
   if(window.confirm("Are you sure you want to delete this visit?")) {
     $.ajax({
@@ -199,9 +205,14 @@ $('.visitDelete').click(function(event) {
   }
 });
 
-////// When visit lookup is clicked //////
-$('#visit_lookup').click(function() {
-  console.log('looking up visits');
+////// When Nearby Customers is clicked //////
+$('#nearbyCustomers').click(function() {
+  getNearbyCustomers();
+});
+
+////// When Check Team Schedule is clicked //////
+$('#checkTeamSchedule').click(function() {
+  getTeamCustomers();
 });
 
 

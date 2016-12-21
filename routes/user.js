@@ -6,6 +6,30 @@ var geocoder = require('geocoder');
 var bcrypt = require('bcrypt');
 
 
+//////  //////
+router.get('/customersByDates/:start/:end/:team', userAuth, function(req, res, next) {
+  knex('visits')
+    .where('start', '>', req.params.start)
+    .andWhere('start', '<', req.params.end)
+    .andWhere(function() {
+      if (req.params.team !== null) {
+        console.log(req.params.team);
+        this.where('team_id', req.params.team)
+      }
+    })
+    .then(function(visits) {
+      let ids = visits.map(function(visit) {
+        return visit.customers_id;
+      });
+      knex('customers')
+        .whereIn('id', ids)
+        .then(function(customers) {
+          res.send(customers);
+        })
+    });
+});
+
+
 ////// Gets jobs based on map position, optionally filtered by team //////
 router.post('/jobs', function(req, res, next) {
   if (req.session.id) {
@@ -536,5 +560,12 @@ router.post('/password', function(req, res, next) {
     })
 });
 
+function userAuth(req, res, next) {
+  if (!req.session.id) {
+    res.redirect('/');
+  } else {
+    next();
+  }
+}
 
 module.exports = router;
