@@ -132,6 +132,14 @@ form:nth-child(2) {
   margin-top: 20px;
 }
 
+/******<< Edit Styles >>******/
+
+/*select {
+  width: 100%;
+  margin-top: 5px;
+}*/
+
+
 /******<< Search Styles >>******/
 
 .search form {

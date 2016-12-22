@@ -13,7 +13,7 @@ html(lang="en")
     link(rel='stylesheet', href='/css/master.css')
     link(rel="stylesheet", type="text/css", href="https://cdn.jsdelivr.net/css-toggle-switch/latest/toggle-switch.css")
 
-  body
+  body(class="edit")
   nav(class="navbar navbar-inverse navbar-fixed-top")
     div(class="container-fluid")
       div(class="navbar-header")
@@ -169,18 +169,18 @@ html(lang="en")
                 input(type="text", id="zip", name="zip", class="form-control", value=`${customer.zip}`)
 
           div(class="row")
-            div(class="col-md-3")
+            div(class="col-md-4")
               div(class="form-group")
-                label Customer Type
-                  select(class="form-control")
-                    option(value="") Customer Type
-                    option(value="EI") EI
-                    option(value="EI_W") EI_W
-                    option(value="EI_WM") EI_WM
-                    option(value="WWI") WWI
-                    option(value="DCS") DCS
-                    option(value="GENERIC") GENERIC
-                    
+                label(for="customer-type") Customer Type
+                select(class="form-control" name="customer-type")
+                  option(value="") Customer Type
+                  option(value="EI") EI
+                  option(value="EI_W") EI_W
+                  option(value="EI_WM") EI_WM
+                  option(value="WWI") WWI
+                  option(value="DCS") DCS
+                  option(value="GENERIC") GENERIC
+                
             div(class="col-md-6")
               div(class="form-group")
                 label Referral
@@ -274,8 +274,11 @@ html(lang="en")
               textarea(name="notes", id="visit_notes", class="form-control" placeholder="Add your visit notes here")
               
             button(type="button", id="nearbyCustomers", class="btn btn-info") Nearby Customers
+            | &nbsp;
             button(type="button", id="checkTeamSchedule", class="btn btn-info") Check Team Schedule
+            | &nbsp;
             button(type="button", id="clear_visit", class="btn btn-danger") Clear Form
+            | &nbsp;
             button(type="button", id="saveVisitSubmit", class="btn btn-Success") Save
             button(type="button", id="visitSubmit", class="btn btn-success") Create Visit
 
