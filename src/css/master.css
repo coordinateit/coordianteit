@@ -78,11 +78,6 @@ section {
   margin-top: 80px;
 }
 
-.index span {
-  font-size: 30px;
-  margin: 40px 20px;
-}
-
 .index table {
   margin: 40px auto;
 }
@@ -94,6 +89,10 @@ section {
 
 .index td:first-child {
   text-align: center;
+}
+
+.thumbnail p {
+  font-size: 30px;
 }
 
 /******<< Dashboard Styles >>******/
@@ -148,7 +147,7 @@ form:nth-child(2) {
 /******<< Map Styles >>******/
 
 #map {
-  height: 65vh;
+  height: 59vh;
   margin: auto;
   width: 45vw;
 }
