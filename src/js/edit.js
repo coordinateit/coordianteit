@@ -1,14 +1,12 @@
 "use strict";
 
 ////// Invoke these functions when page loads //////
-$(document).ready(function(){
-  // getListData();
-  // getTeamList();
+$(document).ready(function() {
+  getTeamList();
   initCalendar();
-  // getVisits();
   $('#calendar').hide();
-  $('#calendar').fullCalendar('refetchEvents');
   $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
+  $('#calendar').fullCalendar('addEventSource', calendarVisits);
 });
 
 ////// Make today's date default with timezone support ///////
@@ -18,20 +16,50 @@ Date.prototype.toDateInputValue = (function() {
   return local.toJSON().slice(0,10);
 });
 
-////// Initialize map using customer position //////
-var map;
-function initMap() {
-  let position = { lat: parseFloat(customer.lat), lng: parseFloat(customer.lng) };
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: position,
-    zoom: 11,
-    fullscreenControl: true
-  });
-  let marker = new google.maps.Marker({
-    position: position,
-    map: map,
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    MAP                                     //
+////////////////////////////////////////////////////////////////////////////////
+
+
+//////  //////
+function getNearbyCustomers() {
+  let date = $('#visit_date').val();
+  let time = $('#visit_start').val();
+  let dateTime = Date.parse(date + ', ' + time);
+  let start = dateTime - 302400000;
+  let end = dateTime + 302400000;
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/customersByDates/' + start + '/' + end
+  }).then(function(customers) {
+    makeMarkers(customers);
   });
 }
+
+//////  //////
+function getTeamCustomers() {
+  let date = $('#visit_date').val();
+  let start = Date.parse(date);
+  let end = start + 86400000;
+  let team = $('#visit_team').val();
+  let url;
+  if (team) {
+    url = '/user/customersByDatesAndTeam/' + start + '/' + end + '/' + team;
+  } else {
+    url = '/user/customersByDates/' + start + '/' + end;
+  }
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: url
+  }).then(function(customers) {
+    makeMarkers(customers);
+  });
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,24 +99,6 @@ function initMap() {
     });
   });
 
-////// Delete customer from database //////
-$('#deleteCustomer').click(function() {
-  if(window.confirm('Are you sure you want to delete this customer?')) {
-    $.ajax({
-      type: 'GET',
-      dataType: 'json',
-      url: `/user/deleteCustomer/${customer.id}`,
-      success: function(data) {
-        if (data.error) {
-          $('#create_form').prepend(`<h3 style="color: red">${data.error}</h3>`)
-        } else {
-          window.location = '/dashboard';
-        }
-      }
-    })
-  };
-});
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,10 +106,14 @@ $('#deleteCustomer').click(function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-////// Show visit in visit form //////
+////// Click edit to display visit in form //////
 $('.visitEdit').click(function(event) {
-  let visit = visits[event.target.id];
-  console.log(visit);
+  showVisit(event.target.id);
+});
+
+////// Show visit in visit form //////
+function showVisit(visitIndex) {
+  let visit = visits[visitIndex];
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let dd = start.getDate();
@@ -124,13 +138,12 @@ $('.visitEdit').click(function(event) {
   $('#visit_notes').val(visit.notes);
 
   $("#create_visit").show();
-  // $("#visit_list").hide();
   $("#saveVisitSubmit").show();
   $("#visitSubmit").hide();
   $('#saveVisitSubmit').click(function() {
     saveVisit(visit.id);
   });
-});
+}
 
 ////// Return pretty time string //////
 function setTime(time) {
@@ -143,6 +156,38 @@ function setTime(time) {
     mm = "0" + mm;
   }
   return hh + ":" + mm;
+}
+
+$('#visitSubmit').click(function() {
+  visitSubmit();
+});
+
+////// Create visit in database //////
+function visitSubmit() {
+  let date = $('#visit_date').val();
+  let start = $('#visit_start').val();
+  let newStart = Date.parse(date + ', ' + start);
+  let end = $('#visit_end').val();
+  let newEnd = Date.parse(date + ', ' + end);
+  let data = {
+    customers_id: customer.id,
+    start: newStart,
+    end: newEnd,
+    visit_type: $('#visit_type').val(),
+    notes: $('#visit_notes').val()
+  };
+  if ($('#visit_team').val()) {
+    data.team_id = $('#visit_team').val()
+  }
+  $.ajax({
+    type: "POST",
+    dataType: "json",
+    data: data,
+    url: "/user/postVisit",
+    success: function() {
+      window.location.reload();
+    }
+  });
 }
 
 ////// Update visit in database //////
@@ -173,19 +218,18 @@ function saveVisit(visitId) {
 
 ////// Clear visit form //////
 $('#clear_visit').click(function() {
-    // $('#create_visit').find('input:text, select, textarea').val('');
-    $('#visit_date').val(null);
-    $('#visit_start').val(null);
-    $('#visit_end').val(null);
-    $('#visit_type').val(null);
-    $('#visit_team').val(null);
-    $('#visit_notes').val(null);
-    $("#saveVisitSubmit").hide();
-    $("#visitSubmit").show();
-    // $("#create_visit").hide();
-    $("#visit_list").show();
+  $('#visit_date').val(null);
+  $('#visit_start').val(null);
+  $('#visit_end').val(null);
+  $('#visit_type').val(null);
+  $('#visit_team').val(null);
+  $('#visit_notes').val(null);
+  $("#saveVisitSubmit").hide();
+  $("#visitSubmit").show();
+  $("#visit_list").show();
 });
 
+/////// Prompts user for confirmation then deletes a visit //////
 $('.visitDelete').click(function(event) {
   if(window.confirm("Are you sure you want to delete this visit?")) {
     $.ajax({
@@ -199,6 +243,35 @@ $('.visitDelete').click(function(event) {
   }
 });
 
+////// When Nearby Customers is clicked //////
+$('#nearbyCustomers').click(function() {
+  getNearbyCustomers();
+});
+
+////// When Check Team Schedule is clicked //////
+$('#checkTeamSchedule').click(function() {
+  getTeamCustomers();
+});
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    CALENDAR                                //
+////////////////////////////////////////////////////////////////////////////////
+
+
+var calendarVisits = visits.map(function(visit, i) {
+  let start = new Date(parseInt(visit.start));
+  let end = new Date(parseInt(visit.end));
+  return { id: visit.id, title: visit.visit_type, start: start, end: end, index: i }
+});
+
+function visitClick(visitId, visitIndex) {
+  showVisit(visitIndex);
+  $("#create_job").hide();
+  $("#create_visit_container").show();
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +280,7 @@ $('.visitDelete').click(function(event) {
 
 
 ////// Customer Profile / Visits Switch ///////
-$(".switch_calendar_job").change(function() {
+$(".switch_visits_customer").change(function() {
   let userinput = $(this);
   if (userinput.prop("checked")){
     $("#create_job").show();
@@ -219,7 +292,7 @@ $(".switch_calendar_job").change(function() {
 });
 
 ////// Map / Calendar Switch ///////
-$(".switch_map_list").change(function() {
+$(".switch_map_calendar").change(function() {
   let userinput = $(this);
   if (userinput.prop("checked")){
     $("#map").show();

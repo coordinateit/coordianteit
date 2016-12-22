@@ -50,7 +50,7 @@ html(lang="en")
       <!-- Customer Profile - Visits Switch -->
       div
         label(class="switch-light")
-          input(class="switch_calendar_job", type="checkbox", checked="checked")
+          input(class="switch_visits_customer", type="checkbox", checked="checked")
           span(class="well")
             span Visits
             span Customer Profile
@@ -200,7 +200,7 @@ html(lang="en")
 
             //- button(type="button", id="create_job_button", class="btn btn-primary") Create Customer
             button(type="button", id="update_customer_button", class="btn btn-primary") Save
-            button(type="button", id="deleteCustomer", class="btn btn-danger") Delete
+            //- button(type="button", id="deleteCustomer", class="btn btn-danger") Delete
             //- button(type="button", id="job_lookup", class="btn btn-primary") Customer Lookup
             //- button(type="reset", id="clear_job", class="btn btn-primary") Clear Form
 
@@ -274,8 +274,7 @@ html(lang="en")
               textarea(name="notes", id="visit_notes", class="form-control" placeholder="Add your visit notes here")
               
             button(type="button", id="nearbyCustomers", class="btn btn-info") Nearby Customers
-            button(type="button", id="nearbyCustomers", class="btn btn-info") Check Team Schedule
-            button(type="button", id="visit_lookup", class="btn btn-info") Visit Lookup
+            button(type="button", id="checkTeamSchedule", class="btn btn-info") Check Team Schedule
             button(type="button", id="clear_visit", class="btn btn-danger") Clear Form
             button(type="button", id="saveVisitSubmit", class="btn btn-Success") Save
             button(type="button", id="visitSubmit", class="btn btn-success") Create Visit
@@ -287,7 +286,7 @@ html(lang="en")
       <!-- Map - Calendar Switch -->
       div
         label(class="switch-light" onclick="")
-          input(class="switch_map_list", type="checkbox", checked="checked")
+          input(class="switch_map_calendar", type="checkbox", checked="checked")
           span(class="well")
             span Calendar
             span Map
@@ -311,6 +310,8 @@ html(lang="en")
   script const customer = !{ JSON.stringify(customer) };
   script const visits = !{ JSON.stringify(visits) };
   script(src='/js/calendar.js')
+  script(src='/js/map.js')
   script(src='/js/edit.js')
+  script(src='/js/teams.js')
   script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap', async)
   

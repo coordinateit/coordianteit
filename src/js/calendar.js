@@ -1,8 +1,9 @@
+
 ////// Initialize calendar and display visits //////
 function initCalendar() {
   $('#calendar').fullCalendar({
     eventClick: function(event) {
-      getVisit(event._id);
+      visitClick(event.id, event.index);
     },
     dayClick: function(date) {
       $('#calendar').fullCalendar('gotoDate', date);

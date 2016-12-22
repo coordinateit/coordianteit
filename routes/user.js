@@ -4,6 +4,53 @@ var router = express.Router();
 var knex = require('../db/knex');
 var geocoder = require('geocoder');
 var bcrypt = require('bcrypt');
+var knexQueries = require('./lib/knexQueries.js');
+
+
+////// Lookup customers by date range //////
+router.get('/customersByDates/:start/:end', userAuth, function(req, res, next) {
+  knexQueries.visitsByDateRange(req.params.start, req.params.end)
+    .then(function(visits) {
+      let ids = visits.map(function(visit) {
+        return visit.customers_id;
+      });
+      knexQueries.customersByIDs(ids)
+        .then(function(customers) {
+          res.send(customers);
+        });
+  });
+});
+
+////// Lookup customers by date range and team //////
+router.get('/customersByDatesAndTeam/:start/:end/:team', userAuth, function(req, res, next) {
+  knexQueries.visitsByDateRangeAndTeam(req.params.start, req.params.end, req.params.team)
+    .then(function(visits) {
+      let ids = [];
+      if (visits.length) {
+        ids = visits.map(function(visit) {
+          return visit.customers_id;
+        });
+        knexQueries.customersByIDs(ids)
+          .then(function(customers) {
+            res.send(customers);
+          });
+      } else {
+        res.send({ error: "There are no visits for this team today." })
+      }
+  });
+});
+
+////// Post new visit //////
+router.post('/postVisit', userAuth, function(req, res, next) {
+  knex('visits')
+    .insert(req.body)
+    .then(function() {
+      res.send({});
+    });
+});
+
+
+////////////////////// ^ NEW FORMAT ^ //////////////////////////
 
 
 ////// Gets jobs based on map position, optionally filtered by team //////
@@ -279,37 +326,12 @@ router.post('/updateCustomer', function(req, res, next) {
 });
 
 
-////// Post visit //////
-router.post('/postVisit', function(req, res, next) {
-  if (req.session.id) {
-    let data = {
-      customers_id: req.body.jobs_id,
-      visit_type: req.body.visit_type,
-      start: req.body.start,
-      end: req.body.end,
-      notes: req.body.notes
-    }
-    if (req.body.team_id) {
-      data.team_id = req.body.team_id
-    }
-    knex('visits')
-      .insert(data)
-      .returning('id')
-      .then(function(id) {
-        knex('visits')
-          .where('id', id[0])
-          .first()
-          .then(function(visit) {
-            res.send(visit);
-          })
-      });
-  }
-});
 
 
 ////// Update visit //////
 router.post('/updateVisit', function(req, res, next) {
   if (req.session.id) {
+    console.log(req.body);
     let data = {
       id: req.body.id,
       visit_type: req.body.visit_type,
@@ -535,5 +557,12 @@ router.post('/password', function(req, res, next) {
     })
 });
 
+function userAuth(req, res, next) {
+  if (!req.session.id) {
+    res.redirect('/');
+  } else {
+    next();
+  }
+}
 
 module.exports = router;
