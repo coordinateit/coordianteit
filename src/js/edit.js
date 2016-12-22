@@ -1,7 +1,8 @@
 "use strict";
 
 ////// Invoke these functions when page loads //////
-$(document).ready(function(){
+$(document).ready(function() {
+  getTeamList();
   initCalendar();
   $('#calendar').hide();
   $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
@@ -32,7 +33,7 @@ function getNearbyCustomers() {
   $.ajax({
     type: 'GET',
     dataType: 'json',
-    url: '/user/customersByDates/' + start + '/' + end + '/' + null
+    url: '/user/customersByDates/' + start + '/' + end
   }).then(function(customers) {
     makeMarkers(customers);
   });
@@ -44,7 +45,12 @@ function getTeamCustomers() {
   let start = Date.parse(date);
   let end = start + 86400000;
   let team = $('#visit_team').val();
-  let url = '/user/customersByDates/' + start + '/' + end + '/' + team;
+  let url;
+  if (team) {
+    url = '/user/customersByDatesAndTeam/' + start + '/' + end + '/' + team;
+  } else {
+    url = '/user/customersByDates/' + start + '/' + end;
+  }
   $.ajax({
     type: 'GET',
     dataType: 'json',
@@ -150,6 +156,38 @@ function setTime(time) {
     mm = "0" + mm;
   }
   return hh + ":" + mm;
+}
+
+$('#visitSubmit').click(function() {
+  visitSubmit();
+});
+
+////// Create visit in database //////
+function visitSubmit() {
+  let date = $('#visit_date').val();
+  let start = $('#visit_start').val();
+  let newStart = Date.parse(date + ', ' + start);
+  let end = $('#visit_end').val();
+  let newEnd = Date.parse(date + ', ' + end);
+  let data = {
+    customers_id: customer.id,
+    start: newStart,
+    end: newEnd,
+    visit_type: $('#visit_type').val(),
+    notes: $('#visit_notes').val()
+  };
+  if ($('#visit_team').val()) {
+    data.team_id = $('#visit_team').val()
+  }
+  $.ajax({
+    type: "POST",
+    dataType: "json",
+    data: data,
+    url: "/user/postVisit",
+    success: function() {
+      window.location.reload();
+    }
+  });
 }
 
 ////// Update visit in database //////
