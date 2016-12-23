@@ -5,10 +5,11 @@ var knex = require('../db/knex');
 var geocoder = require('geocoder');
 var bcrypt = require('bcrypt');
 var knexQueries = require('./lib/knexQueries.js');
+var auth = require('./lib/auth.js');
 
 
 ////// Lookup customers by date range //////
-router.get('/customersByDates/:start/:end', userAuth, function(req, res, next) {
+router.get('/customersByDates/:start/:end', auth.userAuth, function(req, res, next) {
   knexQueries.visitsByDateRange(req.params.start, req.params.end)
     .then(function(visits) {
       let ids = visits.map(function(visit) {
@@ -22,7 +23,7 @@ router.get('/customersByDates/:start/:end', userAuth, function(req, res, next) {
 });
 
 ////// Lookup customers by date range and team //////
-router.get('/customersByDatesAndTeam/:start/:end/:team', userAuth, function(req, res, next) {
+router.get('/customersByDatesAndTeam/:start/:end/:team', auth.userAuth, function(req, res, next) {
   knexQueries.visitsByDateRangeAndTeam(req.params.start, req.params.end, req.params.team)
     .then(function(visits) {
       let ids = [];
@@ -41,7 +42,7 @@ router.get('/customersByDatesAndTeam/:start/:end/:team', userAuth, function(req,
 });
 
 ////// Post new visit //////
-router.post('/postVisit', userAuth, function(req, res, next) {
+router.post('/postVisit', auth.userAuth, function(req, res, next) {
   knex('visits')
     .insert(req.body)
     .then(function() {
@@ -49,41 +50,49 @@ router.post('/postVisit', userAuth, function(req, res, next) {
     });
 });
 
+////// Gets jobs based on map position, optionally filtered by team //////
+router.post('/customers', auth.userAuth, function(req, res, next) {
+  customersForDashboard(req.body)
+    .then(function(customers) {
+      res.send(customers);
+    })
+});
+
 
 ////////////////////// ^ NEW FORMAT ^ //////////////////////////
 
 
 ////// Gets jobs based on map position, optionally filtered by team //////
-router.post('/jobs', function(req, res, next) {
-  if (req.session.id) {
-    // var north = JSON.parse(req.body.bounds).north;
-    // var south = JSON.parse(req.body.bounds).south;
-    // var east = JSON.parse(req.body.bounds).east;
-    // var west = JSON.parse(req.body.bounds).west;
-      knex('customers')
-        .join('visits', 'customers_id', 'customers.id')
-        .where(function() {
-          if (req.body.team) {
-            this.where('team_id', req.body.team)
-          }
-        })
-        .andWhere(function() {
-          if (req.body.date) {
-            var date = new Date(parseInt(req.body.date));
-            let start = date.setHours(0,0,0,0);
-            let end = date.setHours(168,0,0,0);
-            this.whereBetween('start', [start, end]);
-          }
-        })
-        // .andWhere('lat', '<', north)
-        // .andWhere('lat', '>', south)
-        // .andWhere('lng', '<', east)
-        // .andWhere('lng', '>', west)
-        .then(function(customers) {
-          res.send(customers);
-        })
-  }
-});
+// router.post('/jobs', function(req, res, next) {
+//   if (req.session.id) {
+//     var north = JSON.parse(req.body.bounds).north;
+//     var south = JSON.parse(req.body.bounds).south;
+//     var east = JSON.parse(req.body.bounds).east;
+//     var west = JSON.parse(req.body.bounds).west;
+//       knex('customers')
+//         .join('visits', 'customers_id', 'customers.id')
+//         .where(function() {
+//           if (req.body.team) {
+//             this.where('team_id', req.body.team)
+//           }
+//         })
+//         .andWhere(function() {
+//           if (req.body.date) {
+//             var date = new Date(parseInt(req.body.date));
+//             let start = date.setHours(0,0,0,0);
+//             let end = date.setHours(168,0,0,0);
+//             this.whereBetween('start', [start, end]);
+//           }
+//         })
+//         .andWhere('lat', '<', north)
+//         .andWhere('lat', '>', south)
+//         .andWhere('lng', '<', east)
+//         .andWhere('lng', '>', west)
+//         .then(function(customers) {
+//           res.send(customers);
+//         })
+//   }
+// });
 
 
 ////// Gets visits //////
@@ -106,10 +115,10 @@ router.post('/visits', function(req, res, next) {
 
 
 ////// Get visits for a given job ///////
-router.get('/jobVisits/:jobId', function(req, res, next) {
+router.get('/jobVisits/:customerId', function(req, res, next) {
   if (req.session.id) {
     knex('visits')
-      .where('customers_id', req.params.jobId)
+      .where('customers_id', req.params.customerId)
       .then(function(data) {
         res.send(data);
       })
@@ -557,12 +566,12 @@ router.post('/password', function(req, res, next) {
     })
 });
 
-function userAuth(req, res, next) {
-  if (!req.session.id) {
-    res.redirect('/');
-  } else {
-    next();
-  }
-}
+// function auth.userAuth(req, res, next) {
+//   if (!req.session.id) {
+//     res.redirect('/');
+//   } else {
+//     next();
+//   }
+// }
 
 module.exports = router;
