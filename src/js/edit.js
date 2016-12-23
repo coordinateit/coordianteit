@@ -22,6 +22,11 @@ Date.prototype.toDateInputValue = (function() {
 //                                    MAP                                     //
 ////////////////////////////////////////////////////////////////////////////////
 
+////// Set position and marker to customer location //////
+position = { lat: parseFloat(customer.lat), lng: parseFloat(customer.lng) };
+function mapReady() {
+  makeMarker(position);
+}
 
 //////  //////
 function getNearbyCustomers() {
@@ -40,24 +45,12 @@ function getNearbyCustomers() {
 }
 
 //////  //////
-function getTeamCustomers() {
+function checkTeamSchedule() {
   let date = $('#visit_date').val();
   let start = Date.parse(date);
   let end = start + 86400000;
   let team = $('#visit_team').val();
-  let url;
-  if (team) {
-    url = '/user/customersByDatesAndTeam/' + start + '/' + end + '/' + team;
-  } else {
-    url = '/user/customersByDates/' + start + '/' + end;
-  }
-  $.ajax({
-    type: 'GET',
-    dataType: 'json',
-    url: url
-  }).then(function(customers) {
-    makeMarkers(customers);
-  });
+  getCustomersDateTeam(start, end, team);
 }
 
 
@@ -250,7 +243,7 @@ $('#nearbyCustomers').click(function() {
 
 ////// When Check Team Schedule is clicked //////
 $('#checkTeamSchedule').click(function() {
-  getTeamCustomers();
+  checkTeamSchedule();
 });
 
 

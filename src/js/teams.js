@@ -11,7 +11,6 @@ function getTeamList() {
   });
 }
 
-
 ////// Populate team lists //////
 function teamList(teams) {
   for (var i = 0; i < teams.length; i++) {
@@ -19,15 +18,14 @@ function teamList(teams) {
   }
 }
 
-
 ////// Filter page by team //////
-var teamFilter;
+// var teamFilter;
 $('#teams').change(function(clicked) {
-  teamFilter = $('#teams').find(":selected").val();
-  getVisits();
-  getJobs();
-  getListData();
-  $("#calendar").show();
-  $("#create_form").hide();
-  $(".switch_calendar_job").prop("checked", true);
+  let team = $('#teams').find(":selected").val();
+  getVisits(team);
+  getCustomers(team);
+  getListData(team);
+  // $("#calendar").show();
+  // $("#create_form").hide();
+  // $(".switch_calendar_job").prop("checked", true);
 });
