@@ -4,39 +4,95 @@ var router = express.Router();
 var knex = require('../db/knex');
 var geocoder = require('geocoder');
 var bcrypt = require('bcrypt');
+var knexQueries = require('./lib/knexQueries.js');
+var auth = require('./lib/auth.js');
+
+
+////// Lookup customers by date range //////
+router.get('/customersByDates/:start/:end', auth.userAuth, function(req, res, next) {
+  knexQueries.visitsByDateRange(req.params.start, req.params.end)
+    .then(function(visits) {
+      let ids = visits.map(function(visit) {
+        return visit.customers_id;
+      });
+      knexQueries.customersByIDs(ids)
+        .then(function(customers) {
+          res.send(customers);
+        });
+  });
+});
+
+////// Lookup customers by date range and team //////
+router.get('/customersByDatesAndTeam/:start/:end/:team', auth.userAuth, function(req, res, next) {
+  knexQueries.visitsByDateRangeAndTeam(req.params.start, req.params.end, req.params.team)
+    .then(function(visits) {
+      let ids = [];
+      if (visits.length) {
+        ids = visits.map(function(visit) {
+          return visit.customers_id;
+        });
+        knexQueries.customersByIDs(ids)
+          .then(function(customers) {
+            res.send(customers);
+          });
+      } else {
+        res.send({ error: "There are no visits for this team today." })
+      }
+  });
+});
+
+////// Post new visit //////
+router.post('/postVisit', auth.userAuth, function(req, res, next) {
+  knex('visits')
+    .insert(req.body)
+    .then(function() {
+      res.send({});
+    });
+});
+
+////// Gets jobs based on map position, optionally filtered by team //////
+router.post('/customers', auth.userAuth, function(req, res, next) {
+  customersForDashboard(req.body)
+    .then(function(customers) {
+      res.send(customers);
+    })
+});
+
+
+////////////////////// ^ NEW FORMAT ^ //////////////////////////
 
 
 ////// Gets jobs based on map position, optionally filtered by team //////
-router.post('/jobs', function(req, res, next) {
-  if (req.session.id) {
-    var north = JSON.parse(req.body.bounds).north;
-    var south = JSON.parse(req.body.bounds).south;
-    var east = JSON.parse(req.body.bounds).east;
-    var west = JSON.parse(req.body.bounds).west;
-      knex('customers')
-        .join('visits', 'customers_id', 'customers.id')
-        .where(function() {
-          if (req.body.team) {
-            this.where('team_id', req.body.team)
-          }
-        })
-        .andWhere(function() {
-          if (req.body.date) {
-            var date = new Date(parseInt(req.body.date));
-            let start = date.setHours(0,0,0,0);
-            let end = date.setHours(168,0,0,0);
-            this.whereBetween('start', [start, end]);
-          }
-        })
-        .andWhere('lat', '<', north)
-        .andWhere('lat', '>', south)
-        .andWhere('lng', '<', east)
-        .andWhere('lng', '>', west)
-        .then(function(customers) {
-          res.send(customers);
-        })
-  }
-});
+// router.post('/jobs', function(req, res, next) {
+//   if (req.session.id) {
+//     var north = JSON.parse(req.body.bounds).north;
+//     var south = JSON.parse(req.body.bounds).south;
+//     var east = JSON.parse(req.body.bounds).east;
+//     var west = JSON.parse(req.body.bounds).west;
+//       knex('customers')
+//         .join('visits', 'customers_id', 'customers.id')
+//         .where(function() {
+//           if (req.body.team) {
+//             this.where('team_id', req.body.team)
+//           }
+//         })
+//         .andWhere(function() {
+//           if (req.body.date) {
+//             var date = new Date(parseInt(req.body.date));
+//             let start = date.setHours(0,0,0,0);
+//             let end = date.setHours(168,0,0,0);
+//             this.whereBetween('start', [start, end]);
+//           }
+//         })
+//         .andWhere('lat', '<', north)
+//         .andWhere('lat', '>', south)
+//         .andWhere('lng', '<', east)
+//         .andWhere('lng', '>', west)
+//         .then(function(customers) {
+//           res.send(customers);
+//         })
+//   }
+// });
 
 
 ////// Gets visits //////
@@ -59,10 +115,10 @@ router.post('/visits', function(req, res, next) {
 
 
 ////// Get visits for a given job ///////
-router.get('/jobVisits/:jobId', function(req, res, next) {
+router.get('/jobVisits/:customerId', function(req, res, next) {
   if (req.session.id) {
     knex('visits')
-      .where('customers_id', req.params.jobId)
+      .where('customers_id', req.params.customerId)
       .then(function(data) {
         res.send(data);
       })
@@ -123,7 +179,6 @@ router.get('/customer/:id', function(req, res, next) {
     knex('customers')
       .where('id', req.params.id)
       .then(function(data) {
-        console.log(data);
         res.send(data)
       })
   }
@@ -185,14 +240,7 @@ router.post('/newcustomer', function(req, res, next) {
       .insert(data)
       .returning('id')
       .then(function(id) {
-        res.redirect()
-        // knex('customers')
-        //   .where('id', id[0])
-        //   .first()
-        //   .then(function(customer) {
-        //     console.log(customer);
-        //     res.send(customer);
-        //   })
+        res.send(id)
       })
   }
 });
@@ -244,8 +292,8 @@ router.post('/postJob', function(req, res, next) {
 });
 
 
-////// Update existing job //////
-router.post('/updateJob', function(req, res, next) {
+////// Update existing customer //////
+router.post('/updateCustomer', function(req, res, next) {
   if (req.session.id) {
     var lat, lng;
     var address = req.body.address + ', ' + req.body.city + ', ' + req.body.state + ', ' + req.body.zip;
@@ -253,12 +301,13 @@ router.post('/updateJob', function(req, res, next) {
       if (!req.body.customer_name) {
         res.send('Please add customer name.')
       }
-      if (!err) {
+      if (!err && data.results[0]) {
         lat = data.results[0].geometry.location.lat;
         lng = data.results[0].geometry.location.lng;
         update();
       } else {
-        res.send('Invalid address.')
+        console.log('invalid address');
+        res.send({error: "Invalid address"})
       }
     });
     function update() {
@@ -268,63 +317,32 @@ router.post('/updateJob', function(req, res, next) {
           lat: lat,
           lng: lng,
           customer_name: req.body.customer_name,
-          email: req.body.email,
           phone_1: req.body.phone_1,
           phone_2: req.body.phone_2,
+          email: req.body.email,
           address: req.body.address,
           city: req.body.city,
           state: req.body.state,
           zip: req.body.zip,
-          customer_type: req.body.job_type,
+          customer_type: req.body.customer_type,
+          referral: req.body.referral,
           notes: req.body.notes
-        })
-        .returning('id')
-        .then(function(id) {
-          knex('customers')
-            .where('id', id[0])
-            .first()
-            .then(function(customer) {
-              res.send(customer);
-            })
+        }).then(function(id) {
+          res.send({});
         });
     }
   }
 });
 
 
-////// Post visit //////
-router.post('/postVisit', function(req, res, next) {
-  if (req.session.id) {
-    let data = {
-      customers_id: req.body.jobs_id,
-      visit_type: req.body.visit_type,
-      start: req.body.start,
-      end: req.body.end,
-      notes: req.body.notes
-    }
-    if (req.body.team_id) {
-      data.team_id = req.body.team_id
-    }
-    knex('visits')
-      .insert(data)
-      .returning('id')
-      .then(function(id) {
-        knex('visits')
-          .where('id', id[0])
-          .first()
-          .then(function(visit) {
-            res.send(visit);
-          })
-      });
-  }
-});
 
 
 ////// Update visit //////
 router.post('/updateVisit', function(req, res, next) {
   if (req.session.id) {
+    console.log(req.body);
     let data = {
-      customers_id: req.body.jobs_id,
+      id: req.body.id,
       visit_type: req.body.visit_type,
       start: req.body.start,
       end: req.body.end,
@@ -487,12 +505,29 @@ router.post('/search', function(req, res, next) {
   }
 });
 
+router.get('/deleteCustomer/:id', function(req, res, next) {
+  knex('visits')
+    .where('customers_id', req.params.id)
+    .then(function(data) {
+      if (data.length) {
+        res.send({ error: "You must delete all visits associated with this customer first" })
+      } else {
+        knex('customers')
+        .where('id', req.params.id)
+        .del()
+        .then(function() {
+          res.send({});
+        });
+      }
+    })
+});
+
 router.get('/deleteVisit/:id', function(req, res, next) {
   knex('visits')
     .where('id', req.params.id)
     .del()
     .then(function() {
-      res.redirect('/dashboard.html');
+      res.send({});
     });
 });
 
@@ -531,5 +566,12 @@ router.post('/password', function(req, res, next) {
     })
 });
 
+// function auth.userAuth(req, res, next) {
+//   if (!req.session.id) {
+//     res.redirect('/');
+//   } else {
+//     next();
+//   }
+// }
 
 module.exports = router;

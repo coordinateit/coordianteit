@@ -10,10 +10,10 @@ html(lang="en")
     title CoordinateIt Dashboard
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.css")
     link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
-    link(rel='stylesheet', href='/css/dashboard.css')
+    link(rel='stylesheet', href='/css/master.css')
     link(rel="stylesheet", type="text/css", href="https://cdn.jsdelivr.net/css-toggle-switch/latest/toggle-switch.css")
 
-  body
+  body(class="edit")
   nav(class="navbar navbar-inverse navbar-fixed-top")
     div(class="container-fluid")
       div(class="navbar-header")
@@ -34,10 +34,288 @@ html(lang="en")
             a(href="/user") Profile
           li
             a(href="#" id="logout") Log Out
-        a(class="btn btn-success navbar-btn navbar-right", href="create", role="button") Create
+        a(class="btn btn-success navbar-btn navbar-right", href="/create", role="button") Create
   
   
   <!-- Exammple of injected customer data -->      
-  h1 Customer: #{ customer.customer_name }
+
   
-    
+  header
+    h2 View and Edit Customer Profile
+  
+  div(class="dash-container")
+
+    <!-- Customer Profile - Visits Container -->
+    div(class="cal-container")
+      <!-- Customer Profile - Visits Switch -->
+      div
+        label(class="switch-light")
+          input(class="switch_visits_customer", type="checkbox", checked="checked")
+          span(class="well")
+            span Visits
+            span Customer Profile
+            a(class="btn btn-primary")
+
+      div(id="create_form")
+        <!-- Create Job Form -->
+        form(id="create_job", action="/user/postJob", method="POST")
+
+          div(class="row")
+            div(class="col-md-10")
+              div(class="form-group")
+                label(for="customer_name") Customer Name
+                input(type="text", id="customer_name", name="customer_name", class="form-control", value=`${customer.customer_name}`)
+                
+            div(class="col-md-2")
+              div(class="form-group")
+                label(for="status") Status
+                select(id="status", class="form-control", name="status")
+                  option(value="true") Active
+                  option(value="false") Inactive
+
+          div(class="row")
+            div(class="col-md-4")
+              div(class="form-group")
+                label(for="phone_1") Phone Number 1
+                input(type="text", id="phone_1", name="phone_1", class="form-control", placeholder="###-###-###", value=`${customer.phone_1}`)
+                
+            div(class="col-md-4")
+              div(class="form-group")
+                label(for="phone_2") Phone Number 2
+                if customer.phone_2
+                  input(type="text", id="phone_2", name="phone_2", class="form-control", value=`${customer.phone_2}`)
+                else
+                  input(type="text", id="phone_2", name="phone_2", class="form-control", placeholder="###-###-###")
+
+          div(class="row")
+            div(class="col-md-12")
+              div(class="form-group")
+                label(for="email") E-mail
+                if customer.email
+                  input(type="text", id="email", name="email", class="form-control", value=`${customer.email}`)
+                else
+                  input(type="text", id="email", name="email", class="form-control", placeholder="name@domain.com")
+
+          div(class="form-group")
+            label(for="address") Location
+            input(type="text", id="address", name="address", class="form-control", value=`${customer.address}`)
+
+          div(class="row")
+            div(class="col-md-6")
+              div(class="form-group")
+                label(for="city") City
+                input(type="text", id="city", name="city", class="form-control", value=`${customer.city}`)
+
+            div(class="col-md-3")
+              div(class="form-group")
+                label(for="state") State
+                select(id="state", class="form-control", name="state", value="Colorado")
+                  option(value="") State
+                  option(value="AL") Alabama
+                  option(value="AK") Alaska
+                  option(value="AZ") Arizona
+                  option(value="AR") Arkansas
+                  option(value="CA") California
+                  option(value="CO") Colorado
+                  option(value="CT") Connecticut
+                  option(value="DE") Delaware
+                  option(value="DC") District Of Columbia
+                  option(value="FL") Florida
+                  option(value="GA") Georgia
+                  option(value="HI") Hawaii
+                  option(value="ID") Idaho
+                  option(value="IL") Illinois
+                  option(value="IN") Indiana
+                  option(value="IA") Iowa
+                  option(value="KS") Kansas
+                  option(value="KY") Kentucky
+                  option(value="LA") Louisiana
+                  option(value="ME") Maine
+                  option(value="MD") Maryland
+                  option(value="MA") Massachusetts
+                  option(value="MI") Michigan
+                  option(value="MN") Minnesota
+                  option(value="MS") Mississippi
+                  option(value="MO") Missouri
+                  option(value="MT") Montana
+                  option(value="NE") Nebraska
+                  option(value="NV") Nevada
+                  option(value="NH") New Hampshire
+                  option(value="NJ") New Jersey
+                  option(value="NM") New Mexico
+                  option(value="NY") New York
+                  option(value="NC") North Carolina
+                  option(value="ND") North Dakota
+                  option(value="OH") Ohio
+                  option(value="OK") Oklahoma
+                  option(value="OR") Oregon
+                  option(value="PA") Pennsylvania
+                  option(value="RI") Rhode Island
+                  option(value="SC") South Carolina
+                  option(value="SD") South Dakota
+                  option(value="TN") Tennessee
+                  option(value="TX") Texas
+                  option(value="UT") Utah
+                  option(value="VT") Vermont
+                  option(value="VA") Virginia
+                  option(value="WA") Washington
+                  option(value="WV") West Virginia
+                  option(value="WI") Wisconsin
+                  option(value="WY") Wyoming
+
+            div(class="col-md-3")
+              div(class="form-group")
+                label(for="zip") Zip
+                input(type="text", id="zip", name="zip", class="form-control", value=`${customer.zip}`)
+
+          div(class="row")
+            div(class="col-md-4")
+              div(class="form-group")
+                label(for="customer-type") Customer Type
+                select(class="form-control" name="customer-type")
+                  option(value="") Customer Type
+                  option(value="EI") EI
+                  option(value="EI_W") EI_W
+                  option(value="EI_WM") EI_WM
+                  option(value="WWI") WWI
+                  option(value="DCS") DCS
+                  option(value="GENERIC") GENERIC
+                
+            div(class="col-md-6")
+              div(class="form-group")
+                label Referral
+                if customer.referral
+                  input(type="text", id="referral", name="referral", class="form-control", value=`${customer.referral}`)
+                else
+                  input(type="text", id="referral", class="form-control", name="referral", placeholder="Referral")
+
+          div(class="row")
+            div(class="col-md-12")
+              div(class="form-group")
+                label(for="notes") Customer Notes
+                if customer.notes
+                  textarea(type="text", id="notes", name="notes", class="form-control") #{customer.notes}
+                else
+                  textarea(name="notes", id="notes", class="form-control", placeholder="Add your job notes here")
+
+            //- button(type="button", id="create_job_button", class="btn btn-primary") Create Customer
+            button(type="button", id="update_customer_button", class="btn btn-primary") Save
+            //- button(type="button", id="deleteCustomer", class="btn btn-danger") Delete
+            //- button(type="button", id="job_lookup", class="btn btn-primary") Customer Lookup
+            //- button(type="reset", id="clear_job", class="btn btn-primary") Clear Form
+
+        <!-- Create Visit List/Form -->
+        div(id="create_visit_container" class="nodisplay")
+
+          <!-- Visit List -->
+          div(id="visit_list", class="table-responsive")
+            table(class="visit_list table table-striped")
+              tr
+                th Date
+                th Start Time
+                th End Time
+                th Visit Type
+                th Team
+                th
+                th
+              if visits.length
+                - var i = 0;
+                each visit in visits
+                  - let start = new Date(parseInt(visit.start));
+                  - let end = new Date(parseInt(visit.end));
+                    tr
+                      td= visit.start
+                      td= visit.start
+                      td= visit.end
+                      td= visit.visit_type
+                      td= visit.team_id
+                      td
+                        button(type="button" id=`${i}` class="btn btn-primary btn-xs visitEdit") Edit
+                      td
+                        button(type="button" id=`${visit.id}` class="btn btn-danger btn-xs visitDelete") Delete
+                  - i++;
+                                    
+            //- button(type="submit", id="addVisit", class="btn btn-primary") Add Visit
+
+          hr
+
+          form(id="create_visit", method="POST")
+            div(class="row")
+              div(class="col-md-4")
+                div(class="form-group")
+                  label(for="visit_date") Visit Date
+                  input(type="date", id="visit_date", class="form-control", name="visit_date")
+
+              div(class="col-md-4")
+                div(class="form-group")
+                  label Start Time
+                  input(type="time", id="visit_start", class="form-control", name="start_time", value="09:00")
+
+              div(class="col-md-4")
+                div(class="form-group")
+                  label End Time
+                  input(type="time", id="visit_end", class="form-control", name="end_time")
+
+            div(class="row")
+              div(class="col-md-6")
+                div(class="form-group")
+                  label Visit Type
+                  input(type="text", id="visit_type", name="visit_type", class="form-control", placeholder="Visit Type")
+
+              div(class="col-md-6")
+                div(class="form-group")
+                  label Team
+                  select(id="visit_team" class="form-control teams" name="team")
+                    option(value="") Team
+                    <!-- Teams appended from dashboard.js makeList() -->
+
+            div(class="form-group")
+              label Visit Note
+              textarea(name="notes", id="visit_notes", class="form-control" placeholder="Add your visit notes here")
+              
+            button(type="button", id="nearbyCustomers", class="btn btn-info") Nearby Customers
+            | &nbsp;
+            button(type="button", id="checkTeamSchedule", class="btn btn-info") Check Team Schedule
+            | &nbsp;
+            button(type="button", id="clear_visit", class="btn btn-danger") Clear Form
+            | &nbsp;
+            button(type="button", id="saveVisitSubmit", class="btn btn-Success") Save
+            button(type="button", id="visitSubmit", class="btn btn-success") Create Visit
+
+
+    <!-- Map - Calendar Container   -->
+    div(class="maplist-container")
+
+      <!-- Map - Calendar Switch -->
+      div
+        label(class="switch-light" onclick="")
+          input(class="switch_map_calendar", type="checkbox", checked="checked")
+          span(class="well")
+            span Calendar
+            span Map
+            a(class="btn btn-primary")
+
+      <!-- Map -->
+      div(id="map")
+
+      <!-- Calendar -->
+      div(id="calendar")
+
+    footer
+      hr
+      p &copy; 2016 CoordinateIt, Inc.
+
+  script(src='https://code.jquery.com/jquery-2.2.3.min.js', integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=', crossorigin='anonymous')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.js')
+  //- script const customer = customer.customer_name;
+  script const customer = !{ JSON.stringify(customer) };
+  script const visits = !{ JSON.stringify(visits) };
+  script(src='/js/all.js')
+  script(src='/js/calendar.js')
+  script(src='/js/map.js')
+  script(src='/js/teams.js')
+  script(src='/js/edit.js')
+  script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap', async)
+  
