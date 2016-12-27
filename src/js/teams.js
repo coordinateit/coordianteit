@@ -19,13 +19,9 @@ function teamList(teams) {
 }
 
 ////// Filter page by team //////
-// var teamFilter;
 $('#teams').change(function(clicked) {
   let team = $('#teams').find(":selected").val();
   getVisits(team);
   getCustomers(team);
   getListData(team);
-  // $("#calendar").show();
-  // $("#create_form").hide();
-  // $(".switch_calendar_job").prop("checked", true);
 });

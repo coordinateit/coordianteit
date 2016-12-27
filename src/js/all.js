@@ -1,11 +1,10 @@
-
 ////// Logout route //////
 $('#logout').click(function(event) {
   event.preventDefault;
   $.ajax({
     type: "GET",
     datatype: "json",
-    url: "/user/logout",
+    url: "/logout",
     success: function() {
       window.location = "/";
     }
