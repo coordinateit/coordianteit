@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcrypt');
 var knex = require('../db/knex');
+var auth = require('./lib/auth');
 
 
 ////// Route to landing page //////
@@ -11,18 +12,17 @@ router.get('/', function(req, res, next) {
 });
 
 ////// Route to dashboard page //////
-router.get('/dashboard', userAuth, function(req, res, next) {
+router.get('/dashboard', auth.userAuth, function(req, res, next) {
   res.sendfile('./html/dashboard.html');
 });
 
 ////// Route to create page //////
-router.get('/create', userAuth, function(req, res, next) {
+router.get('/create', auth.userAuth, function(req, res, next) {
   res.sendfile('./html/create.html');
 });
 
 ////// Customer class containing customer lookup method -- TODO: MOVE TO MODULE //////
 const Customer = {
-
   getCustomer (id) {
     return knex('customers')
       .where('id', id)
@@ -36,29 +36,29 @@ const Customer = {
 }
 
 ////// Route to edit page //////
-router.get('/edit/:id', userAuth, function(req, res, next) {
+router.get('/edit/:id', auth.userAuth, function(req, res, next) {
   Customer.getCustomer(req.params.id)
     .then((customer) => Customer.getVisits(req.params.id)
       .then((visits) => res.render('edit', { customer: customer, visits: visits })))
 });
 
 ////// Route to list page //////
-router.get('/list', userAuth, function(req, res, next) {
+router.get('/list', auth.userAuth, function(req, res, next) {
   res.sendfile('./html/list.html');
 });
 
 ////// Route to user page //////
-router.get('/user', userAuth, function(req, res, next) {
+router.get('/user', auth.userAuth, function(req, res, next) {
   res.sendfile('./html/user.html');
 });
 
 ////// Route to search page //////
-router.get('/search', userAuth, function(req, res, next) {
+router.get('/search', auth.userAuth, function(req, res, next) {
   res.sendfile('./html/search.html');
 });
 
 ////// Route to admin page //////
-router.get('/admin', adminAuth, function(req, res, next) {
+router.get('/admin', auth.adminAuth, function(req, res, next) {
   res.sendfile('./html/admin.html');
 });
 
@@ -81,28 +81,11 @@ router.post('/login', function(req, res, next) {
   });
 });
 
-////// Signout //////
-router.post('/signout', function(req, res, next) {
+////// Logout route //////
+router.get('/logout', function(req, res, next) {
   req.session = null;
-  res.redirect('/');
+  res.send({});
 });
-
-function userAuth(req, res, next) {
-  if (!req.session.id) {
-    res.redirect('/');
-  } else {
-    next();
-  }
-}
-
-function adminAuth(req, res, next) {
-  if (!req.session.isadmin) {
-    console.log("not an admin");
-    res.redirect('/');
-  } else {
-    next();
-  }
-}
 
 
 module.exports = router;

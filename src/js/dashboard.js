@@ -18,11 +18,13 @@ $(document).ready(function() {
 
 ////// Get visits from server //////
 function getVisits(team) {
+  console.log(team);
   $.ajax({
     type: 'POST',
     dataType: 'json',
-    data: {team: team},
+    data: { team: team },
     url: '/user/visits'
+    // url: `/user/visits/${team}`
   }).then(function(data) {
     var visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));

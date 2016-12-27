@@ -2,7 +2,7 @@
 ////// Initialize map using customer position //////
 var map;
 var editMarker;
-var position;
+// var position;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: position,
@@ -79,7 +79,6 @@ function makeMarkers(customers) {
         infowindows[i].close();
       }
       infowindow.open(map, marker);
-      window.localStorage.search = JSON.stringify({ id: marker.id, type: "visit" });
     });
     markers.push(marker);
   }
