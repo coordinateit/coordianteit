@@ -2,7 +2,7 @@
 ////// Initialize map using customer position //////
 var map;
 var editMarker;
-// var position;
+var position;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: position,

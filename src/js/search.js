@@ -7,6 +7,9 @@ $(document).ready(function() {
 
 var position = JSON.parse(window.localStorage.position);
 
+////// Code to execute when map loads //////
+function mapReady() {} // Must exist even if empty
+
 ///// Get team data from server ///////
 function getTeamList() {
   $.ajax({
@@ -27,17 +30,7 @@ function teamList(teams) {
 }
 
 //////  //////
-function mapReady() {
-
-}
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                                  SEARCH                                    //
-////////////////////////////////////////////////////////////////////////////////
-
-
+var list;
 function getList() {
   $.ajax({
     type: "GET",
@@ -45,9 +38,9 @@ function getList() {
     url: "/search/allCustomersVisits",
     // success: function(data) {
   }).then(function(data) {
-    console.log(data);
     makeMarkers(data);
     visitList(data);
+    list = data;
   });
 }
 
@@ -67,8 +60,182 @@ function visitList(data) {
   }
 }
 
-function searchAndSortAllOfTheThings() {
-  console.log("DOOO IIIIIIIT!!!");
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                  SEARCH                                    //
+////////////////////////////////////////////////////////////////////////////////
+
+
+$('#searchSubmit').click(function(event) {
+  event.preventDefault();
+  if ($('#error')) {
+    $('#error').remove();
+  }
+  searchCustomers();
+});
+
+////// Search by customer //////
+function searchCustomers() {
+  if ($('#customer').val()) {
+    let customerName = $('#customer').val().toLowerCase();
+    let newList = list.filter(function(item) {
+      return item.customer_name.toLowerCase().includes(customerName);
+    });
+    searchTeam(newList);
+  } else {
+    searchTeam(list);
+  }
+}
+
+////// Search by team //////
+function searchTeam(list) { // List is now local, any error from above functions and it will default to the global list
+  if ($('#team').val()) {
+    let team = parseInt($('#team').val());
+    let newList = list.filter(function(item) {
+      return item.team_id === team;
+    });
+    searchRadius(newList);
+  } else {
+    searchRadius(list);
+  }
+}
+
+////// Search by radius/coordinates (skip address fields) //////
+function searchRadius(list) {
+  if ($('#radius').val()) {
+    let address = {
+      address: $('#address').val(),
+      city: $('#city').val(),
+      state: $('#state').val(),
+      zip: $('#zip').val()
+    }
+    $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      data: address,
+      url: '/search/geocode'
+    }).then(function(data) {
+      if (data.error) {
+        $('#advanced').prepend(`<h3 id="error" style="color: red">${data.error}</h3>`)
+      } else {
+        compareCoordinates(data.lat, data.lng);
+      }
+    });
+    function compareCoordinates(lat, lng) {
+      let radius = $('#radius').val();
+      let newList = list.filter(function(item) {
+        return (
+                (parseFloat(item.lat) < lat + radius/200) &&
+                (parseFloat(item.lat) > lat - radius/200) &&
+                (parseFloat(item.lng) < lng + radius/200) &&
+                (parseFloat(item.lng) > lng - radius/200)
+              );
+      });
+      searchPhone(newList);
+    }
+  } else {
+    searchAddress(list);
+  }
+}
+
+////// Search by address //////
+function searchAddress(list) {
+  if ($('#address').val()) {
+    let address = $('#address').val().toLowerCase();
+    let newList = list.filter(function(item) {
+      return item.address.toLowerCase().includes(address);
+    });
+    searchCity(newList);
+  } else {
+    searchCity(list);
+  }
+}
+
+////// Search by city //////
+function searchCity(list) {
+  if ($('#city').val()) {
+    let city = $('#city').val().toLowerCase();
+    let newList = list.filter(function(item) {
+      return item.city.toLowerCase().includes(city);
+    });
+    searchState(newList);
+  } else {
+    searchState(list);
+  }
+}
+
+////// Search by state //////
+function searchState(list) {
+  if ($('#state').val()) {
+    let state = $('#state').val();
+    let newList = list.filter(function(item) {
+      return item.state === state;
+    });
+    searchZip(newList);
+  } else {
+    searchZip(list);
+  }
+}
+
+////// Search by zip //////
+function searchZip(list) {
+  if ($('#zip').val()) {
+    let zip = parseInt($('#zip').val());
+    let newList = list.filter(function(item) {
+      return item.zip === zip;
+    });
+    searchPhone(newList);
+  } else {
+    searchPhone(list);
+  }
+}
+
+////// Search by phone //////
+function searchPhone(list) {
+  if ($('#phone').val()) {
+    let phone = $('#phone').val().toLowerCase();
+    let newList = list.filter(function(item) {
+      return item.phone_1.toLowerCase().includes(phone);
+    });
+    searchFrom(newList);
+  } else {
+    searchFrom(list);
+  }
+}
+
+////// Search by date range //////
+function searchFrom(list) {
+  if ($('#from').val()) {
+    let from = Date.parse($('#from').val());
+    from += 25200000
+    let newList = list.filter(function(item) {
+      return parseInt(item.start) > from;
+    });
+    searchTo(newList);
+  } else {
+    searchTo(list);
+  }
+}
+
+////// Search by date range //////
+function searchTo(list) {
+  if ($('#to').val()) {
+    let to = Date.parse($('#to').val());
+    to += 111600000
+    let newList = list.filter(function(item) {
+      return parseInt(item.start) < to;
+    });
+    displayResults(newList);
+  } else {
+    displayResults(list);
+  }
+}
+
+/////// Update map/list to show results of search //////
+function displayResults(list) {
+  makeMarkers(list);
+  visitList(list);
 }
 
 
@@ -94,11 +261,9 @@ $(".switch_map_list").change(function() {
 $(".switch_basic_advanced").change(function() {
   var userinput = $(this);
   if (userinput.prop("checked")){
-    $("#basic").show();
-    $("#advanced").hide();
+    $(".advancedDiv").hide();
   } else {
-    $("#basic").hide();
-    $("#advanced").show();
+    $(".advancedDiv").show();
   }
 });
 
@@ -112,7 +277,7 @@ $(".switch_basic_advanced").change(function() {
 
 
 ////// Send search parameters to server //////
-$('#searchSubmit').click(function(event) {
+$('#').click(function(event) {
   event.preventDefault();
   let search = {};
   if ($('#customer').val()) {
@@ -178,52 +343,3 @@ function setIdArray(data) {
   })
   window.localStorage.list = JSON.stringify(listIds);
 };
-
-
-////// Initialize map //////
-// var map;
-// var markers = [];
-// var infowindows = [];
-// var position = JSON.parse(window.localStorage.position);
-// function initMap() {
-//   map = new google.maps.Map(document.getElementById('map'), {
-//     center: position,
-//     zoom: 11,
-//     fullscreenControl: true
-//   });
-// }
-
-
-////// Display jobs on map //////
-// function setMarkers(data) {
-//   let coords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lng) };
-//   for (var i = 0; i < markers.length; i++) {  // Clear markers
-//     markers[i].setMap(null);
-//   }
-//   markers = [];
-//   for (var i = 0; i < data.length; i++) {  // Set new markers
-//     let content = `<h5>${data[i].customer_name}</h5>
-//                     <p>Job Type: ${data[i].customer_type}</p>
-//                     <p>Visit Type: ${data[i].visit_type}</p>
-//                     <p>Team: ${data[i].team_id}</p>
-//                     <a href="dashboard.html">View Job/Visits</a>`
-//     let infowindow = new google.maps.InfoWindow({
-//       content: content
-//     });
-//     let marker = new google.maps.Marker({
-//       position: { lat: parseFloat(data[i].lat), lng: parseFloat(data[i].lng) },
-//       map: map,
-//       id: data[i].id,
-//       title: data[i].customer_name
-//     });
-//     marker.addListener('click', function() {
-//       for (var i = 0; i < infowindows.length; i++) {
-//         infowindows[i].close();
-//       }
-//       infowindow.open(map, marker);
-//       // window.localStorage.search = JSON.stringify({id: marker.id, type: type});
-//     });
-//     markers.push(marker);
-//     infowindows.push(infowindow);
-//   }
-// }
