@@ -13,7 +13,20 @@ router.post('/customers', auth.userAuth, function(req, res, next) {
   knexQueries.customersForDashboard(req.body)
     .then(function(customers) {
       res.send(customers);
-    })
+    });
+});
+
+////// Gets visits //////
+router.post('/visits', auth.userAuth, function(req, res, next) {
+  let team;
+  if (req.body.team) {
+    team = req.body.team;
+  } else {
+    team = null;
+  }
+  knexQueries.visits(team).then(function(visits) {
+    res.send(visits);
+  });
 });
 
 

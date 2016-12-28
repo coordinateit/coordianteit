@@ -79,7 +79,6 @@ function makeMarkers(customers) {
         infowindows[i].close();
       }
       infowindow.open(map, marker);
-      window.localStorage.search = JSON.stringify({ id: marker.id, type: "visit" });
     });
     markers.push(marker);
   }

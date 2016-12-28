@@ -51,7 +51,7 @@
   <!-- Search Filters-->
 
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-4" id="search">
 
         <!-- Basic - Advanced Switch -->
         <div>
@@ -66,15 +66,15 @@
         </div>
 
         <!-- Advanced Search Form -->
-        <div id="advanced" class="nodisplay">
+        <div id="advanced">
           <form action="#">
             <fieldset>
               <div id="error"></div>
               <div class="form-group">
-                <label for="customer">Name</label>
-                <input type="text" id="customer" class="form-control" name="customer" placeholder="Customer">
+                <label for="customer">Customer</label>
+                <input type="text" id="customer" class="form-control customer" placeholder="Customer">
               </div>
-              <div class="form-group">
+              <div class="form-group nodisplay advancedDiv">
                 <label for="team">Team</label>
                 <select name="team" id="team" class="form-control teams">
                   <option value="">Team</option>
@@ -89,7 +89,7 @@
                 <label for="city">City</label>
                 <input type="text" id="city" class="form-control" name="city" placeholder="City">
               </div>
-              <div class="form-group">
+              <div class="form-group nodisplay advancedDiv">
                 <label for="state">State</label>
                 <select class="form-control" id="state" name="state">
                   <option value="">State</option>
@@ -150,11 +150,11 @@
                 <label for="zip">Zip Code</label>
                 <input type="text" id="zip" class="form-control" name="zip" placeholder="Zip Code">
               </div>
-              <div class="form-group">
+              <div class="form-group nodisplay advancedDiv">
                 <label for="phone">Phone</label>
                 <input type="text" id="phone" class="form-control" name="zip" placeholder="###-###-####">
               </div>
-              <div class="form-group">
+              <div class="form-group nodisplay advancedDiv">
                 <label for="radius">Radius</label>
                 <select name="team" id="radius" class="form-control">
                   <option value="">Radius</option>
@@ -164,41 +164,15 @@
                   <option value="50">50 Miles</option>
                 </select>
               </div>
-              <div class="form-group">
+              <div class="form-group nodisplay advancedDiv">
                 <label>From</label>
                 <input type="date" id="from" class="form-control" name="from_date" >
               </div>
-              <div class="form-group">
+              <div class="form-group nodisplay advancedDiv">
                 <label>To</label>
                 <input type="date" id="to" class="form-control" name="to_date" >
               </div>
-              <button id="searchSubmit" type="submit" class="btn btn-primary">Search</button>
-            </fieldset>
-          </form>
-        </div>
-
-        <!-- Basic Search Form -->
-        <div id="basic">
-          <form action="#">
-            <fieldset>
-              <div id="error"></div>
-              <div class="form-group">
-                <label for="customer">Customer</label>
-                <input type="text" id="customer" class="form-control" name="customer" placeholder="Customer">
-              </div>
-              <div class="form-group">
-                <label for="address">Address</label>
-                <input type="text" id="address" class="form-control" name="address" placeholder="Address">
-              </div>
-              <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" id="city" class="form-control" name="city" placeholder="City">
-              </div>
-              <div class="form-group">
-                <label for="zip">Zip Code</label>
-                <input type="text" id="zip" class="form-control" name="zip" placeholder="Zip Code">
-              </div>
-              <button id="searchSubmit" type="submit" class="btn btn-primary">Search</button>
+              <button type="submit" id="searchSubmit" class="btn btn-primary">Search</button>
             </fieldset>
           </form>
         </div>
@@ -249,6 +223,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <!-- <script src='js/dashboard.js'></script> -->
 <script src='js/all.js'></script>
+<script src='js/map.js'></script>
 <script src='js/search.js'></script>
 <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap' async></script>
 

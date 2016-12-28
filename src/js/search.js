@@ -2,7 +2,248 @@
 
 $(document).ready(function() {
   getTeamList();
+  getList();
 });
+
+var position = JSON.parse(window.localStorage.position);
+
+////// Code to execute when map loads //////
+function mapReady() {} // Must exist even if empty
+
+///// Get team data from server ///////
+function getTeamList() {
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/teams',
+    success: function(data) {
+      teamList(data);
+    }
+  });
+}
+
+////// Populate team lists //////
+function teamList(teams) {
+  for (var i = 0; i < teams.length; i++) {
+    $('#team').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
+  }
+}
+
+//////  //////
+var list;
+function getList() {
+  $.ajax({
+    type: "GET",
+    dataType: "json",
+    url: "/search/allCustomersVisits",
+    // success: function(data) {
+  }).then(function(data) {
+    makeMarkers(data);
+    visitList(data);
+    list = data;
+  });
+}
+
+////// Add data to list ///////
+function visitList(data) {
+  $(".list").empty();
+  $(".list").append("<tr><th>Customer</th><th>Team</th><th>Start Time</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>");
+  for (var i = 0; i < data.length; i++) {
+    let time = parseTime(data[i].start);
+    $(".list").append(`<tr><td>${data[i].customer_name}
+                        <td>${data[i].team_id}</td>
+                        <td>${time}</td>
+                        <td>${data[i].customer_type}</td>
+                        <td>${data[i].address}</td>
+                        <td>${data[i].phone_1}</td></tr>`
+                      );
+  }
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                  SEARCH                                    //
+////////////////////////////////////////////////////////////////////////////////
+
+
+$('#searchSubmit').click(function(event) {
+  event.preventDefault();
+  if ($('#error')) {
+    $('#error').remove();
+  }
+  searchCustomers();
+});
+
+////// Search by customer //////
+function searchCustomers() {
+  if ($('#customer').val()) {
+    let customerName = $('#customer').val().toLowerCase();
+    let newList = list.filter(function(item) {
+      return item.customer_name.toLowerCase().includes(customerName);
+    });
+    searchTeam(newList);
+  } else {
+    searchTeam(list);
+  }
+}
+
+////// Search by team //////
+function searchTeam(list) { // List is now local, any error from above functions and it will default to the global list
+  if ($('#team').val()) {
+    let team = parseInt($('#team').val());
+    let newList = list.filter(function(item) {
+      return item.team_id === team;
+    });
+    searchRadius(newList);
+  } else {
+    searchRadius(list);
+  }
+}
+
+////// Search by radius/coordinates (skip address fields) //////
+function searchRadius(list) {
+  if ($('#radius').val()) {
+    let address = {
+      address: $('#address').val(),
+      city: $('#city').val(),
+      state: $('#state').val(),
+      zip: $('#zip').val()
+    }
+    $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      data: address,
+      url: '/search/geocode'
+    }).then(function(data) {
+      if (data.error) {
+        $('#advanced').prepend(`<h3 id="error" style="color: red">${data.error}</h3>`)
+      } else {
+        compareCoordinates(data.lat, data.lng);
+      }
+    });
+    function compareCoordinates(lat, lng) {
+      let radius = $('#radius').val();
+      let newList = list.filter(function(item) {
+        return (
+                (parseFloat(item.lat) < lat + radius/200) &&
+                (parseFloat(item.lat) > lat - radius/200) &&
+                (parseFloat(item.lng) < lng + radius/200) &&
+                (parseFloat(item.lng) > lng - radius/200)
+              );
+      });
+      searchPhone(newList);
+    }
+  } else {
+    searchAddress(list);
+  }
+}
+
+////// Search by address //////
+function searchAddress(list) {
+  if ($('#address').val()) {
+    let address = $('#address').val().toLowerCase();
+    let newList = list.filter(function(item) {
+      return item.address.toLowerCase().includes(address);
+    });
+    searchCity(newList);
+  } else {
+    searchCity(list);
+  }
+}
+
+////// Search by city //////
+function searchCity(list) {
+  if ($('#city').val()) {
+    let city = $('#city').val().toLowerCase();
+    let newList = list.filter(function(item) {
+      return item.city.toLowerCase().includes(city);
+    });
+    searchState(newList);
+  } else {
+    searchState(list);
+  }
+}
+
+////// Search by state //////
+function searchState(list) {
+  if ($('#state').val()) {
+    let state = $('#state').val();
+    let newList = list.filter(function(item) {
+      return item.state === state;
+    });
+    searchZip(newList);
+  } else {
+    searchZip(list);
+  }
+}
+
+////// Search by zip //////
+function searchZip(list) {
+  if ($('#zip').val()) {
+    let zip = parseInt($('#zip').val());
+    let newList = list.filter(function(item) {
+      return item.zip === zip;
+    });
+    searchPhone(newList);
+  } else {
+    searchPhone(list);
+  }
+}
+
+////// Search by phone //////
+function searchPhone(list) {
+  if ($('#phone').val()) {
+    let phone = $('#phone').val().toLowerCase();
+    let newList = list.filter(function(item) {
+      return item.phone_1.toLowerCase().includes(phone);
+    });
+    searchFrom(newList);
+  } else {
+    searchFrom(list);
+  }
+}
+
+////// Search by date range //////
+function searchFrom(list) {
+  if ($('#from').val()) {
+    let from = Date.parse($('#from').val());
+    from += 25200000
+    let newList = list.filter(function(item) {
+      return parseInt(item.start) > from;
+    });
+    searchTo(newList);
+  } else {
+    searchTo(list);
+  }
+}
+
+////// Search by date range //////
+function searchTo(list) {
+  if ($('#to').val()) {
+    let to = Date.parse($('#to').val());
+    to += 111600000
+    let newList = list.filter(function(item) {
+      return parseInt(item.start) < to;
+    });
+    displayResults(newList);
+  } else {
+    displayResults(list);
+  }
+}
+
+/////// Update map/list to show results of search //////
+function displayResults(list) {
+  makeMarkers(list);
+  visitList(list);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                  SWITCHES                                  //
+////////////////////////////////////////////////////////////////////////////////
+
 
 /////// Toggle map / list //////
 $(".switch_map_list").change(function() {
@@ -20,17 +261,23 @@ $(".switch_map_list").change(function() {
 $(".switch_basic_advanced").change(function() {
   var userinput = $(this);
   if (userinput.prop("checked")){
-    $("#basic").show();
-    $("#advanced").hide();
+    $(".advancedDiv").hide();
   } else {
-    $("#basic").hide();
-    $("#advanced").show();
+    $(".advancedDiv").show();
   }
 });
 
 
+
+
+
+
+
+
+
+
 ////// Send search parameters to server //////
-$('#searchSubmit').click(function(event) {
+$('#').click(function(event) {
   event.preventDefault();
   let search = {};
   if ($('#customer').val()) {
@@ -78,7 +325,7 @@ function getSearch(search) {
   $.ajax({
     type: "POST",
     dataType: "json",
-    data: {search: JSON.stringify(search)},
+    data: { search: JSON.stringify(search) },
     url: "/user/search",
     success: function(data) {
       setMarkers(data);
@@ -91,120 +338,8 @@ function getSearch(search) {
 
 ////// Make an array of ids for list view //////
 function setIdArray(data) {
-  var listIds = data.data.map(function(i) {
+  var listIds = data.map(function(i) {
     return i.id;
   })
   window.localStorage.list = JSON.stringify(listIds);
 };
-
-
-////// Initialize map //////
-var map;
-var markers = [];
-var infowindows = [];
-var position = JSON.parse(window.localStorage.position);
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: position,
-    zoom: 11,
-    fullscreenControl: true
-  });
-}
-
-
-////// Display jobs on map //////
-function setMarkers(data) {
-  let coords = {lat: parseFloat(data.data[0].lat), lng: parseFloat(data.data[0].lng)};
-  map.panTo(coords);
-  for (var i = 0; i < markers.length; i++) {  // Clear markers
-    markers[i].setMap(null);
-  }
-  markers = [];
-  for (var i = 0; i < data.data.length; i++) {  // Set new markers
-    let content = `<h5>${data.data[i].customer_name}</h5>
-                    <p>Job Type: ${data.data[i].job_type}</p>
-                    <p>Visit Type: ${data.data[i].visit_type}</p>
-                    <p>Team: ${data.data[i].team_id}</p>
-                    <a href="dashboard.html">View Job/Visits</a>`
-    let infowindow = new google.maps.InfoWindow({
-      content: content
-    });
-    let marker = new google.maps.Marker({
-      position: {lat: parseFloat(data.data[i].lat), lng: parseFloat(data.data[i].lng)},
-      map: map,
-      id: data.data[i].id,
-      title: data.data[i].customer_name
-    });
-    marker.addListener('click', function() {
-      for (var i = 0; i < infowindows.length; i++) {
-        infowindows[i].close();
-      }
-      infowindow.open(map, marker);
-      window.localStorage.search = JSON.stringify({id: marker.id, type: data.type});
-    });
-    markers.push(marker);
-    infowindows.push(infowindow);
-  }
-}
-
-
-///// Get team data from server ///////
-function getTeamList() {
-  $.ajax({
-    type: 'GET',
-    dataType: 'json',
-    url: '/user/teams',
-    success: function(data) {
-      teamList(data);
-    }
-  });
-}
-
-
-////// Populate team lists //////
-function teamList(teams) {
-  for (var i = 0; i < teams.length; i++) {
-    $('#team').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
-  }
-}
-
-
-////// Add data to list ///////
-function visitList(data) {
-  $(".list").empty();
-  $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>");
-  for (var i = 0; i < data.data.length; i++) {
-    let date = new Date(parseInt(data.data[i].start));
-    let meridiem = 'am';
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    if (hours > 12) {
-      meridiem = 'pm';
-      hours -= 12;
-    }
-    if (minutes < 10) {
-      minutes = "0" + minutes;
-    }
-    let time = hours + ":" + minutes + " " + meridiem;
-    $(".list").append("<tr><td>" + data.data[i].team_id + "</td><td>" + time +
-                        "</td><td>" + data.data[i].job_type + "</td><td>" + data.data[i].address +
-                        "</td><td>" + data.data[i].phone_number + "</td></tr>"
-                      );
-  }
-}
-
-
-function parseTime(input) {
-  let date = new Date(parseInt(input));
-  let meridiem = 'am';
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  if (hours > 12) {
-    meridiem = 'pm';
-    hours -= 12;
-  }
-  if (minutes < 10) {
-    minutes = "0" + minutes;
-  }
-  return time = hours + ":" + minutes + " " + meridiem;
-}
