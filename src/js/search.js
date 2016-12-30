@@ -50,7 +50,7 @@ function visitList(data) {
   $(".list").append("<tr><th>Customer</th><th>Team</th><th>Start Time</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>");
   for (var i = 0; i < data.length; i++) {
     let time = parseTime(data[i].start);
-    $(".list").append(`<tr><td>${data[i].customer_name}
+    $(".list").append(`<tr><td><a href='/edit/${data[i].customers_id}'>${data[i].customer_name}</a></td>
                         <td>${data[i].team_id}</td>
                         <td>${time}</td>
                         <td>${data[i].customer_type}</td>

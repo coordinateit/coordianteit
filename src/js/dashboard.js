@@ -18,7 +18,6 @@ $(document).ready(function() {
 
 ////// Get visits from server //////
 function getVisits(team) {
-  console.log(team);
   $.ajax({
     type: 'POST',
     dataType: 'json',
@@ -28,14 +27,79 @@ function getVisits(team) {
   }).then(function(data) {
     var visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));
-      let end = new Date(parseInt(visit.end));
-      return {id: visit.id, title: visit.visit_type, start: start, end: end}
+      // Use timeslotLookup to determine if starttime is available, then adjust if need be
+      start = schedulesLookup.lookup(start);
+      let end = new Date(start.getTime() + 1800000);
+      return { id: visit.id, title: visit.visit_type, start: start, end: end }
     })
+    // console.log(schedulesLookup.schedules);
     $('#calendar').fullCalendar('removeEvents');
     $('#calendar').fullCalendar('addEventSource', visits);
     $('#calendar').fullCalendar('refetchEvents');
   });
 }
+
+var schedulesLookup = {
+  schedules: {},
+
+  lookup: function(start) {
+    let date = "date" + start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate();
+    let startUTC = start.getTime();
+    if (!this.schedules[date]) {
+      this.schedules[date] = new Schedule;
+    }
+    if (startUTC % 1800000) {
+      console.log("modulo");
+      let remainder = startUTC % 1800000;
+      startUTC = startUTC - remainder;
+    }
+    lookupLoop();
+    function lookupLoop() {
+      let newStart = new Date(startUTC);
+      let time = "time" + newStart.getHours() + "-" + newStart.getMinutes();
+      if (schedulesLookup.schedules[date][time]) {
+        startUTC += 1800000;
+        lookupLoop();
+      } else {
+        schedulesLookup.schedules[date][time] = true;
+      }
+      return;
+    }
+    start = new Date(startUTC)
+    return start;
+  }
+
+}
+
+var Schedule = class {
+  // this['timeX-X'] refers to timeslot in military time. So time8-0 = 8am. time13-30 = 1:30pm.
+  constructor() {
+    this['time7-0'] = false,
+    this['time7-30'] = false,
+    this['time8-0'] = false,
+    this['time8-30'] = false,
+    this['time9-0'] = false,
+    this['time9-30'] = false,
+    this['time10-0'] = false,
+    this['time10-30'] = false,
+    this['time11-0'] = false,
+    this['time11-30'] = false,
+    this['time12-0'] = false,
+    this['time12-30'] = false,
+    this['time13-0'] = false,
+    this['time13-30'] = false,
+    this['time14-0'] = false,
+    this['time14-30'] = false,
+    this['time15-0'] = false,
+    this['time15-30'] = false,
+    this['time16-0'] = false,
+    this['time16-30'] = false,
+    this['time17-0'] = false,
+    this['time17-30'] = false,
+    this['time18-0'] = false,
+    this['time18-30'] = false
+  }
+};
 
 
 
