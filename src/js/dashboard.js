@@ -27,8 +27,7 @@ function getVisits(team) {
   }).then(function(data) {
     var visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));
-      // Use timeslotLookup to determine if starttime is available, then adjust if need be
-      start = schedulesLookup.lookup(start);
+      start = schedulesLookup.lookup(start); // Determines if start time is available, then adjusts if need be
       let end = new Date(start.getTime() + 1800000);
       return { id: visit.id, title: visit.visit_type, start: start, end: end }
     })
@@ -39,9 +38,9 @@ function getVisits(team) {
   });
 }
 
+////// Schedules object contains timeslot objects for every day with visits. Lookup function checks for available timeslots and increments until finding one available  //////
 var schedulesLookup = {
   schedules: {},
-
   lookup: function(start) {
     let date = "date" + start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate();
     let startUTC = start.getTime();
@@ -68,9 +67,9 @@ var schedulesLookup = {
     start = new Date(startUTC)
     return start;
   }
-
 }
 
+////// Prototype for daily schedule used above //////
 var Schedule = class {
   // this['timeX-X'] refers to timeslot in military time. So time8-0 = 8am. time13-30 = 1:30pm.
   constructor() {
