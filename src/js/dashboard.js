@@ -38,7 +38,21 @@ function getVisits(team) {
   });
 }
 
-////// Schedules object contains timeslot objects for every day with visits. Lookup function checks for available timeslots and increments until finding one available  //////
+////// When user clicks a visit //////
+function visitClick(visitId, visitIndex) {
+  var customers = [];
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: `/dashboard/customerVisit/${visitId}`
+  }).then(function(customer) {
+    customers.push(customer)
+    makeMarkers(customers);
+  })
+}
+
+////// Schedules object contains timeslot objects for every day with visits //////
+////// Lookup function checks for available timeslots and increments until finding one available //////
 var schedulesLookup = {
   schedules: {},
   lookup: function(start) {

@@ -3,7 +3,10 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcrypt');
 var knex = require('../db/knex');
+var knexQueries = require('./lib/knexQueries');
 var auth = require('./lib/auth');
+var timeFunctions = require('./lib/timeFunctions');
+
 
 
 ////// Route to landing page //////
@@ -21,25 +24,12 @@ router.get('/create', auth.userAuth, function(req, res, next) {
   res.sendfile('./html/create.html');
 });
 
-////// Customer class containing customer lookup method -- TODO: MOVE TO MODULE //////
-const Customer = {
-  getCustomer (id) {
-    return knex('customers')
-      .where('id', id)
-      .first()
-  },
-
-  getVisits (id) {
-    return knex('visits')
-      .where('customers_id', id)
-  }
-}
-
 ////// Route to edit page //////
 router.get('/edit/:id', auth.userAuth, function(req, res, next) {
-  Customer.getCustomer(req.params.id)
-    .then((customer) => Customer.getVisits(req.params.id)
-      .then((visits) => res.render('edit', { customer: customer, visits: visits })))
+  knexQueries.customerById(req.params.id)
+    .then((customer) => knexQueries.visitsByCustomer(req.params.id)
+      .then((visits) => res.render('edit', { customer: customer,
+                                            visits: timeFunctions.timeFormat(visits) })))
 });
 
 ////// Route to list page //////

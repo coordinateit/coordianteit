@@ -7,6 +7,8 @@ $(document).ready(function() {
   $('#calendar').hide();
   $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
   $('#calendar').fullCalendar('addEventSource', calendarVisits);
+  $(`#state option[value="${customer.state}"]`).attr("selected", "selected");
+  $(`#customer_type option[value="${customer.customer_type}"]`).attr("selected", "selected");
 });
 
 ////// Make today's date default with timezone support ///////
@@ -64,8 +66,8 @@ function checkTeamSchedule() {
   $('#update_customer_button').click(function() {
     let data = {
       id: customer.id,
+      isactive: $('#status').val() ? true : false,
       customer_name: $('#customer_name').val(),
-      status: $('#status').val(),
       phone_1: $('#phone_1').val(),
       phone_2: $('#phone_2').val(),
       email: $('#email').val(),
@@ -77,6 +79,7 @@ function checkTeamSchedule() {
       referral: $('#referral').val(),
       notes: $('#notes').val()
     }
+    console.log(data);
     $.ajax({
       type: 'POST',
       dataType: 'json',
@@ -86,7 +89,7 @@ function checkTeamSchedule() {
         if (data.error) {
           $('#create_form').prepend(`<h3 style="color: red">${data.error}</h3>`)
         } else {
-          window.location.reload();
+          // window.location.reload();
         }
       }
     });
