@@ -256,6 +256,7 @@ router.post('/updateCustomer', auth.userAuth, function(req, res, next) {
         lat: lat,
         lng: lng,
         customer_name: req.body.customer_name,
+        isactive: req.body.isactive,
         phone_1: req.body.phone_1,
         phone_2: req.body.phone_2,
         email: req.body.email,

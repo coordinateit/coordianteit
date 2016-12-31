@@ -1,6 +1,12 @@
 var knex = require('../../db/knex');
 
 module.exports = {
+  customerById: function(id) {
+    return knex('customers')
+      .where('id', id)
+      .first()
+  },
+
   customersVisitsAll: function() {
     return knex('visits')
       .join('customers', 'customers_id', 'customers.id')
@@ -29,6 +35,12 @@ module.exports = {
       .whereIn('id', ids)
   },
 
+  visitById: function(id) {
+    return knex('visits')
+      .where('id', id)
+      .first()
+  },
+
   visits: function(team) {
     return knex('visits')
       .where(function() {
@@ -36,6 +48,11 @@ module.exports = {
           this.where('team_id', team)
         }
       })
+  },
+
+  visitsByCustomer: function(id) {
+    return knex('visits')
+      .where('customers_id', id)
   },
 
   visitsByDateRange: function(start, end) {

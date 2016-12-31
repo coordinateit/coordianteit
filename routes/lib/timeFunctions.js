@@ -1,24 +1,15 @@
-////// Logout route //////
-$('#logout').click(function(event) {
-  event.preventDefault;
-  $.ajax({
-    type: "GET",
-    datatype: "json",
-    url: "/logout",
-    success: function() {
-      window.location = "/";
-    }
-  })
-});
+module.exports = {
+  timeFormat: function(visits) {
+    visits.map(function(visit) {
+      visit.date = parseDate(visit.start);
+      visit.start = parseTime(visit.start);
+      visit.end = parseTime(visit.end);
+    });
+    return visits;
+  }
+};
 
-////// Get customer by ID //////
-function getCustomer(visitId) {
-  var customer = {}
-
-}
-
-////// Set time to 1:00 pm format //////
-function parseTime(input) {
+var parseTime = function(input) {
   let date = new Date(parseInt(input));
   let meridiem = 'am';
   let hours = date.getHours();
@@ -33,8 +24,7 @@ function parseTime(input) {
   return hours + ":" + minutes + " " + meridiem;
 }
 
-////// Set date to Sat, Oct 10 format //////
-function parseDate(input) {
+var parseDate = function(input) {
   let date = new Date(parseInt(input));
   let dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
