@@ -10,15 +10,20 @@ $("#create_job_button").click(function() {
     zip: $("#zip").val(),
   }
   if (!data.customer_name || !data.phone_1 || !data.address || !data.city || !data.state || !data.zip) {
-    $("#create_form").append("<h4>Please fill out all fields.</h4>");
+    $("#error").remove();
+    $("#create_form").prepend("<h4 id='error' style='color: red'>Please fill out all fields.</h4>");
   } else {
     $.ajax({
       type: 'POST',
       dataType: 'json',
       data: data,
-      url: '/user/newcustomer',
-      success: function(customerId) {
-        window.location = `/edit/${customerId}`;
+      url: '/user/newcustomer'
+    }).then(function(data) {
+      if (data.error) {
+        $("#error").remove();
+        $("#create_form").prepend(`<h4 id='error' style='color: red'>${data.error}</h4>`);
+      } else {
+        window.location = `/edit/${data.id}`;
       }
     })
   }

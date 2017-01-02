@@ -164,7 +164,7 @@ router.post('/newcustomer', auth.userAuth, function(req, res, next) {
       lng = data.results[0].geometry.location.lng;
       insert();
     } else {
-      res.send('Invalid address.')
+      res.send({ error: "Invalid address."})
     }
   });
   function insert() {
@@ -182,7 +182,7 @@ router.post('/newcustomer', auth.userAuth, function(req, res, next) {
       .insert(data)
       .returning('id')
       .then(function(id) {
-        res.send(id)
+        res.send({ id: id })
       })
   }
 });
