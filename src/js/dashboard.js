@@ -17,13 +17,12 @@ $(document).ready(function() {
 
 
 ////// Get visits from server //////
-function getVisits(team) {
+function getVisits(teams) {
   $.ajax({
     type: 'POST',
     dataType: 'json',
-    data: { team: team },
+    data: { teams: JSON.stringify(teams) },
     url: '/user/visits'
-    // url: `/user/visits/${team}`
   }).then(function(data) {
     var visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));
@@ -31,7 +30,6 @@ function getVisits(team) {
       let end = new Date(start.getTime() + 1800000);
       return { id: visit.id, title: visit.visit_type, start: start, end: end }
     })
-    // console.log(schedulesLookup.schedules);
     $('#calendar').fullCalendar('removeEvents');
     $('#calendar').fullCalendar('addEventSource', visits);
     $('#calendar').fullCalendar('refetchEvents');
@@ -62,7 +60,6 @@ var schedulesLookup = {
       this.schedules[date] = new Schedule;
     }
     if (startUTC % 1800000) {
-      console.log("modulo");
       let remainder = startUTC % 1800000;
       startUTC = startUTC - remainder;
     }
@@ -134,11 +131,10 @@ function mapReady() {
 }
 
 ////// Get customers for coming week, option for filter by team //////
-function getCustomers(team) {
+function getCustomers(teams) {
   let start = Date.now();
   let end = start + 604800000;
-  // let team = $('#visit_team').val();
-  getCustomersDateTeam(start, end, team);
+  getCustomersDateTeam(start, end, teams);
 }
 
 
@@ -149,14 +145,14 @@ function getCustomers(team) {
 
 
 ////// Get list data from server ///////
-function getListData(team) {
+function getListData(teams) {
   var date = new Date(parseInt(Date.now()));
   var start = date.setHours(0,0,0,0);
   var end = date.setHours(24,0,0,0);
   $.ajax({
     type: 'POST',
     dataType: 'json',
-    data: { team: team, start: start, end: end },
+    data: { teams: JSON.stringify(teams), start: start, end: end },
     url: '/user/list',
     success: function(data) {
       visitList(data);
@@ -167,15 +163,15 @@ function getListData(team) {
 ////// Add data to list ///////
 function visitList(data) {
   // Make an array of ids for list view
-  var listIds = data.map(function(i) {
-    return i.id;
+  var listIds = data.map(function(visit) {
+    return visit.id;
   })
   window.localStorage.list = JSON.stringify(listIds);
   $(".list").empty();
   $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Visit type</th><th>Address</th><th>Phone Number</th></tr>");
   for (var i = 0; i < data.length; i++) {
     let time = parseTime(data[i].start)
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].visit_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + '</td></tr>');
+    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].visit_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_1 + '</td></tr>');
   }
 }
 

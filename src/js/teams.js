@@ -19,9 +19,14 @@ function teamList(teams) {
 }
 
 ////// Filter page by team //////
-$('#teams').change(function(clicked) {
-  let team = $('#teams').find(":selected").val();
-  getVisits(team);
-  getCustomers(team);
-  getListData(team);
+$("#teams").on('change', function () {
+  var teams = $(this).val();
+  if (teams) {
+    teams = teams.map(function(team) {
+      return parseInt(team);
+    });
+  }
+  getVisits(teams);
+  getCustomers(teams);
+  getListData(teams);
 });

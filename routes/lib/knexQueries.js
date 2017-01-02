@@ -61,10 +61,10 @@ module.exports = {
       .andWhere('start', '<', end)
   },
 
-  visitsByDateRangeAndTeam(start, end, team) {
+  visitsByDateRangeAndTeams(start, end, teams) {
     return knex('visits')
-      .where('start', '>', start)
+      .whereIn('team_id', teams)
+      .andWhere('start', '>', start)
       .andWhere('start', '<', end)
-      .andWhere('team_id', team)
   }
 }
