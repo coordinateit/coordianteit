@@ -1,5 +1,5 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('customers', function(table) {
+  return knex.schema.createTable('jobs', function(table) {
     table.increments('id').primary();
     table.decimal('lat', 11, 7).notNullable();
     table.decimal('lng', 11, 7).notNullable();
