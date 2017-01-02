@@ -50,7 +50,7 @@ function getNearbyCustomers() {
 function checkTeamSchedule() {
   let date = $('#visit_date').val();
   let start = Date.parse(date);
-  let end = start + 86400000;
+  let end = start + 86400000; // Search today
   let team = $('#visit_team').val();
   getCustomersDateTeam(start, end, team);
 }
