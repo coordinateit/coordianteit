@@ -38,7 +38,7 @@ function getUsers() {
     url: "/admin/users",
     success: function(data) {
       for (var i = 0; i < data.length; i++) {
-        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone_number}</td><td>${data[i].isadmin}</td><td><button type="button" id="${data[i].id}" class="btn btn-primary btn-xs userEdit">Edit</button></td><td><a href="/admin/deleteUser/${data[i].id}"><button type="button" class="btn btn-danger btn-xs userDelete">Delete</button></a></td></tr>`)
+        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone_1}</td><td>${data[i].isadmin}</td><td><button type="button" id="${data[i].id}" class="btn btn-primary btn-xs userEdit">Edit</button></td><td><a href="/admin/deleteUser/${data[i].id}"><button type="button" class="btn btn-danger btn-xs userDelete">Delete</button></a></td></tr>`)
       }
       userEditListen();
     }
@@ -172,7 +172,7 @@ function showTeamMembers(teamMembers) {
   $('#teamMembers').empty();
   $('#teamMembers').append('<tr><th>Name</th><th>Phone</th></tr>');
   for (var i = 0; i < teamMembers.length; i++) {
-    $('#teamMembers').append(`<tr><td>${teamMembers[i].name}</td><td>${teamMembers[i].phone_number}</td></tr>`);
+    $('#teamMembers').append(`<tr><td>${teamMembers[i].name}</td><td>${teamMembers[i].phone_1}</td></tr>`);
   }
 }
 
@@ -229,11 +229,11 @@ function initMap() {
 function getJobs() {
   $.ajax({
     type: 'POST',
-    data: {bounds: JSON.stringify(bounds), team: teamFilter},
+    data: { bounds: JSON.stringify(bounds), team: teamFilter },
     dataType: 'json',
-    url: '/user/jobs'
-  }).then(function(jobs) {
-    setMarkers(jobs);
+    url: '/user/customers'
+  }).then(function(customers) {
+    setMarkers(customers);
   });
 }
 
@@ -294,6 +294,6 @@ function visitList(data) {
       minutes = "0" + minutes;
     }
     let time = hours + ":" + minutes + " " + meridiem;
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_number + "</td></tr>");
+    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_1 + "</td></tr>");
   }
 }

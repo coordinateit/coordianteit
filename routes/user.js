@@ -9,8 +9,8 @@ var auth = require('./lib/auth.js');
 
 
 ////// Lookup customers by date range //////
-router.get('/customersByDates/:start/:end', auth.userAuth, function(req, res, next) {
-  knexQueries.visitsByDateRange(req.params.start, req.params.end)
+router.post('/customersByDates', auth.userAuth, function(req, res, next) {
+  knexQueries.visitsByDateRange(req.body.start, req.body.end)
     .then(function(visits) {
       let ids = visits.map(function(visit) {
         return visit.customers_id;
@@ -23,9 +23,11 @@ router.get('/customersByDates/:start/:end', auth.userAuth, function(req, res, ne
 });
 
 ////// Lookup customers by date range and team //////
-router.get('/customersByDatesAndTeam/:start/:end/:team', auth.userAuth, function(req, res, next) {
-  knexQueries.visitsByDateRangeAndTeam(req.params.start, req.params.end, req.params.team)
+router.post('/customersByDatesAndTeams', auth.userAuth, function(req, res, next) {
+  console.log(JSON.parse(req.body.teams));
+  knexQueries.visitsByDateRangeAndTeams(req.body.start, req.body.end, JSON.parse(req.body.teams))
     .then(function(visits) {
+      console.log(visits);
       let ids = [];
       if (visits.length) {
         ids = visits.map(function(visit) {
@@ -50,7 +52,7 @@ router.post('/postVisit', auth.userAuth, function(req, res, next) {
     });
 });
 
-////// Gets jobs based on map position, optionally filtered by team //////
+////// Gets customers based on map position, optionally filtered by team //////
 router.post('/customers', auth.userAuth, function(req, res, next) {
   customersForDashboard(req.body)
     .then(function(customers) {
@@ -63,9 +65,10 @@ router.post('/customers', auth.userAuth, function(req, res, next) {
 
 ////// Gets visits //////
 router.post('/visits', auth.userAuth, function(req, res, next) {
-  if (req.body.team) {
+  if (req.body.teams) {
+    let teams = JSON.parse(req.body.teams);
     knex('visits')
-      .where('team_id', req.body.team)
+      .whereIn('team_id', teams)
       .then(function(visits) {
         res.send(visits);
       })
@@ -99,8 +102,9 @@ router.post('/list', auth.userAuth, function(req, res, next) {
   knex('customers')
     .join('visits', 'customers.id', 'visits.customers_id')
     .where(function() {
-      if (req.body.team) {
-        this.where('team_id', req.body.team);
+      if (req.body.teams) {
+        let teams = JSON.parse(req.body.teams);
+        this.whereIn('team_id', teams);
       }
     })
     .where(function() {
@@ -308,7 +312,7 @@ router.post('/geocode', auth.userAuth, function(req, res, next) {
   });
 });
 
-////// Search jobs //////
+////// Search customers //////
 router.post('/search', auth.userAuth, function(req, res, next) {
   var search = JSON.parse(req.body.search);
   var lat, lng, fromDate, toDate, radius;

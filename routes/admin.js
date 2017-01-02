@@ -52,7 +52,7 @@ router.post('/postUser', function(req, res, next) {
         team_id: team_id,
         isadmin: req.body.isadmin
       }).then(function() {
-        res.redirect('/admin.html')
+        res.redirect('/admin')
     });
   }
 });
@@ -89,7 +89,7 @@ router.get('/deleteUser/:id', function(req, res) {
       .where('id', req.params.id)
       .del()
       .then(function() {
-        res.redirect('/admin.html');
+        res.redirect('/admin');
       })
   }
 });
@@ -103,7 +103,7 @@ router.post('/postTeam', function(req, res, next) {
         vehicle: req.body.vehicle
       })
       .then(function() {
-        res.redirect('/admin.html')
+        res.redirect('/admin')
       })
   }
 });
@@ -144,7 +144,7 @@ router.get('/deleteTeam/:teamId', function(req, res, next) {
             .where('id', req.params.teamId)
             .del()
             .then(function() {
-              res.redirect('/admin.html');
+              res.redirect('/admin');
             })
         }
       })

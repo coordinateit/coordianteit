@@ -21,16 +21,19 @@ function makeMarker(position) {
 }
 
 ////// Get customers by date range, with option for team filter //////
-function getCustomersDateTeam(start, end, team) {
-  let url;
-  if (team) {
-    url = '/user/customersByDatesAndTeam/' + start + '/' + end + '/' + team;
+function getCustomersDateTeam(start, end, teams) {
+  let url, data;
+  if (teams) {
+    data = { start: start, end: end, teams: JSON.stringify(teams) };
+    url = '/user/customersByDatesAndTeams';
   } else {
-    url = '/user/customersByDates/' + start + '/' + end;
+    data = { start: start, end: end };
+    url = '/user/customersByDates';
   }
   $.ajax({
-    type: 'GET',
+    type: 'POST',
     dataType: 'json',
+    data: data,
     url: url
   }).then(function(customers) {
     makeMarkers(customers);
