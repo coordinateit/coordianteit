@@ -2,8 +2,8 @@ module.exports = {
   timeFormat: function(visits) {
     visits.map(function(visit) {
       visit.date = parseDate(visit.start);
-      visit.start = parseTime(visit.start);
-      visit.end = parseTime(visit.end);
+      visit.startTime = parseTime(visit.start);
+      visit.endTime = parseTime(visit.end);
     });
     return visits;
   }

@@ -105,11 +105,13 @@ function checkTeamSchedule() {
 ////// Click edit to display visit in form //////
 $('.visitEdit').click(function(event) {
   showVisit(event.target.id);
+  console.log(event.target);
 });
 
 ////// Show visit in visit form //////
 function showVisit(visitIndex) {
   let visit = visits[visitIndex];
+  console.log(visit);
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let dd = start.getDate();

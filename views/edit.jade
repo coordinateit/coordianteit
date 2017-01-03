@@ -229,15 +229,15 @@ html(lang="en")
                   - let end = new Date(parseInt(visit.end));
                     tr
                       td= visit.date
-                      td= visit.start
-                      td= visit.end
+                      td= visit.startTime
+                      td= visit.endTime
                       td= visit.visit_type
                       td= visit.team_id
                       td
                         button(type="button" id=`${i}` class="btn btn-primary btn-xs visitEdit") Edit
                       td
                         button(type="button" id=`${visit.id}` class="btn btn-danger btn-xs visitDelete") Delete
-                  - 
+                  - i++;  
                                     
             //- button(type="submit", id="addVisit", class="btn btn-primary") Add Visit
 
