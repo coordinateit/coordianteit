@@ -264,7 +264,7 @@ var calendarVisits = visits.map(function(visit, i) {
   return { id: visit.id, title: visit.visit_type, start: start, end: end, index: i }
 });
 
-function visitClick(visitId, visitIndex) {
+function visitClick(customerId, visitIndex) {
   showVisit(visitIndex);
   $("#create_job").hide();
   $("#create_visit_container").show();

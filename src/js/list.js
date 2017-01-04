@@ -34,6 +34,11 @@ function makeList(data) {
       minutes = "0" + minutes;
     }
     let time = hours + ":" + minutes + " " + meridiem;
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].job_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_1 + "</td></tr>");
+    $(".list").append(`<tr><td>${time}</td>
+                            <td>${data[i].team_id}</td>
+                            <td>${data[i].visit_type}</td>
+                            <td>${data[i].customer_name}</td>
+                            <td>${data[i].address}</td>
+                            <td>${data[i].phone_1}</td></tr>`);
   }
 }

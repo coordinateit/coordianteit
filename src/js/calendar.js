@@ -8,8 +8,6 @@ function initCalendar() {
     dayClick: function(date) {
       $('#calendar').fullCalendar('gotoDate', date);
       $('#calendar').fullCalendar('changeView', 'agendaDay');
-      // Set currentDate to date clicked
-      // currentDate = date._d.getTime();
     },
     eventMouseover: function() {
       document.body.style.cursor = "pointer";

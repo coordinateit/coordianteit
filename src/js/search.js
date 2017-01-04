@@ -82,6 +82,19 @@ function searchCustomers() {
     let newList = list.filter(function(item) {
       return item.customer_name.toLowerCase().includes(customerName);
     });
+    searchStatus(newList);
+  } else {
+    searchStatus(list);
+  }
+}
+
+////// Search by status //////
+function searchStatus(list) {
+  if ($('#isactive').val()) {
+    let isactive = $('#isactive').val() === "true";
+    let newList = list.filter(function(item) {
+      return item.isactive == isactive;
+    });
     searchTeam(newList);
   } else {
     searchTeam(list);

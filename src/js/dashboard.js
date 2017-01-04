@@ -28,7 +28,8 @@ function getVisits(teams) {
       let start = new Date(parseInt(visit.start));
       start = schedulesLookup.lookup(start); // Determines if start time is available, then adjusts if need be
       let end = new Date(start.getTime() + 1800000);
-      return { id: visit.id, title: visit.visit_type, start: start, end: end }
+      return { id: visit.id, title: `${visit.team_name} - ${visit.visit_type} - ${visit.customer_name} - ${visit.address} - ${visit.phone_1}`, start: start, end: end }
+      // Team - Visit Type - Customer Name - Address - Phone Number
     })
     $('#calendar').fullCalendar('removeEvents');
     $('#calendar').fullCalendar('addEventSource', visits);
@@ -37,16 +38,16 @@ function getVisits(teams) {
 }
 
 ////// When user clicks a visit //////
-function visitClick(visitId, visitIndex) {
+function visitClick(customerId, index) {
   var customers = [];
   $.ajax({
     type: 'GET',
     dataType: 'json',
-    url: `/dashboard/customerVisit/${visitId}`
+    url: `/dashboard/customerVisit/${customerId}`
   }).then(function(customer) {
     customers.push(customer)
     makeMarkers(customers);
-  })
+  });
 }
 
 ////// Schedules object contains timeslot objects for every day with visits //////
@@ -168,10 +169,16 @@ function visitList(data) {
   })
   window.localStorage.list = JSON.stringify(listIds);
   $(".list").empty();
-  $(".list").append("<tr><th>Team</th><th>Start Time</th><th>Visit type</th><th>Address</th><th>Phone Number</th></tr>");
+  //              Team - Visit Type - Customer Name - Address - Phone Number
+  $(".list").append("<tr><th>Start Time</th><th>Team</th><th>Visit type</th><th>Customer</th><th>Address</th><th>Phone Number</th></tr>");
   for (var i = 0; i < data.length; i++) {
     let time = parseTime(data[i].start)
-    $(".list").append("<tr><td>" + data[i].team_id + "</td><td>" + time + "</td><td>" + data[i].visit_type + "</td><td>" + data[i].address + "</td><td>" + data[i].phone_1 + '</td></tr>');
+    $(".list").append(`<tr><td>${time}</td>
+                            <td>${data[i].team_id}</td>
+                            <td>${data[i].visit_type}</td>
+                            <td>${data[i].customer_name}</td>
+                            <td>${data[i].address}</td>
+                            <td>${data[i].phone_1}</td></tr>`);
   }
 }
 

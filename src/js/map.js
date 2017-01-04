@@ -14,9 +14,11 @@ function initMap() {
 
 ////// Create marker from position //////
 function makeMarker(position) {
+  let image = "../img/focus-marker.png"
   editMarker = new google.maps.Marker({
     position: position,
-    map: map
+    map: map,
+    icon: image
   });
 }
 
@@ -49,7 +51,8 @@ function makeMarkers(customers) {
   }
   for (var i = 0; i < customers.length; i++) {  // Set new markers
     let content = `<h4>${customers[i].customer_name}</h4>
-                    <p>${customers[i].customer_type} </p>
+                    <p>${customers[i].address}, ${customers[i].city}</p>
+                    <p>${customers[i].customer_type}</p>
                     <a href='/edit/${customers[i].id}'>View Customer</a>
                     <br><br>
                     <h5>Visits:</h5>`
@@ -63,7 +66,7 @@ function makeMarkers(customers) {
           let start = parseTime(data[i].start);
           let end = parseTime(data[i].end);
           let date = parseDate(data[i].start);
-          content += `<p>${data[i].visit_type}: ${start} - ${end}, ${date}</p>`
+          content += `<p>${data[i].visit_type}: ${start} - ${end}, ${date} -- ${data[i].team_name}</p>`
         }
         infowindow = new google.maps.InfoWindow({
           content: content

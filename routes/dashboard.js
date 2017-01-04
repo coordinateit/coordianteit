@@ -10,12 +10,9 @@ var auth = require('./lib/auth.js');
 
 ////// Gets customer by visit ID //////
 router.get('/customerVisit/:id', auth.userAuth, function(req, res, next) {
-  knexQueries.visitById(req.params.id)
-    .then(function(visit) {
-      knexQueries.customerById(visit.customers_id)
-        .then(function(customer) {
-          res.send(customer);
-        })
+  knexQueries.customerById(req.params.id)
+    .then(function(customer) {
+      res.send(customer);
     });
 });
 

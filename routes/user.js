@@ -68,12 +68,16 @@ router.post('/visits', auth.userAuth, function(req, res, next) {
   if (req.body.teams) {
     let teams = JSON.parse(req.body.teams);
     knex('visits')
+      .join('teams', 'team_id', 'teams.id')
+      .join('customers', 'customers_id', 'customers.id')
       .whereIn('team_id', teams)
       .then(function(visits) {
         res.send(visits);
       })
   } else {
     knex('visits')
+      .join('teams', 'team_id', 'teams.id')
+      .join('customers', 'customers_id', 'customers.id')
       .then(function(visits) {
         res.send(visits);
       })
@@ -83,6 +87,7 @@ router.post('/visits', auth.userAuth, function(req, res, next) {
 ////// Get visits for a given job ///////
 router.get('/jobVisits/:customerId', auth.userAuth, function(req, res, next) {
   knex('visits')
+    .join('teams', 'team_id', 'teams.id')
     .where('customers_id', req.params.customerId)
     .then(function(data) {
       res.send(data);
