@@ -79,7 +79,6 @@ function checkTeamSchedule() {
       referral: $('#referral').val(),
       notes: $('#notes').val()
     }
-    console.log(data);
     $.ajax({
       type: 'POST',
       dataType: 'json',
@@ -89,7 +88,7 @@ function checkTeamSchedule() {
         if (data.error) {
           $('#create_form').prepend(`<h3 style="color: red">${data.error}</h3>`)
         } else {
-          // window.location.reload();
+          window.location.reload();
         }
       }
     });
@@ -111,7 +110,6 @@ $('.visitEdit').click(function(event) {
 ////// Show visit in visit form //////
 function showVisit(visitIndex) {
   let visit = visits[visitIndex];
-  console.log(visit);
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let dd = start.getDate();
@@ -155,6 +153,15 @@ function setTime(time) {
   }
   return hh + ":" + mm;
 }
+
+$('#visit_start').on('change', function() {
+  let date = $('#visit_date').val();
+  let start = $('#visit_start').val();
+  let newStart = Date.parse(date + ', ' + start);
+  let newEnd = new Date(newStart + 1800000);
+  let endTime = setTime(newEnd);
+  $('#visit_end').val(endTime);
+});
 
 $('#visitSubmit').click(function() {
   visitSubmit();

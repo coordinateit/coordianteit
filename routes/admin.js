@@ -138,7 +138,7 @@ router.get('/deleteTeam/:teamId', function(req, res, next) {
       .where('team_id', req.params.teamId)
       .then(function(data) {
         if (data.length) {
-          res.send({error: "You must remove all members from a team before deleting it."})
+          res.send({ error: "You must remove all members from a team before deleting it." })
         } else {
           knex('teams')
             .where('id', req.params.teamId)

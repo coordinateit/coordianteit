@@ -20,11 +20,17 @@ function teamList(teams) {
 
 ////// Filter page by team //////
 $("#teams").on('change', function () {
-  var teams = $(this).val();
+  let teams = $(this).val();
   if (teams) {
-    teams = teams.map(function(team) {
-      return parseInt(team);
-    });
+    if (teams[0] !== "") {
+      teams = teams.map(function(team) {
+        return parseInt(team);
+      });
+    } else {
+      teams = null;
+    }
+  } else {
+    teams = null;
   }
   getVisits(teams);
   getCustomers(teams);

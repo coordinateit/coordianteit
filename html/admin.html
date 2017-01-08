@@ -30,7 +30,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <h1><a class="navbar-brand" href="/">CoordinateIt</a></h1>
+        <h1><a class="navbar-brand" href="/dashboard">CoordinateIt</a></h1>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
@@ -96,7 +96,7 @@
   </section>
 
   <!-- User Management -->
-  <section class="user_management nodisplay">
+  <!-- <section class="user_management nodisplay">
     <h3>Create User</h3>
     <div class="row">
       <div class="col-md-3">
@@ -129,7 +129,7 @@
               <label for="team">Team</label>
               <select class="form-control teams" id="user_team_id" name="team_id">
                 <option value="">Team</option>
-                <!-- Teams appended from profile.js teamList() -->
+
               </select>
             </div>
             <button type="submit" id="create_user" class="btn btn-primary">Create User</button>
@@ -150,7 +150,7 @@
         </table>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Team Management -->
   <section class="team_management">
@@ -197,8 +197,69 @@
       </div>
       <div class="col-md-8">
 
+
+
+        <section class="user_management">
+          <h3>Create User</h3>
+          <div class="row">
+            <div class="col-md-4">
+              <form action="/admin/postUser" method="POST">
+                <fieldset>
+                  <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="user_name" class="form-control" name="name" placeholder="Name">
+                  </div>
+                  <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" id="user_phone" class="form-control" name="phone" placeholder="phone">
+                  </div>
+                  <div class="form-group">
+                    <label>E-Mail</label>
+                    <input type="text" id="user_email" class="form-control" name="email" placeholder="e-mail@domain.com">
+                  </div>
+                  <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="user_password" class="form-control" name="password" placeholder="Password">
+                  </div>
+                  <div class="form-group">
+                    <label>User Type</label>
+                    <select name="isadmin" id="user_isadmin" class="form-control">
+                      <option value="false">User</option>
+                      <option value="true">Admin</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="team">Team</label>
+                    <select class="form-control teams" id="user_team_id" name="team_id">
+                      <option value="">Team</option>
+                      <!-- Teams appended from profile.js teamList() -->
+                    </select>
+                  </div>
+                  <button type="submit" id="create_user" class="btn btn-primary">Create User</button>
+                  <button type="button" id="save_user" class="btn btn-primary">Save</button>
+                </fieldset>
+              </form>
+            </div>
+            <div class="col-md-8">
+              <table id="allUsers" class="table table-striped table-responsive">
+                <tr>
+                  <th>Name</th>
+                  <th>E-mail</th>
+                  <th>Phone</th>
+                  <th>Admin</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+
+
           <!-- Map - List Switch -->
-          <div>
+          <!-- <div>
             <label class="switch-light" onclick="">
               <input class="switch_map_list" type="checkbox" checked="checked">
               <span class="well">
@@ -207,13 +268,13 @@
                 <a class="btn btn-primary"></a>
               </span>
             </label>
-          </div>
+          </div> -->
 
           <!-- Map -->
-          <div id="map"></div>
+          <!-- <div id="map"></div> -->
 
           <!-- List -->
-          <div id="list" class="nodisplay table-responsive">
+          <!-- <div id="list" class="nodisplay table-responsive">
             <table class="list table table-striped">
               <tr>
                 <th>Team</th>
@@ -224,7 +285,7 @@
               </tr>
             </table>
             <a href="list" target="_blank">Printer Friendly Version</a>
-          </div>
+          </div> -->
       </div>
     </div>
   </section>
@@ -237,11 +298,8 @@
 
 <script src='https://code.jquery.com/jquery-2.2.3.min.js' integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=' crossorigin='anonymous'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- <script src='js/dashboard.js'></script> -->
 <script src='js/all.js'></script>
 <script src='js/profile.js'></script>
-
-<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap' async></script>
 
 </body>
 </html>
