@@ -38,7 +38,9 @@ function getCustomersDateTeam(start, end, teams) {
     data: data,
     url: url
   }).then(function(customers) {
-    makeMarkers(customers);
+    makeMarkers(customers.filter(function(localCustomer) {
+      return localCustomer.id !== customer.id;
+    }));
   });
 }
 
