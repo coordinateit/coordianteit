@@ -24,10 +24,8 @@ router.post('/customersByDates', auth.userAuth, function(req, res, next) {
 
 ////// Lookup customers by date range and team //////
 router.post('/customersByDatesAndTeams', auth.userAuth, function(req, res, next) {
-  console.log(JSON.parse(req.body.teams));
   knexQueries.visitsByDateRangeAndTeams(req.body.start, req.body.end, JSON.parse(req.body.teams))
     .then(function(visits) {
-      console.log(visits);
       let ids = [];
       if (visits.length) {
         ids = visits.map(function(visit) {
@@ -65,8 +63,10 @@ router.post('/customers', auth.userAuth, function(req, res, next) {
 
 ////// Gets visits //////
 router.post('/visits', auth.userAuth, function(req, res, next) {
-  if (req.body.teams) {
-    let teams = JSON.parse(req.body.teams);
+  console.log(req.body);
+  let teams = JSON.parse(req.body.teams);
+  if (teams) {
+    console.log(teams);
     knex('visits')
       .join('teams', 'team_id', 'teams.id')
       .join('customers', 'customers_id', 'customers.id')

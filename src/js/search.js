@@ -6,6 +6,7 @@ $(document).ready(function() {
 });
 
 var position = JSON.parse(window.localStorage.position);
+var list;
 
 ////// Code to execute when map loads //////
 function mapReady() {} // Must exist even if empty
@@ -30,13 +31,24 @@ function teamList(teams) {
 }
 
 //////  //////
-var list;
+
 function getList() {
   $.ajax({
     type: "GET",
     dataType: "json",
-    url: "/search/allCustomersVisits",
-    // success: function(data) {
+    url: "/search/allCustomersVisits"
+  }).then(function(data) {
+    makeMarkers(data);
+    visitList(data);
+    list = data;
+  });
+}
+
+function getList() {
+  $.ajax({
+    type: "GET",
+    dataType: "json",
+    url: "/search/allCustomersVisits"
   }).then(function(data) {
     makeMarkers(data);
     visitList(data);
@@ -275,6 +287,13 @@ $(".switch_basic_advanced").change(function() {
   var userinput = $(this);
   if (userinput.prop("checked")){
     $(".advancedDiv").hide();
+    $("#isactive").val(null);
+    $("#team").val(null);
+    $("#state").val(null);
+    $("#phone").val(null);
+    $("#radius").val(null);
+    $("#from").val(null);
+    $("#to").val(null);
   } else {
     $(".advancedDiv").show();
   }
@@ -288,71 +307,71 @@ $(".switch_basic_advanced").change(function() {
 
 
 
-
-////// Send search parameters to server //////
-$('#').click(function(event) {
-  event.preventDefault();
-  let search = {};
-  if ($('#customer').val()) {
-    search.customer_name = $('#customer').val();
-  }
-  if ($('#po').val()) {
-    search.po = $('#po').val();
-  }
-  if ($('#priority').val()) {
-    search.priority = $('#priority').val();
-  }
-  if ($('#team').val()) {
-    search.team_id = $('#team').val();
-  }
-  if ($('#from').val()) {
-    search.from = $('#from').val();
-  }
-  if ($('#to').val()) {
-    search.to = $('#to').val();
-  }
-  if ($('#address').val()) {
-    search.address = $('#address').val();
-  }
-  if ($('#city').val()) {
-    search.city = $('#city').val();
-  }
-  if ($('#state').val()) {
-    search.state = $('#state').val();
-  }
-  if ($('#zip').val()) {
-    search.zip = $('#zip').val();
-  }
-  if ($('#radius').val()) {
-    search.radius = $('#radius').val();
-  }
-  if ($('#notes').val()) {
-    search.notes = $('#notes').val();
-  }
-  getSearch(search);
-});
-
-
-////// Query database for search items //////
-function getSearch(search) {
-  $.ajax({
-    type: "POST",
-    dataType: "json",
-    data: { search: JSON.stringify(search) },
-    url: "/user/search",
-    success: function(data) {
-      setMarkers(data);
-      visitList(data);
-      setIdArray(data);
-    }
-  })
-}
-
-
-////// Make an array of ids for list view //////
-function setIdArray(data) {
-  var listIds = data.map(function(i) {
-    return i.id;
-  })
-  window.localStorage.list = JSON.stringify(listIds);
-};
+//
+// ////// Send search parameters to server //////
+// $('#').click(function(event) {
+//   event.preventDefault();
+//   let search = {};
+//   if ($('#customer').val()) {
+//     search.customer_name = $('#customer').val();
+//   }
+//   if ($('#po').val()) {
+//     search.po = $('#po').val();
+//   }
+//   if ($('#priority').val()) {
+//     search.priority = $('#priority').val();
+//   }
+//   if ($('#team').val()) {
+//     search.team_id = $('#team').val();
+//   }
+//   if ($('#from').val()) {
+//     search.from = $('#from').val();
+//   }
+//   if ($('#to').val()) {
+//     search.to = $('#to').val();
+//   }
+//   if ($('#address').val()) {
+//     search.address = $('#address').val();
+//   }
+//   if ($('#city').val()) {
+//     search.city = $('#city').val();
+//   }
+//   if ($('#state').val()) {
+//     search.state = $('#state').val();
+//   }
+//   if ($('#zip').val()) {
+//     search.zip = $('#zip').val();
+//   }
+//   if ($('#radius').val()) {
+//     search.radius = $('#radius').val();
+//   }
+//   if ($('#notes').val()) {
+//     search.notes = $('#notes').val();
+//   }
+//   getSearch(search);
+// });
+//
+//
+// ////// Query database for search items //////
+// function getSearch(search) {
+//   $.ajax({
+//     type: "POST",
+//     dataType: "json",
+//     data: { search: JSON.stringify(search) },
+//     url: "/user/search",
+//     success: function(data) {
+//       setMarkers(data);
+//       visitList(data);
+//       setIdArray(data);
+//     }
+//   })
+// }
+//
+//
+// ////// Make an array of ids for list view //////
+// function setIdArray(data) {
+//   var listIds = data.map(function(i) {
+//     return i.id;
+//   })
+//   window.localStorage.list = JSON.stringify(listIds);
+// };

@@ -5,7 +5,7 @@ $(document).ready(function() {
   getListData();
   getTeamList();
   initCalendar();
-  getVisits();
+  getVisits(null);
   $('#calendar').fullCalendar('refetchEvents');
 });
 
@@ -24,12 +24,12 @@ function getVisits(teams) {
     data: { teams: JSON.stringify(teams) },
     url: '/user/visits'
   }).then(function(data) {
-    var visits = data.map(function(visit) {
+    schedulesLookup.schedules = {};
+    let visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));
       start = schedulesLookup.lookup(start); // Determines if start time is available, then adjusts if need be
       let end = new Date(start.getTime() + 1800000);
       return { id: visit.id, title: `${visit.team_name} - ${visit.visit_type} - ${visit.customer_name} - ${visit.address} - ${visit.phone_1}`, start: start, end: end }
-      // Team - Visit Type - Customer Name - Address - Phone Number
     })
     $('#calendar').fullCalendar('removeEvents');
     $('#calendar').fullCalendar('addEventSource', visits);
@@ -169,7 +169,6 @@ function visitList(data) {
   })
   window.localStorage.list = JSON.stringify(listIds);
   $(".list").empty();
-  //              Team - Visit Type - Customer Name - Address - Phone Number
   $(".list").append("<tr><th>Start Time</th><th>Team</th><th>Visit type</th><th>Customer</th><th>Address</th><th>Phone Number</th></tr>");
   for (var i = 0; i < data.length; i++) {
     let time = parseTime(data[i].start)
