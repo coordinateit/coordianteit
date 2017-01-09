@@ -29,7 +29,7 @@ router.get('/edit/:id', auth.userAuth, function(req, res, next) {
   knexQueries.customerById(req.params.id)
     .then((customer) => knexQueries.visitsByCustomer(req.params.id)
       .then((visits) => res.render('edit', { customer: customer,
-                                            visits: timeFunctions.timeFormat(visits) })))
+                                            visits: timeFunctions.timeFormatAndSort(visits) })))
 });
 
 ////// Route to list page //////

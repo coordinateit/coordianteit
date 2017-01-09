@@ -30,23 +30,17 @@ function mapReady() {
   makeMarker(position);
 }
 
-//////  //////
+////// Lookup customer/visits within 3.5 days before and after //////
 function getNearbyCustomers() {
   let date = $('#visit_date').val();
   let time = $('#visit_start').val();
   let dateTime = Date.parse(date + ', ' + time);
   let start = dateTime - 302400000;
   let end = dateTime + 302400000;
-  $.ajax({
-    type: 'GET',
-    dataType: 'json',
-    url: '/user/customersByDates/' + start + '/' + end
-  }).then(function(customers) {
-    makeMarkers(customers);
-  });
+  getCustomersDateTeam(start, end);
 }
 
-//////  //////
+////// Lookup customer/visits same day by team //////
 function checkTeamSchedule() {
   let date = $('#visit_date').val();
   let start = Date.parse(date);
@@ -63,36 +57,36 @@ function checkTeamSchedule() {
 
 
 ////// Update customer in database //////
-  $('#update_customer_button').click(function() {
-    let data = {
-      id: customer.id,
-      isactive: $('#status').val() ? true : false,
-      customer_name: $('#customer_name').val(),
-      phone_1: $('#phone_1').val(),
-      phone_2: $('#phone_2').val(),
-      email: $('#email').val(),
-      address: $('#address').val(),
-      city: $('#city').val(),
-      state: $('#state').val(),
-      zip: $('#zip').val(),
-      customer_type: $('#customer_type').val(),
-      referral: $('#referral').val(),
-      notes: $('#notes').val()
-    }
-    $.ajax({
-      type: 'POST',
-      dataType: 'json',
-      data: data,
-      url: '/user/updateCustomer',
-      success: function(data) {
-        if (data.error) {
-          $('#create_form').prepend(`<h3 style="color: red">${data.error}</h3>`)
-        } else {
-          window.location.reload();
-        }
+$('#update_customer_button').click(function() {
+  let data = {
+    id: customer.id,
+    isactive: $('#status').val() ? true : false,
+    customer_name: $('#customer_name').val(),
+    phone_1: $('#phone_1').val(),
+    phone_2: $('#phone_2').val(),
+    email: $('#email').val(),
+    address: $('#address').val(),
+    city: $('#city').val(),
+    state: $('#state').val(),
+    zip: $('#zip').val(),
+    customer_type: $('#customer_type').val(),
+    referral: $('#referral').val(),
+    notes: $('#notes').val()
+  }
+  $.ajax({
+    type: 'POST',
+    dataType: 'json',
+    data: data,
+    url: '/user/updateCustomer',
+    success: function(data) {
+      if (data.error) {
+        $('#create_form').prepend(`<h3 style="color: red">${data.error}</h3>`)
+      } else {
+        window.location.reload();
       }
-    });
+    }
   });
+});
 
 
 
@@ -124,7 +118,6 @@ function showVisit(visitIndex) {
   let date = yyyy + "-" + MM + "-" + dd;
   let startTime = setTime(start);
   let endTime = setTime(end);
-
   $('#visit_date').val(date);
   $('#visit_start').val(startTime);
   $('#visit_end').val(endTime);
@@ -132,7 +125,6 @@ function showVisit(visitIndex) {
   let team = document.getElementById('visit_team');
   team.value = visit.team_id;
   $('#visit_notes').val(visit.notes);
-
   $("#create_visit").show();
   $("#saveVisitSubmit").show();
   $("#visitSubmit").hide();
