@@ -38,16 +38,26 @@ function getCustomersDateTeam(start, end, teams) {
     data: data,
     url: url
   }).then(function(customers) {
-    makeMarkers(customers.filter(function(localCustomer) {
-      return localCustomer.id !== customer.id;
-    }));
+    let currentCustomer = getCurrentCustomer();
+    if (currentCustomer) {
+      makeMarkers(customers.filter(function(localCustomer) {
+        return localCustomer.id !== customer.id;
+      }), currentCustomer);
+    } else {
+      makeMarkers(customers);
+    }
   });
+}
+
+function getCurrentCustomer() {
+  return customer;
 }
 
 ////// Create markers from an array of customers //////
 var markers = [];
 var infowindows = [];
-function makeMarkers(customers) {
+function makeMarkers(customers, currentCustomer) {
+  let bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < markers.length; i++) {  // Clear markers
     markers[i].setMap(null);
   }
@@ -76,8 +86,10 @@ function makeMarkers(customers) {
         infowindows.push(infowindow);
       }
     });
+    let position = { lat: parseFloat(customers[i].lat), lng: parseFloat(customers[i].lng) };
+    bounds.extend(position);
     let marker = new google.maps.Marker({
-      position: { lat: parseFloat(customers[i].lat), lng: parseFloat(customers[i].lng) },
+      position: position,
       map: map,
       id: customers[i].id,
       title: customers[i].customer_name
@@ -90,4 +102,8 @@ function makeMarkers(customers) {
     });
     markers.push(marker);
   }
+  if (currentCustomer) {
+    bounds.extend({ lat: parseFloat(currentCustomer.lat), lng: parseFloat(currentCustomer.lng) });
+  }
+  map.fitBounds(bounds);
 }

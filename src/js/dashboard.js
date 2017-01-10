@@ -133,7 +133,8 @@ function mapReady() {
 
 ////// Get customers for coming week, option for filter by team //////
 function getCustomers(teams) {
-  let start = Date.now();
+  let date = new Date(Date.now());
+  let start = date.setHours(0,0,0,0);
   let end = start + 604800000;
   getCustomersDateTeam(start, end, teams);
 }
