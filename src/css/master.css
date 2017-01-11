@@ -152,6 +152,10 @@ form:nth-child(2) {
   display: none;
 }
 
+.createteam {
+  border-right: 1px solid #eee;
+}
+
 /******<< Map Styles >>******/
 
 #map {
