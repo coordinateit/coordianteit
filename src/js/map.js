@@ -38,19 +38,14 @@ function getCustomersDateTeam(start, end, teams) {
     data: data,
     url: url
   }).then(function(customers) {
-    let currentCustomer = getCurrentCustomer();
-    if (currentCustomer) {
+    if (window.customer) {
       makeMarkers(customers.filter(function(localCustomer) {
         return localCustomer.id !== customer.id;
-      }), currentCustomer);
+      }), customer);
     } else {
       makeMarkers(customers);
     }
   });
-}
-
-function getCurrentCustomer() {
-  return customer;
 }
 
 ////// Create markers from an array of customers //////

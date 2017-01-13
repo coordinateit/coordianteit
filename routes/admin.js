@@ -97,13 +97,28 @@ router.get('/deleteUser/:id', function(req, res) {
 
 router.post('/postTeam', function(req, res, next) {
   if (req.session.isadmin) {
+    console.log(req.body);
     knex('teams')
       .insert({
         team_name: req.body.team_name,
         vehicle: req.body.vehicle
       })
       .then(function() {
-        res.redirect('/admin')
+        res.send({})
+      })
+  }
+});
+
+router.post('/saveTeam', function(req, res, next) {
+  if (req.session.isadmin) {
+    knex('teams')
+      .where('id', req.body.id)
+      .update({
+        team_name: req.body.team_name,
+        vehicle: req.body.vehicle
+      })
+      .then(function() {
+        res.send({})
       })
   }
 });

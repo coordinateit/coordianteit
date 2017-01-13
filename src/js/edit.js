@@ -98,7 +98,6 @@ $('#update_customer_button').click(function() {
 ////// Click edit to display visit in form //////
 $('.visitEdit').click(function(event) {
   showVisit(event.target.id);
-  console.log(event.target);
 });
 
 ////// Show visit in visit form //////
@@ -297,5 +296,6 @@ $(".switch_map_calendar").change(function() {
   } else {
     $("#map").hide();
     $("#calendar").show();
+    $('#calendar').fullCalendar('refetchEvents');
   }
 });
