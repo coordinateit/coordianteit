@@ -132,6 +132,21 @@ function showVisit(visitIndex) {
   });
 }
 
+//////  //////
+for (var i = 0; i < visits.length; i++) {
+  let date = parseDate(parseInt(visits[i].start));
+  let start = parseTime(parseInt(visits[i].start));
+  let end = parseTime(parseInt(visits[i].end));
+  $('.visit_list').append(`<tr><td>${date}</td>
+                                <td>${start}</td>
+                                <td>${end}</td>
+                                <td>${visits[i].visit_type}</td>
+                                <td>${visits[i].team_id}</td>
+                                <td><button type="button" id=${i} class="btn btn-primary btn-xs visitEdit">Edit</button></td>
+                                <td><button type="button" id=${visits[i].id} class="btn btn-danger btn-xs visitDelete">Delete</button></td>
+                                </tr>`);
+}
+
 ////// Return pretty time string //////
 function setTime(time) {
   let hh = time.getHours();
