@@ -7,6 +7,7 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: position,
     zoom: 11,
+    maxZoom: 18,
     fullscreenControl: true
   });
   mapReady();
