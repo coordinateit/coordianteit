@@ -101,5 +101,8 @@ function makeMarkers(customers, currentCustomer) {
   if (currentCustomer) {
     bounds.extend({ lat: parseFloat(currentCustomer.lat), lng: parseFloat(currentCustomer.lng) });
   }
+  if (!customers.length) {
+    bounds.extend(position);
+  }
   map.fitBounds(bounds);
 }
