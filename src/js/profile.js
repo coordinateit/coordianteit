@@ -8,7 +8,6 @@ $(document).ready(function(){
   getListData();
 });
 
-
 ////// Check for admin access and redirect //////
 function authorize() {
   $.ajax({
@@ -28,6 +27,12 @@ function authorize() {
 }
 
 
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    USERS                                   //
+////////////////////////////////////////////////////////////////////////////////
+
+
 ////// Get all users //////
 function getUsers() {
   $('#allUsers').empty();
@@ -38,13 +43,12 @@ function getUsers() {
     url: "/admin/users",
     success: function(data) {
       for (var i = 0; i < data.length; i++) {
-        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone_1}</td><td>${data[i].isadmin}</td><td><button type="button" id="${data[i].id}" class="btn btn-primary btn-xs userEdit">Edit</button></td><td><a href="/admin/deleteUser/${data[i].id}"><button type="button" class="btn btn-danger btn-xs userDelete">Delete</button></a></td></tr>`)
+        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone}</td><td>${data[i].isadmin}</td><td><button type="button" id="${data[i].id}" class="btn btn-primary btn-xs userEdit">Edit</button></td><td><a href="/admin/deleteUser/${data[i].id}"><button type="button" class="btn btn-danger btn-xs userDelete">Delete</button></a></td></tr>`)
       }
       userEditListen();
     }
   })
 }
-
 
 ////// Listen for edit user click //////
 function userEditListen() {
@@ -52,7 +56,6 @@ function userEditListen() {
     getUser(parseInt(event.target.id));
   })
 }
-
 
 ////// Get user from database //////
 function getUser(id) {
@@ -65,7 +68,6 @@ function getUser(id) {
     }
   });
 }
-
 
 ////// Populate user form //////
 function showUser(user) {
@@ -102,17 +104,13 @@ function showUser(user) {
 }
 
 
-////// Profile Button Div Switch /////
-$(".menu button").on("click", function(){
-  var button_id = "." + $(this).attr("id");
-  $(".credentials").hide();
-  $(".team_management").hide();
-  $(".user_management").hide();
-  $(button_id).show();
-});
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    TEAMS                                   //
+////////////////////////////////////////////////////////////////////////////////
 
 
-
+//////  //////
 function getTeamList() {
   $.ajax({
     type: 'GET',
@@ -124,38 +122,38 @@ function getTeamList() {
   });
 }
 
-
-
+//////  //////
 function teamList(teams) {
   for (var i = 0; i < teams.length; i++) {
     $('.teams').append(`<option value="${teams[i].id}">${teams[i].team_name}</option>`);
   };
 }
 
-
 ////// Filter page by team //////
 var teamFilter;
 $('#teamselect').change(function(clicked) {
   teamFilter = $('#teamselect').find(":selected").val();
-  getJobs();
-  getListData();
   getTeam();
 });
 
-
+//////  //////
 function getTeam() {
   $.ajax({
     type: "GET",
     datatype: "json",
     url: "/admin/team/" + teamFilter,
     success: function(data) {
-      $('#truck').text(data.vehicle)
+      $('#team-name').val(data.team_name)
+      $('#truck').val(data.vehicle)
+      $('#submitTeam').hide();
+      $('#saveTeam').show();
+      $('#clearForm').show();
       getTeamMembers(data.id)
     }
   });
 }
 
-
+//////  //////
 function getTeamMembers(team) {
   $.ajax({
     type: "GET",
@@ -167,16 +165,60 @@ function getTeamMembers(team) {
   });
 }
 
-
+//////  //////
 function showTeamMembers(teamMembers) {
   $('#teamMembers').empty();
   $('#teamMembers').append('<tr><th>Name</th><th>Phone</th></tr>');
   for (var i = 0; i < teamMembers.length; i++) {
-    $('#teamMembers').append(`<tr><td>${teamMembers[i].name}</td><td>${teamMembers[i].phone_1}</td></tr>`);
+    $('#teamMembers').append(`<tr><td>${teamMembers[i].name}</td><td>${teamMembers[i].phone}</td></tr>`);
   }
 }
 
+//////  //////
+$('#submitTeam').click(function(e) {
+  e.preventDefault();
+  let data = {
+    team_name: $('#team-name').val(),
+    vehicle: $('#truck').val()
+  }
+  console.log(data);
+  $.ajax({
+    type: 'POST',
+    dataType: 'json',
+    data: data,
+    url: '/admin/postTeam'
+  }).then(function(data) {
+      window.location = '/admin';
+  });
+});
 
+//////  //////
+$('#saveTeam').click(function(e) {
+  e.preventDefault();
+  let data = {
+    id: teamFilter,
+    team_name: $('#team-name').val(),
+    vehicle: $('#truck').val()
+  }
+  $.ajax({
+    type: 'POST',
+    dataType: 'json',
+    data: data,
+    url: '/admin/saveTeam'
+  }).then(function() {
+    window.location = '/admin';
+  });
+});
+
+$('#clearForm').click(function() {
+  $('#team-name').val() = null;
+  $('#truck').val() = null;
+  $('#submitTeam').show();
+  $('#saveTeam').hide();
+  $('#clearForm').hide();
+});
+
+//////  //////
 $('#delete-team').click(function() {
   $.ajax({
     type: "GET",
@@ -188,7 +230,7 @@ $('#delete-team').click(function() {
   });
 });
 
-
+//////  //////
 $(".switch_map_list").change(function() {
   var userinput = $(this);
   if (userinput.prop("checked")){
@@ -224,20 +266,6 @@ function initMap() {
   });
 }
 
-
-////// Get jobs from server //////
-function getJobs() {
-  $.ajax({
-    type: 'POST',
-    data: { bounds: JSON.stringify(bounds), team: teamFilter },
-    dataType: 'json',
-    url: '/user/customers'
-  }).then(function(customers) {
-    setMarkers(customers);
-  });
-}
-
-
 ////// Display jobs on map //////
 function setMarkers(jobs) {
   for (var i = 0; i < markers.length; i++) {  // Clear markers
@@ -268,14 +296,13 @@ function getListData() {
   $.ajax({
     type: 'POST',
     dataType: 'json',
-    data: {team: teamFilter},
+    data: { team: teamFilter },
     url: '/user/list',
     success: function(data) {
       visitList(data);
     }
   });
 }
-
 
 ////// Add data to list ///////
 function visitList(data) {
