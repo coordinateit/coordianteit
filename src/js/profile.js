@@ -219,13 +219,19 @@ $('#clearForm').click(function() {
 });
 
 //////  //////
-$('#delete-team').click(function() {
+$('#delete-team').click(function(e) {
+  e.preventDefault();
+  console.log(teamFilter);
   $.ajax({
     type: "GET",
     datatype: "json",
     url: "/admin/deleteTeam/" + teamFilter,
-    success: function() {
-      console.log("User has been deleted");
+    success: function(data) {
+      if (data.error) {
+        $('#teamSelect').append(`<h3 style="color: red">${data.error}</h3>`)
+      } else {
+        window.location = "/admin";
+      }
     }
   });
 });

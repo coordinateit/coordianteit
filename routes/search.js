@@ -9,8 +9,8 @@ var auth = require('./lib/auth.js');
 
 
 //////  //////
-router.get('/allCustomersVisits', auth.userAuth, function(req, res, next) {
-  knexQueries.customersVisitsAll()
+router.get('/allCustomers', auth.userAuth, function(req, res, next) {
+  knex('customers')
     .then(function(data) {
       res.send(data);
     });

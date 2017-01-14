@@ -23,7 +23,7 @@ function parseTime(input) {
   let meridiem = 'am';
   let hours = date.getHours();
   let minutes = date.getMinutes();
-  if (hours = 12) {
+  if (hours === 12) {
     meridiem = 'pm';
   } else if (hours > 12) {
     meridiem = 'pm';
