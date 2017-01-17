@@ -89,7 +89,7 @@ router.get('/deleteUser/:id', function(req, res) {
       .where('id', req.params.id)
       .del()
       .then(function() {
-        res.redirect('/admin');
+        res.send({});
       })
   }
 });

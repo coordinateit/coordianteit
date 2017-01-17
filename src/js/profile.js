@@ -43,9 +43,10 @@ function getUsers() {
     url: "/admin/users",
     success: function(data) {
       for (var i = 0; i < data.length; i++) {
-        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone}</td><td>${data[i].isadmin}</td><td><button type="button" id="${data[i].id}" class="btn btn-primary btn-xs userEdit">Edit</button></td><td><a href="/admin/deleteUser/${data[i].id}"><button type="button" class="btn btn-danger btn-xs userDelete">Delete</button></a></td></tr>`)
+        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone}</td><td>${data[i].isadmin}</td><td><button type="button" id="${data[i].id}edit" class="btn btn-primary btn-xs userEdit">Edit</button></td><td><button type="button" id="${data[i].id}delete" class="btn btn-danger btn-xs userDelete">Delete</button></td></tr>`)
       }
       userEditListen();
+      userDeleteListen();
     }
   })
 }
@@ -53,7 +54,8 @@ function getUsers() {
 ////// Listen for edit user click //////
 function userEditListen() {
   $('.userEdit').click(function() {
-    getUser(parseInt(event.target.id));
+    let userId = parseInt(event.target.id.split().pop());
+    getUser(userId);
   })
 }
 
@@ -67,6 +69,27 @@ function getUser(id) {
       showUser(data);
     }
   });
+}
+
+////// Listen for delete user click //////
+function userDeleteListen() {
+  $('.userDelete').click(function() {
+    let userId = parseInt(event.target.id.split().pop());
+    deleteUser(userId);
+  });
+}
+
+////// Delete user from database //////
+function deleteUser(userId) {
+  if (window.confirm("Are you sure you want to delete this user?")) {
+    $.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: '/admin/deleteUser/' + userId
+    }).then(function() {
+      window.location = '/admin';
+    });
+  }
 }
 
 ////// Populate user form //////
@@ -97,7 +120,7 @@ function showUser(user) {
       data: data,
       url: "/admin/updateUser/" + user.id,
       success: function() {
-        getUsers();
+        window.location = '/admin';
       }
     })
   });
