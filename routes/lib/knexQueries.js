@@ -61,5 +61,9 @@ module.exports = {
       .whereIn('team_id', teams)
       .andWhere('start', '>', start)
       .andWhere('start', '<', end)
+  },
+
+  getTeams() {
+    return knex('teams')
   }
 }

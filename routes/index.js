@@ -28,8 +28,10 @@ router.get('/create', auth.userAuth, function(req, res, next) {
 router.get('/edit/:id', auth.userAuth, function(req, res, next) {
   knexQueries.customerById(req.params.id)
     .then((customer) => knexQueries.visitsByCustomer(req.params.id)
-      .then((visits) => res.render('edit', { customer: customer,
-                                            visits: timeFunctions.timeFormatAndSort(visits) })))
+      .then((visits) => knexQueries.getTeams()
+        .then((teams) => res.render('edit', { customer: customer,
+                                              teams: teams,
+                                              visits: timeFunctions.timeSort(visits) }))))
 });
 
 ////// Route to list page //////

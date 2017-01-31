@@ -133,12 +133,13 @@ for (var i = 0; i < visits.length; i++) {
   let date = parseDate(parseInt(visits[i].start));
   let start = parseTime(parseInt(visits[i].start));
   let end = parseTime(parseInt(visits[i].end));
+  let team = teams[visits[i]['team_id']]
   $('.visit_list').append(`<tr>
       <td>${date}</td>
       <td>${start}</td>
       <td>${end}</td>
       <td>${visits[i].visit_type}</td>
-      <td>${visits[i].team_id}</td>
+      <td>${team.team_name}</td>
       <td><button type="button" id=${i} class="btn btn-primary btn-xs visitEdit">Edit</button></td>
       <td><button type="button" id=${visits[i].id} class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
@@ -276,7 +277,8 @@ $('#checkTeamSchedule').click(function() {
 var calendarVisits = visits.map(function(visit, i) {
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
-  return { id: visit.id, title: visit.visit_type, start: start, end: end, index: i }
+  let team = teams[visit.team_id];
+  return { id: visit.id, title: `${team.team_name} - ${visit.visit_type} - ${customer.customer_name} - ${customer.address} - ${customer.phone_1}`, start: start, end: end, index: i }
 });
 
 function visitClick(customerId, visitIndex) {

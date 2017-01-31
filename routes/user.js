@@ -66,7 +66,6 @@ router.post('/visits', auth.userAuth, function(req, res, next) {
   console.log(req.body);
   let teams = JSON.parse(req.body.teams);
   if (teams) {
-    console.log(teams);
     knex('visits')
       .join('teams', 'team_id', 'teams.id')
       .join('customers', 'customers_id', 'customers.id')

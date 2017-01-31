@@ -26,13 +26,15 @@ $("#teams").on('change', function () {
       teams = teams.map(function(team) {
         return parseInt(team);
       });
+      getListData(teams);
     } else {
+      getListData();
       teams = null;
     }
   } else {
+    getListData();
     teams = null;
   }
   getVisits(teams);
-  getCustomers(teams);
-  getListData(teams);
+  getCustomers(teams);;
 });

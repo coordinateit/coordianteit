@@ -1,5 +1,5 @@
 module.exports = {
-  timeFormatAndSort: function(visits) {
+  timeSort: function(visits) {
     visits.map(function(visit) {
       // visit.date = parseDate(visit.start);
       // visit.startTime = parseTime(visit.start);
