@@ -36,19 +36,7 @@ function getList() {
   $.ajax({
     type: "GET",
     dataType: "json",
-    url: "/search/allCustomersVisits"
-  }).then(function(data) {
-    makeMarkers(data);
-    visitList(data);
-    list = data;
-  });
-}
-
-function getList() {
-  $.ajax({
-    type: "GET",
-    dataType: "json",
-    url: "/search/allCustomersVisits"
+    url: "/search/allCustomers"
   }).then(function(data) {
     makeMarkers(data);
     visitList(data);
@@ -59,12 +47,10 @@ function getList() {
 ////// Add data to list ///////
 function visitList(data) {
   $(".list").empty();
-  $(".list").append("<tr><th>Customer</th><th>Team</th><th>Start Time</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>");
+  $(".list").append("<tr><th>Customer</th><th>Job Type</th><th>Address</th><th>Phone</th></tr>");
   for (var i = 0; i < data.length; i++) {
     let time = parseTime(data[i].start);
-    $(".list").append(`<tr><td><a href='/edit/${data[i].customers_id}'>${data[i].customer_name}</a></td>
-                        <td>${data[i].team_id}</td>
-                        <td>${time}</td>
+    $(".list").append(`<tr><td><a href='/edit/${data[i].id}'>${data[i].customer_name}</a></td>
                         <td>${data[i].customer_type}</td>
                         <td>${data[i].address}</td>
                         <td>${data[i].phone_1}</td></tr>`
@@ -107,24 +93,24 @@ function searchStatus(list) {
     let newList = list.filter(function(item) {
       return item.isactive == isactive;
     });
-    searchTeam(newList);
-  } else {
-    searchTeam(list);
-  }
-}
-
-////// Search by team //////
-function searchTeam(list) { // List is now local, any error from above functions and it will default to the global list
-  if ($('#team').val()) {
-    let team = parseInt($('#team').val());
-    let newList = list.filter(function(item) {
-      return item.team_id === team;
-    });
     searchRadius(newList);
   } else {
     searchRadius(list);
   }
 }
+
+////// Search by team //////
+// function searchTeam(list) { // List is now local, any error from above functions and it will default to the global list
+//   if ($('#team').val()) {
+//     let team = parseInt($('#team').val());
+//     let newList = list.filter(function(item) {
+//       return item.team_id === team;
+//     });
+//     searchRadius(newList);
+//   } else {
+//     searchRadius(list);
+//   }
+// }
 
 ////// Search by radius/coordinates (skip address fields) //////
 function searchRadius(list) {
@@ -223,39 +209,39 @@ function searchPhone(list) {
     let newList = list.filter(function(item) {
       return item.phone_1.toLowerCase().includes(phone);
     });
-    searchFrom(newList);
-  } else {
-    searchFrom(list);
-  }
-}
-
-////// Search by date range //////
-function searchFrom(list) {
-  if ($('#from').val()) {
-    let from = Date.parse($('#from').val());
-    from += 25200000
-    let newList = list.filter(function(item) {
-      return parseInt(item.start) > from;
-    });
-    searchTo(newList);
-  } else {
-    searchTo(list);
-  }
-}
-
-////// Search by date range //////
-function searchTo(list) {
-  if ($('#to').val()) {
-    let to = Date.parse($('#to').val());
-    to += 111600000
-    let newList = list.filter(function(item) {
-      return parseInt(item.start) < to;
-    });
     displayResults(newList);
   } else {
     displayResults(list);
   }
 }
+
+////// Search by date range //////
+// function searchFrom(list) {
+//   if ($('#from').val()) {
+//     let from = Date.parse($('#from').val());
+//     from += 25200000
+//     let newList = list.filter(function(item) {
+//       return parseInt(item.start) > from;
+//     });
+//     searchTo(newList);
+//   } else {
+//     searchTo(list);
+//   }
+// }
+
+////// Search by date range //////
+// function searchTo(list) {
+//   if ($('#to').val()) {
+//     let to = Date.parse($('#to').val());
+//     to += 111600000
+//     let newList = list.filter(function(item) {
+//       return parseInt(item.start) < to;
+//     });
+//     displayResults(newList);
+//   } else {
+//     displayResults(list);
+//   }
+// }
 
 /////// Update map/list to show results of search //////
 function displayResults(list) {

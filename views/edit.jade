@@ -222,25 +222,6 @@ html(lang="en")
                 th Team
                 th
                 th
-              if visits.length
-                - var i = 0;
-                each visit in visits
-                  - let start = new Date(parseInt(visit.start));
-                  - let end = new Date(parseInt(visit.end));
-                    tr
-                      td= visit.date
-                      td= visit.startTime
-                      td= visit.endTime
-                      td= visit.visit_type
-                      td= visit.team_id
-                      td
-                        button(type="button" id=`${i}` class="btn btn-primary btn-xs visitEdit") Edit
-                      td
-                        button(type="button" id=`${visit.id}` class="btn btn-danger btn-xs visitDelete") Delete
-                  - i++;  
-                                    
-            //- button(type="submit", id="addVisit", class="btn btn-primary") Add Visit
-
           hr
 
           form(id="create_visit", method="POST")
@@ -307,7 +288,7 @@ html(lang="en")
 
     footer
       hr
-      p &copy; 2016 CoordinateIt, Inc.
+      p &copy; 2017 CoordinateIt, Inc.
       
   script(src='https://code.jquery.com/jquery-2.2.3.min.js', integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=', crossorigin='anonymous')
   script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
@@ -316,10 +297,11 @@ html(lang="en")
   //- script const customer = customer.customer_name;
   script var customer = !{ JSON.stringify(customer) };
   script var visits = !{ JSON.stringify(visits) };
+  script var teams = !{ JSON.stringify(teams) };
   script(src='/js/all.js')
   script(src='/js/calendar.js')
   script(src='/js/map.js')
   script(src='/js/teams.js')
   script(src='/js/edit.js')
-  script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyChjSUhv_DsG4b_zS9XpI4WTwf0A0BxmCU&callback=initMap', async)
+  script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAehjsxdKlP6fvltk0TKtveswS-kAR68Hc&callback=initMap', async)
   

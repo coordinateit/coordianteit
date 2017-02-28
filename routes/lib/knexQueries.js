@@ -7,11 +7,6 @@ module.exports = {
       .first()
   },
 
-  customersVisitsAll: function() {
-    return knex('visits')
-      .join('customers', 'customers_id', 'customers.id')
-  },
-
   customersForDashboard: function(request) {
     return knex('customers')
      .join('visits', 'customers_id', 'customers.id')
@@ -66,5 +61,9 @@ module.exports = {
       .whereIn('team_id', teams)
       .andWhere('start', '>', start)
       .andWhere('start', '<', end)
+  },
+
+  getTeams() {
+    return knex('teams')
   }
 }

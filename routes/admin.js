@@ -89,7 +89,7 @@ router.get('/deleteUser/:id', function(req, res) {
       .where('id', req.params.id)
       .del()
       .then(function() {
-        res.redirect('/admin');
+        res.send({});
       })
   }
 });
@@ -153,7 +153,7 @@ router.get('/deleteTeam/:teamId', function(req, res, next) {
       .where('team_id', req.params.teamId)
       .then(function(data) {
         if (data.length) {
-          res.send({ error: "You must remove all members from a team before deleting it." })
+          res.send({ error: "Please remove members before deleting team." })
         } else {
           knex('teams')
             .where('id', req.params.teamId)

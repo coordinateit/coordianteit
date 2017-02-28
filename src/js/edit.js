@@ -95,14 +95,10 @@ $('#update_customer_button').click(function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-////// Click edit to display visit in form //////
-$('.visitEdit').click(function(event) {
-  showVisit(event.target.id);
-});
-
 ////// Show visit in visit form //////
 function showVisit(visitIndex) {
   let visit = visits[visitIndex];
+  console.log(visit.id);
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let dd = start.getDate();
@@ -130,6 +126,23 @@ function showVisit(visitIndex) {
   $('#saveVisitSubmit').click(function() {
     saveVisit(visit.id);
   });
+}
+
+//////  //////
+for (var i = 0; i < visits.length; i++) {
+  let date = parseDate(parseInt(visits[i].start));
+  let start = parseTime(parseInt(visits[i].start));
+  let end = parseTime(parseInt(visits[i].end));
+  let team = teams[visits[i]['team_id']]
+  $('.visit_list').append(`<tr>
+      <td>${date}</td>
+      <td>${start}</td>
+      <td>${end}</td>
+      <td>${visits[i].visit_type}</td>
+      <td>${team.team_name}</td>
+      <td><button type="button" id=${i} class="btn btn-primary btn-xs visitEdit">Edit</button></td>
+      <td><button type="button" id=${visits[i].id} class="btn btn-danger btn-xs visitDelete">Delete</button></td>
+    </tr>`);
 }
 
 ////// Return pretty time string //////
@@ -225,9 +238,14 @@ $('#clear_visit').click(function() {
   $("#visit_list").show();
 });
 
+////// Click edit to display visit in form //////
+$('.visitEdit').click(function(event) {
+  showVisit(event.target.id);
+});
+
 /////// Prompts user for confirmation then deletes a visit //////
 $('.visitDelete').click(function(event) {
-  if(window.confirm("Are you sure you want to delete this visit?")) {
+  if (window.confirm("Are you sure you want to delete this visit?")) {
     $.ajax({
       type: 'GET',
       dataType: 'json',
@@ -259,7 +277,8 @@ $('#checkTeamSchedule').click(function() {
 var calendarVisits = visits.map(function(visit, i) {
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
-  return { id: visit.id, title: visit.visit_type, start: start, end: end, index: i }
+  let team = teams[visit.team_id];
+  return { id: visit.id, title: `${team.team_name} - ${visit.visit_type} - ${customer.customer_name} - ${customer.address} - ${customer.phone_1}`, start: start, end: end, index: i }
 });
 
 function visitClick(customerId, visitIndex) {

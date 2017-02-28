@@ -39,12 +39,16 @@ function getCustomersDateTeam(start, end, teams) {
     data: data,
     url: url
   }).then(function(customers) {
-    if (window.customer) {
+    if (window.customer && !customers.error) {
       makeMarkers(customers.filter(function(localCustomer) {
         return localCustomer.id !== customer.id;
       }), customer);
-    } else {
+    } else if (!customers.error) {
       makeMarkers(customers);
+    } else {
+      for (var i = 0; i < markers.length; i++) {  // Clear markers
+        markers[i].setMap(null);
+      }
     }
   });
 }
