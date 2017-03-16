@@ -223,50 +223,106 @@ html(lang="en")
                 th
                 th
           hr
-
-          form(id="create_visit", method="POST")
+          
+          h4 Search
+          br
+          
+          form(id="search_visit", method="POST")
             div(class="row")
               div(class="col-md-4")
                 div(class="form-group")
-                  label(for="visit_date") Visit Date
-                  input(type="date", id="visit_date", class="form-control", name="visit_date")
-
-              div(class="col-md-4")
+                  label(for="search_date") Visit Date
+                  input(type="date", id="search_date", class="form-control", name="search_date")
+                
+              div(class="col-md-2")
                 div(class="form-group")
-                  label Start Time
-                  input(type="time", id="visit_start", class="form-control", name="start_time", value="09:00")
-
-              div(class="col-md-4")
-                div(class="form-group")
-                  label End Time
-                  input(type="time", id="visit_end", class="form-control", name="end_time", value="09:30")
-
-            div(class="row")
-              div(class="col-md-6")
-                div(class="form-group")
-                  label Visit Type
-                  input(type="text", id="visit_type", name="visit_type", class="form-control", placeholder="Visit Type")
-
-              div(class="col-md-6")
+                  label(for="days_number") # of Days
+                  input(type="number", id="days_number", class="form-control", name="days_number")
+                
+              div(class="col-md-3")
                 div(class="form-group")
                   label Team
                   select(id="visit_team" class="form-control teams" name="team")
                     option(value="") Team
                     <!-- Teams appended from dashboard.js makeList() -->
-
-            div(class="form-group")
-              label Visit Note
-              textarea(name="notes", id="visit_notes", class="form-control" placeholder="Add your visit notes here")
-              
-            button(type="button", id="nearbyCustomers", class="btn btn-info", title="See nearby customers within the same week.") Nearby Customers
-            | &nbsp;
-            button(type="button", id="checkTeamSchedule", class="btn btn-info", title="Check for team visits on the same day.") Check Team Schedule
-            | &nbsp;
-            button(type="button", id="clear_visit", class="btn btn-danger") Clear Form
-            | &nbsp;
-            button(type="button", id="saveVisitSubmit", class="btn btn-Success") Save
-            button(type="button", id="visitSubmit", class="btn btn-success") Create Visit
-
+                
+              div(class="col-md-3")
+                div(class="form-group")
+                  label Radius
+                  select(name="visit_radius" id="visit_radius" class="form-control")
+                    option(value="") Radius
+                    option(value="5") 5 Miles
+                    option(value="10") 10 Miles
+                    option(value="25") 25 Miles
+                    option(value="50") 50 Miles
+                    
+            div(class="row")  
+              div(class="col-md-2")
+                div(class="form-group")
+                  button(type="button", id="nearbyVisits", class="btn btn-info", title="See nearby visits within the set parameters.") Nearby Visits
+          
+          hr
+          h4 Assignment
+          br
+          
+          form(id="assign_visit", method="POST")
+            div(class="row")
+              div(class="col-md-3")
+                div(class="form-group")
+                  label(for="visit_date") Assign Date
+                  input(type="date", id="visit_date", class="form-control", name="visit_date")
+                  
+              div(class="col-md-3")
+                div(class="form-group")
+                  label(for="visit_start") Assign Time
+                  input(type="time", id="visit_start", class="form-control", name="visit_start")  
+                  
+              div(class="col-md-3")
+                div(class="form-group")
+                  label(for="visit_end") End Time
+                  input(type="time", id="visit_end", class="form-control", name="visit_end") 
+                  
+              div(class="col-md-3")
+                div(class="form-group")
+                  label(for="visit_team") Assign Team
+                  select(id="visit_team" class="form-control teams" name="visit_team")
+                    option(value="") Team
+                    <!-- Teams appended from dashboard.js makeList() -->
+            
+            div(class="row")
+              div(class="col-md-2")
+                div(class="form-group")
+                  button(type="button", id="checkTeamSchedule", class="btn btn-info", title="Check selected team's schedule.") Team Schedule 
+          
+          hr
+          h4 Confirm
+          br
+          
+          form(id="confirm_visit", method="POST")
+            div(class="row")
+              div(class="col-md-4")
+                div(class="form-group")
+                  label(for="visit_type") Visit Type
+                  input(type="text", id="visit_type", class="form-control", name="visit_type")
+                  
+              div(class="col-md-4")
+                div(class="form-group")
+                  label(for="visit_notes") Notes
+                  textarea(type="textarea", id="visit_notes", class="form-control", name="visit_notes", rows="4")  
+                  
+              div(class="col-md-4")
+                div(class="form-group")
+                  label(for="confirm_crew") Crew
+                  textarea(type="textarea", id="confirm_crew", class="form-control", name="confirm_crew", rows="4")
+            
+            div(class="row")
+              div(class="col-md-12")
+                div(class="form-group")
+                  button(type="button", id="clear_form", class="btn btn-danger", title="Clear the Form") Clear Form
+                  | &nbsp;
+                  button(type="button", id="checkTeamSchedule", class="btn btn-info", title="Check selected team's schedule.") Confirm
+                  | &nbsp;
+                  button(type="button", id="get_first_available", class="btn btn-success", title="Gets First Available Teams by Proximity.") Get First Available
 
     <!-- Map - Calendar Container   -->
     div(class="maplist-container")
