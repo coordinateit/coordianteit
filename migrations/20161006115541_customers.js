@@ -7,10 +7,10 @@ exports.up = function(knex, Promise) {
     table.string('email');
     table.string('phone_1');
     table.string('phone_2');
-    table.string('address').notNullable();
-    table.string('city').notNullable();
-    table.string('state').notNullable();
-    table.integer('zip').notNullable();
+    table.string('address');
+    table.string('city');
+    table.string('state');
+    table.string('zip');
     table.string('customer_type');
     table.string('referral');
     table.boolean('isactive').notNullable().defaultsTo(true);

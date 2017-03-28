@@ -9,9 +9,9 @@ $("#create_job_button").click(function() {
     state: $("#state").val(),
     zip: $("#zip").val(),
   }
-  if (!data.customer_name || !data.phone_1 || !data.address || !data.city || !data.state || !data.zip) {
+  if (!data.customer_name) {
     $("#error").remove();
-    $("#create_form").prepend("<h4 id='error' style='color: red'>Please fill out all fields.</h4>");
+    $("#create_form").prepend("<h4 id='error' style='color: red'>Please enter customer name.</h4>");
   } else {
     $.ajax({
       type: 'POST',

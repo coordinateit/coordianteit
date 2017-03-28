@@ -12,6 +12,7 @@ html(lang="en")
     link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
     link(rel='stylesheet', href='/css/master.css')
     link(rel="stylesheet", type="text/css", href="https://cdn.jsdelivr.net/css-toggle-switch/latest/toggle-switch.css")
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css")
 
   body(class="edit")
   nav(class="navbar navbar-inverse navbar-fixed-top")
@@ -50,15 +51,15 @@ html(lang="en")
       <!-- Customer Profile - Visits Switch -->
       div
         label(class="switch-light")
-          input(class="switch_visits_customer", type="checkbox", checked="checked")
+          input(class="switch_visits_customer", type="checkbox")
           span(class="well")
             span Visits
             span Customer Profile
             a(class="btn btn-primary")
 
       div(id="create_form")
-        <!-- Create Job Form -->
-        form(id="create_job", action="/user/postJob", method="POST")
+        <!-- Customer Profile (Create Job Form) -->
+        form(id="create_job", action="/user/postJob", method="POST", class="nodisplay")
 
           div(class="row")
             div(class="col-md-10")
@@ -209,7 +210,7 @@ html(lang="en")
             //- button(type="reset", id="clear_job", class="btn btn-primary") Clear Form
 
         <!-- Create Visit List/Form -->
-        div(id="create_visit_container" class="nodisplay")
+        div(id="create_visit_container")
 
           <!-- Visit List -->
           div(id="visit_list", class="table-responsive")
@@ -237,20 +238,17 @@ html(lang="en")
               div(class="col-md-2")
                 div(class="form-group")
                   label(for="days_number") # of Days
-                  input(type="number", id="days_number", class="form-control", name="days_number")
+                  input(type="number", id="number_days", class="form-control", name="days_number")
                 
               div(class="col-md-3")
                 div(class="form-group")
-                  label Team
-                  select(id="visit_team" class="form-control teams" name="team")
-                    option(value="") Team
-                    <!-- Teams appended from dashboard.js makeList() -->
-                
+                  label(for="teams") Team
+                  select(name="teams" id="team_filter" class="selectpicker teams" data-title="Select Team" data-width='auto' multiple)
+
               div(class="col-md-3")
                 div(class="form-group")
                   label Radius
                   select(name="visit_radius" id="visit_radius" class="form-control")
-                    option(value="") Radius
                     option(value="5") 5 Miles
                     option(value="10") 10 Miles
                     option(value="25") 25 Miles
@@ -286,7 +284,6 @@ html(lang="en")
                 div(class="form-group")
                   label(for="visit_team") Assign Team
                   select(id="visit_team" class="form-control teams" name="visit_team")
-                    option(value="") Team
                     <!-- Teams appended from dashboard.js makeList() -->
             
             div(class="row")
@@ -360,4 +357,6 @@ html(lang="en")
   script(src='/js/teams.js')
   script(src='/js/edit.js')
   script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAehjsxdKlP6fvltk0TKtveswS-kAR68Hc&callback=initMap', async)
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js')
+
   

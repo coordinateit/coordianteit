@@ -58,7 +58,12 @@ module.exports = {
 
   visitsByDateRangeAndTeams(start, end, teams) {
     return knex('visits')
-      .whereIn('team_id', teams)
+      // .whereIn('team_id', teams)
+      .where(function() {
+        if (teams) {
+          this.whereIn('team_id', teams)
+        }
+      })
       .andWhere('start', '>', start)
       .andWhere('start', '<', end)
   },

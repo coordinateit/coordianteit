@@ -30,23 +30,15 @@ function mapReady() {
   makeMarker(position);
 }
 
-////// Lookup customer/visits within 3.5 days before and after //////
-function getNearbyCustomers() {
-  let date = $('#visit_date').val();
-  let time = $('#visit_start').val();
-  let dateTime = Date.parse(date + ', ' + time);
-  let start = dateTime - 302400000;
-  let end = dateTime + 302400000;
-  getCustomersDateTeam(start, end);
-}
-
 ////// Lookup customer/visits same day by team //////
-function checkTeamSchedule() {
+function getNearbyVisits() {
   let date = $('#visit_date').val();
   let start = Date.parse(date);
-  let end = start + 86400000; // Search today
-  let team = $('#visit_team').val();
-  getCustomersDateTeam(start, end, team);
+  let number_days = $('#number_days').val() || 1;
+  let end = start + (number_days * 86400000); // Number of days * length of a day
+  let teams = $('#team_filter').val();
+  let radius = $('#visit_radius').val();
+  getCustomersDateTeam(start, end, radius, teams);
 }
 
 
@@ -91,6 +83,23 @@ $('#update_customer_button').click(function() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+//                                    SEARCH                                  //
+////////////////////////////////////////////////////////////////////////////////
+
+
+////// When Nearby Customers is clicked //////
+$('#nearbyVisits').click(function() {
+  getNearbyVisits();
+});
+
+////// When Check Team Schedule is clicked //////
+$('#checkTeamSchedule').click(function() {
+  checkTeamSchedule();
+});
+
+
+
+////////////////////////////////////////////////////////////////////////////////
 //                                    VISITS                                  //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -98,7 +107,6 @@ $('#update_customer_button').click(function() {
 ////// Show visit in visit form //////
 function showVisit(visitIndex) {
   let visit = visits[visitIndex];
-  console.log(visit.id);
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let dd = start.getDate();
@@ -255,16 +263,6 @@ $('.visitDelete').click(function(event) {
       }
     });
   }
-});
-
-////// When Nearby Customers is clicked //////
-$('#nearbyCustomers').click(function() {
-  getNearbyCustomers();
-});
-
-////// When Check Team Schedule is clicked //////
-$('#checkTeamSchedule').click(function() {
-  checkTeamSchedule();
 });
 
 

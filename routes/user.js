@@ -24,6 +24,7 @@ router.post('/customersByDates', auth.userAuth, function(req, res, next) {
 
 ////// Lookup customers by date range and team //////
 router.post('/customersByDatesAndTeams', auth.userAuth, function(req, res, next) {
+  console.log(JSON.parse(req.body.teams));
   knexQueries.visitsByDateRangeAndTeams(req.body.start, req.body.end, JSON.parse(req.body.teams))
     .then(function(visits) {
       let ids = [];
@@ -52,7 +53,7 @@ router.post('/postVisit', auth.userAuth, function(req, res, next) {
 
 ////// Gets customers based on map position, optionally filtered by team //////
 router.post('/customers', auth.userAuth, function(req, res, next) {
-  customersForDashboard(req.body)
+  knexQueries.customersForDashboard(req.body)
     .then(function(customers) {
       res.send(customers);
     })
@@ -170,12 +171,12 @@ router.post('/newcustomer', auth.userAuth, function(req, res, next) {
     if (!err && data.results[0]) {
       lat = data.results[0].geometry.location.lat;
       lng = data.results[0].geometry.location.lng;
-      insert();
+      insertCustomer();
     } else {
       res.send({ error: "Invalid address."})
     }
   });
-  function insert() {
+  function insertCustomer() {
     let data = {
       lat: lat,
       lng: lng,
@@ -184,7 +185,7 @@ router.post('/newcustomer', auth.userAuth, function(req, res, next) {
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,
-      zip: req.body.zip,
+      zip: req.body.zip
     }
     knex('customers')
       .insert(data)
@@ -192,51 +193,6 @@ router.post('/newcustomer', auth.userAuth, function(req, res, next) {
       .then(function(id) {
         res.send({ id: id })
       })
-  }
-});
-
-////// Post new job //////
-router.post('/postJob', auth.userAuth, function(req, res, next) {
-  var lat, lng;
-  var address = req.body.address + ', ' + req.body.city + ', ' + req.body.state + ', ' + req.body.zip;
-  geocoder.geocode(address, function(err, data) {
-    if (!req.body.customer_name) {
-      res.send('Please add customer name.')
-    }
-    if (!err && data.results[0]) {
-      lat = data.results[0].geometry.location.lat;
-      lng = data.results[0].geometry.location.lng;
-      insert();
-    } else {
-      res.send('Invalid address.')
-    }
-  });
-  function insert() {
-    let data = {
-      lat: lat,
-      lng: lng,
-      customer_name: req.body.customer_name,
-      email: req.body.email,
-      phone_1: req.body.phone_1,
-      phone_2: req.body.phone_2,
-      address: req.body.address,
-      city: req.body.city,
-      state: req.body.state,
-      zip: req.body.zip,
-      customer_type: req.body.job_type,
-      notes: req.body.notes
-    }
-    knex('customers')
-      .insert(data)
-      .returning('id')
-      .then(function(id) {
-        knex('customers')
-          .where('id', id[0])
-          .first()
-          .then(function(customer) {
-            res.send(customer);
-          })
-      });
   }
 });
 
