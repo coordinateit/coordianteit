@@ -338,6 +338,33 @@ html(lang="en")
 
       <!-- Calendar -->
       div(id="calendar")
+      
+    <!-- Visit Search List -->
+    div(class="visit-search-list")
+      div(class="menu-list")
+        ul(id="menu-content" class="menu-content collapse out")
+          li(id="li-customer2" data-toggle="collapse" data-target="#customer1" class="collapsed")
+            h4 Customer 1
+            ul(class="sub-menu collapse" id="customer1")
+              li
+                table(class="table table-striped")
+                  tr
+                    th Date
+                    th Start Time
+                    th End Time
+                    th Visit Type
+                    th Team
+          li(id="li-customer2" data-toggle="collapse" data-target="#customer2" class="collapsed")
+            h4 Customer 2
+            ul(class="sub-menu collapse" id="customer2")
+              li
+                table(class="table table-striped")
+                  tr
+                    th Date
+                    th Start Time
+                    th End Time
+                    th Visit Type
+                    th Team          
 
     footer
       hr

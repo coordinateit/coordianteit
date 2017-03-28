@@ -109,6 +109,7 @@ section {
 .maplist-container {
   left: 50%;
   position: fixed;
+  display: none;
 }
 
 .team-dropdown {
@@ -139,6 +140,114 @@ form:nth-child(2) {
   width: 100%;
   margin-top: 5px;
 }*/
+
+/*****>> nav styles <<*****/
+
+/*****>> side nav styles <<*****/
+
+.visit-search-list {
+  overflow: auto;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: #fff;
+  display: inline-block;
+  color: #333;
+  letter-spacing: 1px;
+  left: 50%;
+  position: fixed;
+  height: 59vh;
+  width: 45vw;
+  border: 1px solid #ccc;
+  margin: 2%;
+}
+
+.visit-search-list h4 {
+  margin-left: 1rem;
+}
+
+.visit-search-list ul,
+.visit-search-list li {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  line-height: 35px;
+  cursor: pointer;
+}
+.visit-search-list ul :not(collapsed) .arrow:before,
+.visit-search-list li :not(collapsed) .arrow:before {
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px;
+  vertical-align: middle;
+  float: right;
+}
+
+.visit-search-list ul .sub-menu li.active a,
+.visit-search-list li .sub-menu li.active a {
+  color: #333;
+}
+.visit-search-list ul .sub-menu li,
+.visit-search-list li .sub-menu li {
+  background-color: #fff;
+  border: none;
+  line-height: 28px;
+  margin-left: 0px;
+}
+.visit-search-list ul .sub-menu li:hover,
+.visit-search-list li .sub-menu li:hover {
+  background-color: #fff;
+}
+.visit-search-list ul .sub-menu li:before,
+.visit-search-list li .sub-menu li:before {
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px;
+  vertical-align: middle;
+}
+.visit-search-list li {
+  padding-left: 0px;
+  border-bottom: 1px solid #ccc;
+}
+.visit-search-list li a {
+  text-decoration: none;
+  color: #333;
+}
+.visit-search-list li a i {
+  padding-left: 10px;
+  width: 20px;
+  padding-right: 30px;
+  color: #333;
+}
+
+@media (max-width: 767px) {
+  .visit-search-list {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .visit-search-list .toggle-btn {
+    display: block;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 10 !important;
+    padding: 3px;
+    background-color: #fff;
+    color: #000;
+    width: 40px;
+    text-align: center;
+  }
+  .brand {
+    text-align: left !important;
+    padding: 3rem;
+  }
+}
+@media (min-width: 767px) {
+  .visit-search-list .menu-list .menu-content {
+    display: block;
+  }
+}
 
 
 /******<< Search Styles >>******/
