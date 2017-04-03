@@ -243,7 +243,8 @@ html(lang="en")
               div(class="col-md-3")
                 div(class="form-group")
                   label(for="teams") Team
-                  select(name="teams" id="team_filter" class="selectpicker teams" data-title="Select Team" data-width='auto' multiple)
+                  br
+                  select(name="teams" id="team_filter" class="selectpicker teams form-control" data-title="Select Team"  multiple)
 
               div(class="col-md-3")
                 div(class="form-group")
@@ -257,7 +258,7 @@ html(lang="en")
             div(class="row")  
               div(class="col-md-2")
                 div(class="form-group")
-                  button(type="button", id="get_first_available", class="btn btn-success", title="Gets First Available Teams by Proximity.") Get First Available
+                  button(type="button", id="get_first_available", class="btn btn-info", title="Gets First Available Teams by Proximity.") Get First Available
 
           
           hr
@@ -286,7 +287,11 @@ html(lang="en")
                   label(for="visit_team") Assign Team
                   select(id="visit_team" class="form-control teams" name="visit_team")
                     <!-- Teams appended from dashboard.js makeList() -->
-
+              
+            div(class="row")  
+              div(class="col-md-2")
+                div(class="form-group")
+                  button(type="button", id="check_team_schedule", class="btn btn-info", title="Checks selected team's schedule.") Check Team Schedule
           
           hr
           h4 Confirm
@@ -314,54 +319,48 @@ html(lang="en")
                 div(class="form-group")
                   button(type="button", id="clear_form", class="btn btn-danger", title="Clear the Form") Clear Form
                   | &nbsp;
-                  button(type="button", id="checkTeamSchedule", class="btn btn-info", title="Check selected team's schedule.") Confirm
+                  button(type="button", id="checkTeamSchedule", class="btn btn-success", title="Check selected team's schedule.") Confirm
                   | &nbsp;
                   
     <!-- Map - Calendar Container   -->
     div(class="maplist-container")
 
-      <!-- Map - Calendar Switch -->
-      div
-        label(class="switch-light" onclick="")
-          input(class="switch_map_calendar", type="checkbox", checked="checked")
-          span(class="well")
-            span Calendar
-            span Map
-            a(class="btn btn-primary")
+      <!-- Nav tabs -->
+      ul(class="nav nav-tabs" role="tablist")
+        li(role="presentation" class="active")
+          a(href="#calendar_panel" aria-controls="calendar" role="tab" data-toggle="tab") Calendar
+        li(role="presentation")
+          a(href="#map_panel" aria-controls="map" role="tab" data-toggle="tab") Map
+        li(role="presentation")
+          a(href="#list_tab_panel" aria-controls="list_tab" role="tab" data-toggle="tab") Search List
 
-      <!-- Map -->
-      div(id="map")
+      <!-- Tab panes -->
+      div(class="tab-content")
+        div(role="tabpanel" class="tab-pane active" id="calendar_panel")
+          <!-- Calendar -->
+          div(id="calendar")
+        div(role="tabpanel" class="tab-pane" id="map_panel")
+          <!-- Map -->
+          div(id="map")
+        div(role="tabpanel" class="tab-pane" id="list_tab_panel")
+          <!-- Visit Search List -->
+          div(class="visit-search-list")
+            div(class="menu-list")
+              button(id="close_list", class="btn btn-danger") Close
+              ul(id="first_available_list" class="menu-content collapse out")
+              //- Content Dynamically Generated 
 
-      <!-- Calendar -->
-      div(id="calendar")
+      //- <!-- Map - Calendar Switch -->
+      //- div
+      //-   label(class="switch-light" onclick="")
+      //-     input(class="switch_map_calendar", type="checkbox", checked="checked")
+      //-     span(class="well")
+      //-       span Calendar
+      //-       span Map
+      //-       a(class="btn btn-primary")
+
       
-    <!-- Visit Search List -->
-    div(class="visit-search-list")
-      div(class="menu-list")
-        button(id="close_list", class="btn btn-danger") Close
-        ul(id="first_available_list" class="menu-content collapse out")
-          //- li(id="li-customer2" data-toggle="collapse" data-target="#customer1" class="collapsed")
-          //-   h4 Customer 1
-          //-   ul(class="sub-menu collapse" id="customer1")
-          //-     li
-          //-       table(class="table table-striped")
-          //-         tr
-          //-           th Date
-          //-           th Start Time
-          //-           th End Time
-          //-           th Visit Type
-          //-           th Team
-          //- li(id="li-customer2" data-toggle="collapse" data-target="#customer2" class="collapsed")
-          //-   h4 Customer 2
-          //-   ul(class="sub-menu collapse" id="customer2")
-          //-     li
-          //-       table(class="table table-striped")
-          //-         tr
-          //-           th Date
-          //-           th Start Time
-          //-           th End Time
-          //-           th Visit Type
-          //-           th Team          
+          
 
     footer
       hr
