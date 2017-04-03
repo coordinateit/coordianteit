@@ -25,12 +25,20 @@ Date.prototype.toDateInputValue = (function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 ////// Set position and marker to customer location //////
-position = { lat: parseFloat(customer.lat), lng: parseFloat(customer.lng) };
-function mapReady() {
-  makeMarker(position);
-}
+  if (!customer.address && !customer.city && !customer.zip) {
+    position = default_position;
+  } else {
+    position = { lat: parseFloat(customer.lat), lng: parseFloat(customer.lng) };
+  }
+  function mapReady() {
+    let no_address;
+    if (!customer.address && !customer.city && !customer.zip) {
+      no_address = true;
+    }
+    makeMarker(position, no_address);
+  }
 
-////// Lookup customer/visits same day by team //////
+
 // function getNearbyVisits() {
 //   let date = $('#visit_date').val();
 //   let start = Date.parse(date);
@@ -42,6 +50,7 @@ function mapReady() {
 //   $('.visit-search-list').show();
 //   $('.maplist-container').hide();
 // }
+
 
 // Search visits by team/date/location
   function get_first_available() {
