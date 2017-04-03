@@ -8,7 +8,7 @@ function initCalendar() {
     dayClick: function(date) {
       $('#calendar').fullCalendar('gotoDate', date);
       $('#calendar').fullCalendar('changeView', 'agendaDay');
-      date_range();
+      filter_by_team();
     },
     eventMouseover: function() {
       document.body.style.cursor = "pointer";
@@ -32,12 +32,13 @@ function initCalendar() {
 }
 
 $('#calendar').click(function() {
-  console.log('click');
   filter_by_team();
 });
 
 function date_range() {
   let start = $('#calendar').fullCalendar('getView').start._d;
   let end = $('#calendar').fullCalendar('getView').end._d;
+  start = start.getTime();
+  end = end.getTime();
   return { start: start, end: end }
 }

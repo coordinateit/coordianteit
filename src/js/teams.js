@@ -24,7 +24,7 @@ $("#teams").on('change', function () {
 });
 
 function filter_by_team() {
-  let teams = $(this).val();
+  let teams = $('#teams').val();
   if (teams) {
     if (teams[0] !== "") {
       teams = teams.map(function(team) {

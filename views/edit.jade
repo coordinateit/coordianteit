@@ -238,7 +238,7 @@ html(lang="en")
               div(class="col-md-2")
                 div(class="form-group")
                   label(for="days_number") # of Days
-                  input(type="number", id="number_days", class="form-control", name="days_number")
+                  input(type="number", id="number_days", class="form-control", name="days_number", value="30")
                 
               div(class="col-md-3")
                 div(class="form-group")
@@ -250,7 +250,7 @@ html(lang="en")
                   label Radius
                   select(name="visit_radius" id="visit_radius" class="form-control")
                     option(value="5") 5 Miles
-                    option(value="10") 10 Miles
+                    option(value="10" selected) 10 Miles
                     option(value="25") 25 Miles
                     option(value="50") 50 Miles
                     
