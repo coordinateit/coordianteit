@@ -46,19 +46,9 @@ router.post('/get_first_available', auth.userAuth, function(req, res, next) {
   let end = req.body.end;
   let teams = JSON.parse(req.body.teams);
   let radius = req.body.radius;
-
   knexQueries.getFirstAvailable(start, end, teams)
     .then(function(visits) {
       res.send(visits);
-    });
-});
-
-////// Post new visit //////
-router.post('/postVisit', auth.userAuth, function(req, res, next) {
-  knex('visits')
-    .insert(req.body)
-    .then(function() {
-      res.send({});
     });
 });
 
@@ -245,6 +235,15 @@ router.post('/updateCustomer', auth.userAuth, function(req, res, next) {
         res.send({});
       });
   }
+});
+
+////// Post new visit //////
+router.post('/postVisit', auth.userAuth, function(req, res, next) {
+  knex('visits')
+    .insert(req.body)
+    .then(function() {
+      res.send({});
+    });
 });
 
 ////// Update visit //////

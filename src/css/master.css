@@ -150,7 +150,6 @@ form:nth-child(2) {
   font-weight: 400;
   background-color: #fff;
   /*display: inline-block;*/
-  display: none;
   color: #333;
   letter-spacing: 1px;
   left: 50%;
@@ -285,6 +284,10 @@ form:nth-child(2) {
 #list {
   margin: auto;
   overflow: auto;
+}
+
+.highlight {
+  background-color: yellow;
 }
 
 /******<< Footer Styles >>******/

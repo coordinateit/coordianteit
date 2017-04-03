@@ -31,9 +31,6 @@ function initCalendar() {
   date_range();
 }
 
-$('#calendar').click(function() {
-  filter_by_team();
-});
 
 function date_range() {
   let start = $('#calendar').fullCalendar('getView').start._d;

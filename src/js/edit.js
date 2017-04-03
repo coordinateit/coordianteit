@@ -2,9 +2,9 @@
 
 ////// Invoke these functions when page loads //////
 $(document).ready(function() {
-  getTeamList();
   initCalendar();
-  $('#calendar').hide();
+  getTeamList();
+  // $('#calendar').hide();
   $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
   $('#calendar').fullCalendar('addEventSource', calendarVisits);
   $(`#state option[value="${customer.state}"]`).attr("selected", "selected");
@@ -38,23 +38,11 @@ Date.prototype.toDateInputValue = (function() {
     makeMarker(position, no_address);
   }
 
-
-// function getNearbyVisits() {
-//   let date = $('#visit_date').val();
-//   let start = Date.parse(date);
-//   let number_days = $('#number_days').val() || 1;
-//   let end = start + (number_days * 86400000); // Number of days * length of a day
-//   let teams = $('#team_filter').val();
-//   let radius = $('#visit_radius').val();
-//   getCustomersDateTeam(start, end, radius, teams);
-//   $('.visit-search-list').show();
-//   $('.maplist-container').hide();
-// }
-
-
 // Search visits by team/date/location
   function get_first_available() {
-    let date = $('#visit_date').val();
+    $('#list_tab_button').tab('show');
+    $('#first_available_list').empty();
+    let date = $('#search_date').val();
     let start = Date.parse(date);
     let number_days = $('#number_days').val() || 1;
     let end = start + (number_days * 86400000); // Number of days * length of a day
@@ -62,8 +50,6 @@ Date.prototype.toDateInputValue = (function() {
     let radius = $('#visit_radius').val();
     let lat = parseFloat(customer.lat);
     let lng = parseFloat(customer.lng);
-
-
     let search_params = { start: start, end: end, teams: JSON.stringify(teams), radius: radius, lat: lat, lng: lng};
     let url = '/user/get_first_available';
     $.ajax({
@@ -82,16 +68,18 @@ Date.prototype.toDateInputValue = (function() {
         return a.coord_distance - b.coord_distance;
       });
       for (var i = 0; i < visits.length; i++) {
+
         let schedule = visits.filter(function(visit) {
           let date = new Date(parseInt(visits[i].start));
           let start = date.setHours(0,0,0,0);
           let end = start + 86400000;
           return visit.team_id === visits[i].team_id && visit.start > start && visit.start < end;
         });
+        let miles = (visits[i].coord_distance * 69).toFixed(1);
         // TODO: Join with teams to get team name, add team name below instead of ID
         $('#first_available_list').append(`
           <li id="li-visit${i}" data-toggle="collapse" data-target="#first_available_visit_${i}" class="collapsed">
-            <h4>Team ${visits[i].team_id}</h4>
+            <h4>Team ${visits[i].team_id} - ${miles} miles - ${parseDate(visits[i].start)}</h4>
             <ul class="sub-menu collapse" id="first_available_visit_${i}">
               <li>
                 <table id="first_available_table_${i}" class="table table-striped">
@@ -103,14 +91,19 @@ Date.prototype.toDateInputValue = (function() {
                     <th>Address</th>
                     <th>Visit Type</th>
                     <th>Crew</th>
+                    <th></th>
                   </tr>
                 </table>
               </li>
             </ul>
           </li>`);
         for (var j = 0; j < schedule.length; j++) {
+          let highlight = "";
+          if (schedule[j].customers_id === visits[i].customers_id) {
+            highlight = "highlight"
+          }
           $(`#first_available_table_${i}`).append(`
-            <tr>
+            <tr class="${highlight}">
               <td>${parseDate(visits[i].start)}</td>
               <td>${parseTime(schedule[j].start)}</td>
               <td>${parseTime(schedule[j].end)}</td>
@@ -118,6 +111,7 @@ Date.prototype.toDateInputValue = (function() {
               <td>${visits[i].address}, ${visits[i].city}</td>
               <td>${schedule[j].visit_type}</td>
               <td>${schedule[j].crew}</td>
+              <td>${schedule[j].customers_id}</td>
             </tr>`);
         }
       }
@@ -240,13 +234,12 @@ for (var i = 0; i < visits.length; i++) {
   let date = parseDate(parseInt(visits[i].start));
   let start = parseTime(parseInt(visits[i].start));
   let end = parseTime(parseInt(visits[i].end));
-  let team = teams[visits[i]['team_id']]
   $('.visit_list').append(`<tr>
       <td>${date}</td>
       <td>${start}</td>
       <td>${end}</td>
       <td>${visits[i].visit_type}</td>
-      <td>${team.team_name}</td>
+      <td>${visits[i].team_name}</td>
       <td><button type="button" id=${i} class="btn btn-primary btn-xs visitEdit">Edit</button></td>
       <td><button type="button" id=${visits[i].id} class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
@@ -274,7 +267,7 @@ $('#visit_start').on('change', function() {
   $('#visit_end').val(endTime);
 });
 
-$('#visitSubmit').click(function() {
+$('#visit_submit').click(function() {
   visitSubmit();
 });
 
@@ -290,7 +283,8 @@ function visitSubmit() {
     start: newStart,
     end: newEnd,
     visit_type: $('#visit_type').val(),
-    notes: $('#visit_notes').val()
+    notes: $('#visit_notes').val(),
+    crew: $('#visit_crew').val()
   };
   if ($('#visit_team').val()) {
     data.team_id = $('#visit_team').val()
@@ -340,6 +334,7 @@ $('#clear_visit').click(function() {
   $('#visit_type').val(null);
   $('#visit_team').val(null);
   $('#visit_notes').val(null);
+  $('#visit_crew').val(null);
   $("#saveVisitSubmit").hide();
   $("#visitSubmit").show();
   $("#visit_list").show();
@@ -401,22 +396,4 @@ $(".switch_visits_customer").change(function() {
     $("#create_job").hide();
     $("#create_visit_container").show();
   }
-});
-
-////// Map / Calendar Switch ///////
-$(".switch_map_calendar").change(function() {
-  let userinput = $(this);
-  if (userinput.prop("checked")){
-    $("#map").show();
-    $("#calendar").hide();
-  } else {
-    $("#map").hide();
-    $("#calendar").show();
-    $('#calendar').fullCalendar('refetchEvents');
-  }
-});
-
-$('#close_list').click(function() {
-  $('.visit-search-list').hide();
-  $('.maplist-container').show();
 });
