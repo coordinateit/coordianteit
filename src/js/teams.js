@@ -20,6 +20,10 @@ function teamList(teams) {
 
 ////// Filter page by team //////
 $("#teams").on('change', function () {
+  filter_by_team();
+});
+
+function filter_by_team() {
   let teams = $(this).val();
   if (teams) {
     if (teams[0] !== "") {
@@ -36,5 +40,5 @@ $("#teams").on('change', function () {
     teams = null;
   }
   getVisits(teams);
-  getCustomers(teams);;
-});
+  getCustomers(teams);
+}

@@ -26,7 +26,6 @@ function makeMarker(position) {
 ////// Get customers by date range, with option for team filter //////
 function getCustomersDateTeam(start, end, radius, teams) {
   let url, data;
-  console.log(teams);
   if (teams) {
     data = { start: start, end: end, radius: radius, teams: JSON.stringify(teams) };
     url = '/user/customersByDatesAndTeams';

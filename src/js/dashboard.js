@@ -2,9 +2,9 @@
 
 ////// Invoke these functions when page loads //////
 $(document).ready(function() {
+  initCalendar();
   getListData();
   getTeamList();
-  initCalendar();
   getVisits(null);
   $('#calendar').fullCalendar('refetchEvents');
 });
@@ -16,8 +16,9 @@ $(document).ready(function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-////// Get visits from server //////
+////// Get visits from server to display on calendar //////
 function getVisits(teams) {
+  // TODO: filter by date range
   $.ajax({
     type: 'POST',
     dataType: 'json',
@@ -133,9 +134,12 @@ function mapReady() {
 
 ////// Get customers for coming week, option for filter by team //////
 function getCustomers(teams) {
-  let date = new Date(Date.now());
-  let start = date.setHours(0,0,0,0);
-  let end = start + 604800000;
+  // let date = new Date(Date.now());
+  // let start = date.setHours(0,0,0,0);
+  // let end = start + 604800000;
+  let dates = date_range();
+  let start = dates.start;
+  let end = dates.end;
   getCustomersDateTeam(start, end, teams);
 }
 
@@ -148,9 +152,12 @@ function getCustomers(teams) {
 
 ////// Get list data from server ///////
 function getListData(teams) {
-  var date = new Date(parseInt(Date.now()));
-  var start = date.setHours(0,0,0,0);
-  var end = date.setHours(24,0,0,0);
+  // var date = new Date(parseInt(Date.now()));
+  // let start = date.setHours(0,0,0,0);
+  // let end = date.setHours(24,0,0,0);
+  let dates = date_range();
+  let start = dates.start;
+  let end = dates.end;
   $.ajax({
     type: 'POST',
     dataType: 'json',
