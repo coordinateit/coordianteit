@@ -31,22 +31,20 @@ function mapReady() {
 }
 
 ////// Lookup customer/visits same day by team //////
-function getNearbyVisits() {
-  let date = $('#visit_date').val();
-  let start = Date.parse(date);
-  let number_days = $('#number_days').val() || 1;
-  let end = start + (number_days * 86400000); // Number of days * length of a day
-  let teams = $('#team_filter').val();
-  let radius = $('#visit_radius').val();
-  getCustomersDateTeam(start, end, radius, teams);
-  $('.visit-search-list').show();
-  $('.maplist-container').hide();
-}
+// function getNearbyVisits() {
+//   let date = $('#visit_date').val();
+//   let start = Date.parse(date);
+//   let number_days = $('#number_days').val() || 1;
+//   let end = start + (number_days * 86400000); // Number of days * length of a day
+//   let teams = $('#team_filter').val();
+//   let radius = $('#visit_radius').val();
+//   getCustomersDateTeam(start, end, radius, teams);
+//   $('.visit-search-list').show();
+//   $('.maplist-container').hide();
+// }
 
 // Search visits by team/date/location
   function get_first_available() {
-    $('.visit-search-list').show();
-    $('.maplist-container').hide();
     let date = $('#visit_date').val();
     let start = Date.parse(date);
     let number_days = $('#number_days').val() || 1;
