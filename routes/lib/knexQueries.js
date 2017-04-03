@@ -68,6 +68,18 @@ module.exports = {
       .andWhere('start', '<', end)
   },
 
+  getFirstAvailable(start, end, teams) {
+    return knex('customers')
+      .join('visits', 'customers.id', 'customers_id')
+      .where(function() {
+        if (teams) {
+          this.whereIn('team_id', teams)
+        }
+      })
+      .andWhere('start', '>', start)
+      .andWhere('start', '<', end)
+  },
+
   getTeams() {
     return knex('teams')
   }

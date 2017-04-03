@@ -39,7 +39,87 @@ function getNearbyVisits() {
   let teams = $('#team_filter').val();
   let radius = $('#visit_radius').val();
   getCustomersDateTeam(start, end, radius, teams);
+  $('.visit-search-list').show();
+  $('.maplist-container').hide();
 }
+
+// Search visits by team/date/location
+  function get_first_available() {
+    $('.visit-search-list').show();
+    $('.maplist-container').hide();
+    let date = $('#visit_date').val();
+    let start = Date.parse(date);
+    let number_days = $('#number_days').val() || 1;
+    let end = start + (number_days * 86400000); // Number of days * length of a day
+    let teams = $('#team_filter').val();
+    let radius = $('#visit_radius').val();
+    let lat = parseFloat(customer.lat);
+    let lng = parseFloat(customer.lng);
+
+
+    let search_params = { start: start, end: end, teams: JSON.stringify(teams), radius: radius, lat: lat, lng: lng};
+    let url = '/user/get_first_available';
+    $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      data: search_params,
+      url: url
+    }).then(function(visits) {
+      visits.map(function(visit) {
+        let x = Math.abs(lng - parseFloat(visit.lng));
+        let y = Math.abs(lat - parseFloat(visit.lat));
+        visit.coord_distance = Math.sqrt((x * x) + (y * y));
+        // TODO: convert coord_distance to distance in miles & add radius
+      });
+      visits.sort(function(a, b) {
+        return a.coord_distance - b.coord_distance;
+      });
+      for (var i = 0; i < visits.length; i++) {
+        let schedule = visits.filter(function(visit) {
+          let date = new Date(parseInt(visits[i].start));
+          let start = date.setHours(0,0,0,0);
+          let end = start + 86400000;
+          return visit.team_id === visits[i].team_id && visit.start > start && visit.start < end;
+        });
+        // TODO: Join with teams to get team name, add team name below instead of ID
+        $('#first_available_list').append(`
+          <li id="li-visit${i}" data-toggle="collapse" data-target="#first_available_visit_${i}" class="collapsed">
+            <h4>${parseDate(visits[i].start)} - Team ${visits[i].team_id}, ${visits[i].customer_name}, ${visits[i].address}, ${visits[i].city}</h4>
+            <ul class="sub-menu collapse" id="first_available_visit_${i}">
+              <li>
+                <table id="first_available_table_${i}" class="table table-striped">
+                  <tr>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Visit Type</th>
+                  </tr>
+                </table>
+              </li>
+            </ul>
+          </li>`);
+        for (var j = 0; j < schedule.length; j++) {
+          $(`#first_available_table_${i}`).append(`
+            <tr>
+              <td>${parseTime(schedule[j].start)}</td>
+              <td>${parseTime(schedule[j].end)}</td>
+              <td>${schedule[j].visit_type}</td>
+            </tr>`);
+        }
+      }
+
+      if (window.customer && !visits.error) {
+        makeMarkers(visits.filter(function(localCustomer) {
+          return localCustomer.id !== customer.id;
+        }), customer);
+      } else if (!visits.error) {
+        makeMarkers(visits);
+      } else {
+        for (var i = 0; i < markers.length; i++) {  // Clear markers
+          markers[i].setMap(null);
+        }
+      }
+    });
+  }
 
 
 
@@ -95,6 +175,10 @@ $('#nearbyVisits').click(function() {
 ////// When Check Team Schedule is clicked //////
 $('#checkTeamSchedule').click(function() {
   checkTeamSchedule();
+});
+
+$('#get_first_available').click(function() {
+  get_first_available();
 });
 
 
@@ -315,4 +399,9 @@ $(".switch_map_calendar").change(function() {
     $("#calendar").show();
     $('#calendar').fullCalendar('refetchEvents');
   }
+});
+
+$('#close_list').click(function() {
+  $('.visit-search-list').hide();
+  $('.maplist-container').show();
 });

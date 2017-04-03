@@ -24,7 +24,6 @@ router.post('/customersByDates', auth.userAuth, function(req, res, next) {
 
 ////// Lookup customers by date range and team //////
 router.post('/customersByDatesAndTeams', auth.userAuth, function(req, res, next) {
-  console.log(JSON.parse(req.body.teams));
   knexQueries.visitsByDateRangeAndTeams(req.body.start, req.body.end, JSON.parse(req.body.teams))
     .then(function(visits) {
       let ids = [];
@@ -40,6 +39,18 @@ router.post('/customersByDatesAndTeams', auth.userAuth, function(req, res, next)
         res.send({ error: "There are no visits for this team today." })
       }
   });
+});
+
+router.post('/get_first_available', auth.userAuth, function(req, res, next) {
+  let start = req.body.start;
+  let end = req.body.end;
+  let teams = JSON.parse(req.body.teams);
+  let radius = req.body.radius;
+
+  knexQueries.getFirstAvailable(start, end, teams)
+    .then(function(visits) {
+      res.send(visits);
+    });
 });
 
 ////// Post new visit //////
@@ -64,7 +75,6 @@ router.post('/customers', auth.userAuth, function(req, res, next) {
 
 ////// Gets visits //////
 router.post('/visits', auth.userAuth, function(req, res, next) {
-  console.log(req.body);
   let teams = JSON.parse(req.body.teams);
   if (teams) {
     knex('visits')
@@ -239,7 +249,6 @@ router.post('/updateCustomer', auth.userAuth, function(req, res, next) {
 
 ////// Update visit //////
 router.post('/updateVisit', auth.userAuth, function(req, res, next) {
-  console.log(req.body);
   let data = {
     id: req.body.id,
     visit_type: req.body.visit_type,

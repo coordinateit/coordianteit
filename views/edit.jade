@@ -257,7 +257,8 @@ html(lang="en")
             div(class="row")  
               div(class="col-md-2")
                 div(class="form-group")
-                  button(type="button", id="nearbyVisits", class="btn btn-info", title="See nearby visits within the set parameters.") Nearby Visits
+                  button(type="button", id="get_first_available", class="btn btn-success", title="Gets First Available Teams by Proximity.") Get First Available
+
           
           hr
           h4 Assignment
@@ -285,11 +286,7 @@ html(lang="en")
                   label(for="visit_team") Assign Team
                   select(id="visit_team" class="form-control teams" name="visit_team")
                     <!-- Teams appended from dashboard.js makeList() -->
-            
-            div(class="row")
-              div(class="col-md-2")
-                div(class="form-group")
-                  button(type="button", id="checkTeamSchedule", class="btn btn-info", title="Check selected team's schedule.") Team Schedule 
+
           
           hr
           h4 Confirm
@@ -319,8 +316,7 @@ html(lang="en")
                   | &nbsp;
                   button(type="button", id="checkTeamSchedule", class="btn btn-info", title="Check selected team's schedule.") Confirm
                   | &nbsp;
-                  button(type="button", id="get_first_available", class="btn btn-success", title="Gets First Available Teams by Proximity.") Get First Available
-
+                  
     <!-- Map - Calendar Container   -->
     div(class="maplist-container")
 
@@ -342,29 +338,30 @@ html(lang="en")
     <!-- Visit Search List -->
     div(class="visit-search-list")
       div(class="menu-list")
-        ul(id="menu-content" class="menu-content collapse out")
-          li(id="li-customer2" data-toggle="collapse" data-target="#customer1" class="collapsed")
-            h4 Customer 1
-            ul(class="sub-menu collapse" id="customer1")
-              li
-                table(class="table table-striped")
-                  tr
-                    th Date
-                    th Start Time
-                    th End Time
-                    th Visit Type
-                    th Team
-          li(id="li-customer2" data-toggle="collapse" data-target="#customer2" class="collapsed")
-            h4 Customer 2
-            ul(class="sub-menu collapse" id="customer2")
-              li
-                table(class="table table-striped")
-                  tr
-                    th Date
-                    th Start Time
-                    th End Time
-                    th Visit Type
-                    th Team          
+        button(id="close_list", class="btn btn-danger") Close
+        ul(id="first_available_list" class="menu-content collapse out")
+          //- li(id="li-customer2" data-toggle="collapse" data-target="#customer1" class="collapsed")
+          //-   h4 Customer 1
+          //-   ul(class="sub-menu collapse" id="customer1")
+          //-     li
+          //-       table(class="table table-striped")
+          //-         tr
+          //-           th Date
+          //-           th Start Time
+          //-           th End Time
+          //-           th Visit Type
+          //-           th Team
+          //- li(id="li-customer2" data-toggle="collapse" data-target="#customer2" class="collapsed")
+          //-   h4 Customer 2
+          //-   ul(class="sub-menu collapse" id="customer2")
+          //-     li
+          //-       table(class="table table-striped")
+          //-         tr
+          //-           th Date
+          //-           th Start Time
+          //-           th End Time
+          //-           th Visit Type
+          //-           th Team          
 
     footer
       hr

@@ -109,7 +109,6 @@ section {
 .maplist-container {
   left: 50%;
   position: fixed;
-  display: none;
 }
 
 .team-dropdown {
@@ -150,7 +149,8 @@ form:nth-child(2) {
   font-size: 14px;
   font-weight: 400;
   background-color: #fff;
-  display: inline-block;
+  /*display: inline-block;*/
+  display: none;
   color: #333;
   letter-spacing: 1px;
   left: 50%;
