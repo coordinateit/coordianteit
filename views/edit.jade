@@ -288,10 +288,10 @@ html(lang="en")
                   select(id="visit_team" class="form-control teams" name="visit_team")
                     <!-- Teams appended from dashboard.js makeList() -->
               
-            div(class="row")  
-              div(class="col-md-2")
-                div(class="form-group")
-                  button(type="button", id="check_team_schedule", class="btn btn-info", title="Checks selected team's schedule.") Check Team Schedule
+            //- div(class="row")  
+            //-   div(class="col-md-2")
+            //-     div(class="form-group")
+            //-       button(type="button", id="check_team_schedule", class="btn btn-info", title="Checks selected team's schedule.") Check Team Schedule
           
           hr
           h4 Confirm
@@ -312,14 +312,14 @@ html(lang="en")
               div(class="col-md-4")
                 div(class="form-group")
                   label(for="confirm_crew") Crew
-                  textarea(type="textarea", id="confirm_crew", class="form-control", name="confirm_crew", rows="4")
+                  textarea(type="textarea", id="visit_crew", class="form-control", name="confirm_crew", rows="4")
             
             div(class="row")
               div(class="col-md-12")
                 div(class="form-group")
-                  button(type="button", id="clear_form", class="btn btn-danger", title="Clear the Form") Clear Form
+                  button(type="button", id="clear_visit", class="btn btn-danger", title="Clear the Form") Clear Form
                   | &nbsp;
-                  button(type="button", id="checkTeamSchedule", class="btn btn-success", title="Check selected team's schedule.") Confirm
+                  button(type="button", id="visit_submit", class="btn btn-success", title="Check selected team's schedule.") Confirm
                   | &nbsp;
                   
     <!-- Map - Calendar Container   -->
@@ -332,13 +332,14 @@ html(lang="en")
         li(role="presentation")
           a(href="#map_panel" aria-controls="map" role="tab" data-toggle="tab") Map
         li(role="presentation")
-          a(href="#list_tab_panel" aria-controls="list_tab" role="tab" data-toggle="tab") Search List
+          a(href="#list_tab_panel" aria-controls="list_tab" role="tab" data-toggle="tab" id="list_tab_button") Search List
 
       <!-- Tab panes -->
       div(class="tab-content")
         div(role="tabpanel" class="tab-pane active" id="calendar_panel")
           <!-- Calendar -->
-          div(id="calendar")
+          div(id="cal-container")
+            div(id="calendar")
         div(role="tabpanel" class="tab-pane" id="map_panel")
           <!-- Map -->
           div(id="map")
@@ -346,21 +347,8 @@ html(lang="en")
           <!-- Visit Search List -->
           div(class="visit-search-list")
             div(class="menu-list")
-              button(id="close_list", class="btn btn-danger") Close
               ul(id="first_available_list" class="menu-content collapse out")
-              //- Content Dynamically Generated 
-
-      //- <!-- Map - Calendar Switch -->
-      //- div
-      //-   label(class="switch-light" onclick="")
-      //-     input(class="switch_map_calendar", type="checkbox", checked="checked")
-      //-     span(class="well")
-      //-       span Calendar
-      //-       span Map
-      //-       a(class="btn btn-primary")
-
-      
-          
+                // Content generated dynamically         
 
     footer
       hr

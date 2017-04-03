@@ -46,7 +46,8 @@ module.exports = {
   },
 
   visitsByCustomer: function(id) {
-    return knex('visits')
+    return knex('teams')
+      .join('visits', 'teams.id', 'team_id')
       .where('customers_id', id)
   },
 
@@ -69,8 +70,9 @@ module.exports = {
   },
 
   getFirstAvailable(start, end, teams) {
-    return knex('customers')
-      .join('visits', 'customers.id', 'customers_id')
+    return knex('teams')
+      .join('visits', 'teams.id', 'visits.team_id')
+      .join('customers', 'visits.customers_id', 'customers.id')
       .where(function() {
         if (teams) {
           this.whereIn('team_id', teams)

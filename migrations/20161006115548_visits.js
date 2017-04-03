@@ -8,6 +8,7 @@ exports.up = function(knex, Promise) {
     table.integer('team_id').references('id').inTable('teams');
     table.string('extraequipment', 1000);
     table.string('notes', 5000);
+    table.string('crew');
   });
 };
 
