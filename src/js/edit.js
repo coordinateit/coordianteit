@@ -84,14 +84,18 @@ function getNearbyVisits() {
         // TODO: Join with teams to get team name, add team name below instead of ID
         $('#first_available_list').append(`
           <li id="li-visit${i}" data-toggle="collapse" data-target="#first_available_visit_${i}" class="collapsed">
-            <h4>${parseDate(visits[i].start)} - Team ${visits[i].team_id}, ${visits[i].customer_name}, ${visits[i].address}, ${visits[i].city}</h4>
+            <h4>Team ${visits[i].team_id}</h4>
             <ul class="sub-menu collapse" id="first_available_visit_${i}">
               <li>
                 <table id="first_available_table_${i}" class="table table-striped">
                   <tr>
+                    <th>Date</th>
                     <th>Start Time</th>
                     <th>End Time</th>
+                    <th>Customer Name</th>
+                    <th>Address</th>
                     <th>Visit Type</th>
+                    <th>Crew</th>
                   </tr>
                 </table>
               </li>
@@ -100,9 +104,13 @@ function getNearbyVisits() {
         for (var j = 0; j < schedule.length; j++) {
           $(`#first_available_table_${i}`).append(`
             <tr>
+              <td>${parseDate(visits[i].start)}</td>
               <td>${parseTime(schedule[j].start)}</td>
               <td>${parseTime(schedule[j].end)}</td>
+              <td>${visits[i].customer_name}</td>
+              <td>${visits[i].address}, ${visits[i].city}</td>
               <td>${schedule[j].visit_type}</td>
+              <td>${schedule[j].crew}</td>
             </tr>`);
         }
       }
