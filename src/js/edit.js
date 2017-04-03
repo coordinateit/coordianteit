@@ -25,23 +25,31 @@ Date.prototype.toDateInputValue = (function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 ////// Set position and marker to customer location //////
-position = { lat: parseFloat(customer.lat), lng: parseFloat(customer.lng) };
-function mapReady() {
-  makeMarker(position);
-}
+  if (!customer.address && !customer.city && !customer.zip) {
+    position = default_position;
+  } else {
+    position = { lat: parseFloat(customer.lat), lng: parseFloat(customer.lng) };
+  }
+  function mapReady() {
+    let no_address;
+    if (!customer.address && !customer.city && !customer.zip) {
+      no_address = true;
+    }
+    makeMarker(position, no_address);
+  }
 
 ////// Lookup customer/visits same day by team //////
-function getNearbyVisits() {
-  let date = $('#visit_date').val();
-  let start = Date.parse(date);
-  let number_days = $('#number_days').val() || 1;
-  let end = start + (number_days * 86400000); // Number of days * length of a day
-  let teams = $('#team_filter').val();
-  let radius = $('#visit_radius').val();
-  getCustomersDateTeam(start, end, radius, teams);
-  $('.visit-search-list').show();
-  $('.maplist-container').hide();
-}
+  function getNearbyVisits() {
+    let date = $('#visit_date').val();
+    let start = Date.parse(date);
+    let number_days = $('#number_days').val() || 1;
+    let end = start + (number_days * 86400000); // Number of days * length of a day
+    let teams = $('#team_filter').val();
+    let radius = $('#visit_radius').val();
+    getCustomersDateTeam(start, end, radius, teams);
+    $('.visit-search-list').show();
+    $('.maplist-container').hide();
+  }
 
 // Search visits by team/date/location
   function get_first_available() {

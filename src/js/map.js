@@ -3,6 +3,7 @@
 var map;
 var editMarker;
 var position;
+const default_position = { lat: 40.016733, lng: -105.281430 };
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: position,
@@ -14,8 +15,13 @@ function initMap() {
 }
 
 ////// Create marker from position //////
-function makeMarker(position) {
-  let image = "../img/focus-marker.png"
+function makeMarker(position, no_address) {
+  let image;
+  if (no_address) {
+    image = "../img/question_mark.png"
+  } else {
+    image = "../img/focus-marker.png"
+  }
   editMarker = new google.maps.Marker({
     position: position,
     map: map,
