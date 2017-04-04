@@ -331,10 +331,11 @@ html(lang="en")
         li(role="presentation" class="active")
           a(href="#calendar_panel" aria-controls="calendar" role="tab" data-toggle="tab") Calendar
         li(role="presentation")
-          a(href="#map_panel" aria-controls="map" role="tab" data-toggle="tab") Map
+          a(href="#map_panel" aria-controls="map" role="tab" id="map_tab" data-toggle="tab") Map
         li(role="presentation")
           a(href="#list_tab_panel" aria-controls="list_tab" role="tab" data-toggle="tab" id="list_tab_button") Search List
-
+      br
+      
       <!-- Tab panes -->
       div(class="tab-content")
         div(role="tabpanel" class="tab-pane active" id="calendar_panel")
