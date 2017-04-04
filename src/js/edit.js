@@ -58,64 +58,86 @@ Date.prototype.toDateInputValue = (function() {
       data: search_params,
       url: url
     }).then(function(visits) {
+      // TODO: add radius
       visits.map(function(visit) {
         let x = Math.abs(lng - parseFloat(visit.lng));
         let y = Math.abs(lat - parseFloat(visit.lat));
         visit.coord_distance = Math.sqrt((x * x) + (y * y));
-        // TODO: convert coord_distance to distance in miles & add radius
       });
       visits.sort(function(a, b) {
         return a.coord_distance - b.coord_distance;
       });
+      let keys = [];
+      let customers_arr = [];
       for (var i = 0; i < visits.length; i++) {
-
-        let schedule = visits.filter(function(visit) {
-          let date = new Date(parseInt(visits[i].start));
-          let start = date.setHours(0,0,0,0);
-          let end = start + 86400000;
-          return visit.team_id === visits[i].team_id && visit.start > start && visit.start < end;
-        });
-        let miles = (visits[i].coord_distance * 69).toFixed(1);
-        // TODO: Join with teams to get team name, add team name below instead of ID
-        $('#first_available_list').append(`
-          <li id="li-visit${i}" data-toggle="collapse" data-target="#first_available_visit_${i}" class="collapsed">
-            <h4>Team ${visits[i].team_id} - ${miles} miles - ${parseDate(visits[i].start)}</h4>
-            <ul class="sub-menu collapse" id="first_available_visit_${i}">
-              <li>
-                <table id="first_available_table_${i}" class="table table-striped">
-                  <tr>
-                    <th>Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Customer Name</th>
-                    <th>Address</th>
-                    <th>Visit Type</th>
-                    <th>Crew</th>
-                    <th></th>
-                  </tr>
-                </table>
-              </li>
-            </ul>
-          </li>`);
-        for (var j = 0; j < schedule.length; j++) {
-          let highlight = "";
-          if (schedule[j].customers_id === visits[i].customers_id) {
-            highlight = "highlight"
-          }
-          $(`#first_available_table_${i}`).append(`
-            <tr class="${highlight}">
-              <td>${parseDate(visits[i].start)}</td>
-              <td>${parseTime(schedule[j].start)}</td>
-              <td>${parseTime(schedule[j].end)}</td>
-              <td>${visits[i].customer_name}</td>
-              <td>${visits[i].address}, ${visits[i].city}</td>
-              <td>${schedule[j].visit_type}</td>
-              <td>${schedule[j].crew}</td>
-              <td>${schedule[j].customers_id}</td>
-            </tr>`);
+        if (!keys.includes(visits[i].customers_id)) {
+          keys.push(visits[i].customers_id)
         }
       }
-
+      for (var i = 0; i < keys.length; i++) {
+        let visits_arr = [];
+        for (var j = 0; j < visits.length; j++) {
+          if (visits[j].customers_id === keys[i]) {
+           visits_arr.push(visits[j])
+          }
+        }
+        visits_arr.sort(function(a, b) {
+         return a.start - b.start;
+        });
+        customers_arr.push(visits_arr);
+      }
+      for (var h = 0; h < customers_arr.length; h++) {
+        let visits_arr = customers_arr[h];
+        let days = [];
+        for (var i = 0; i < visits_arr.length; i++) {
+          let date = new Date(parseInt(visits_arr[i].start));
+          let start = date.setHours(0,0,0,0);
+          let end = start + 86400000;
+          let schedule = visits.filter(function(visit) {
+            return visit.team_id === visits_arr[i].team_id && visit.start > start && visit.start < end;
+          });
+          let miles = (visits_arr[i].coord_distance * 69).toFixed(1);
+          // TODO: Join with teams to get team name, add team name below instead of ID
+          if (!days.includes(start)) {
+            days.push(start);
+            $('#first_available_list').append(`
+              <li data-toggle="collapse" data-target="#first_available_visit_${i}${h}" class="collapsed">
+                <h4>Team ${visits_arr[i].team_id} - ${miles} miles - ${parseDate(visits_arr[i].start)}</h4>
+                <ul class="sub-menu collapse" id="first_available_visit_${i}${h}">
+                  <li>
+                    <table id="first_available_table_${i}${h}" class="table table-striped">
+                      <tr>
+                        <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Customer Name</th>
+                        <th>Address</th>
+                        <th>Visit Type</th>
+                        <th>Crew</th>
+                      </tr>
+                    </table>
+                  </li>
+                </ul>
+              </li>`);
+            for (var j = 0; j < schedule.length; j++) {
+              let highlight = "";
+              if (schedule[j].customers_id === visits_arr[i].customers_id) {
+                highlight = "highlight"
+              }
+              $(`#first_available_table_${i}${h}`).append(`
+                <tr class="${highlight}">
+                  <td>${parseDate(visits_arr[i].start)}</td>
+                  <td>${parseTime(schedule[j].start)}</td>
+                  <td>${parseTime(schedule[j].end)}</td>
+                  <td>${visits_arr[i].customer_name}</td>
+                  <td>${visits_arr[i].address}, ${visits_arr[i].city}</td>
+                  <td>${schedule[j].visit_type}</td>
+                  <td>${schedule[j].crew}</td>
+                </tr>`);
+            }
+          }
+        }
+      }
       if (window.customer && !visits.error) {
         makeMarkers(visits.filter(function(localCustomer) {
           return localCustomer.id !== customer.id;
@@ -221,10 +243,11 @@ function showVisit(visitIndex) {
   let team = document.getElementById('visit_team');
   team.value = visit.team_id;
   $('#visit_notes').val(visit.notes);
+  $('#visit_crew').val(visit.crew);
   $("#create_visit").show();
-  $("#saveVisitSubmit").show();
-  $("#visitSubmit").hide();
-  $('#saveVisitSubmit').click(function() {
+  $("#visit_save").show();
+  $("#visit_submit").hide();
+  $('#visit_save').click(function() {
     saveVisit(visit.id);
   });
 }
@@ -313,7 +336,8 @@ function saveVisit(visitId) {
     end: newEnd,
     visit_type: $('#visit_type').val(),
     team_id: $('#visit_team').val(),
-    notes: $('#visit_notes').val()
+    notes: $('#visit_notes').val(),
+    crew: $('#visit_crew').val()
   };
   $.ajax({
     type: "POST",

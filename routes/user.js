@@ -253,7 +253,8 @@ router.post('/updateVisit', auth.userAuth, function(req, res, next) {
     visit_type: req.body.visit_type,
     start: req.body.start,
     end: req.body.end,
-    notes: req.body.notes
+    notes: req.body.notes,
+    crew: req.body.crew
   }
   if (req.body.team_id) {
     data.team_id = req.body.team_id
