@@ -397,3 +397,15 @@ $(".switch_visits_customer").change(function() {
     $("#create_visit_container").show();
   }
 });
+
+$('#map_tab').click(function() {
+  console.log('go');
+});
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    Map Resize Fix                          //
+////////////////////////////////////////////////////////////////////////////////
+
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  google.maps.event.trigger(map, 'resize');
+});

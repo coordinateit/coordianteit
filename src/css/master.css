@@ -273,6 +273,17 @@ form:nth-child(2) {
   width: 45vw;
 }
 
+/*.tab-content>.tab-pane {
+    display: block;
+    visibility: hidden;
+}
+
+.tab-content>.tab-pane.active {
+    display: block;
+    visibility: visible;
+}*/
+
+
 .search #map, .profile #map {
   height: 65vh;
   margin: auto;
