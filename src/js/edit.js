@@ -59,7 +59,6 @@ Date.prototype.toDateInputValue = (function() {
       range = { lat_hi: (lat + r/2), lat_lo: (lat - r/2), lng_hi: (lng + r/2), lng_lo: (lng - r/2) };
     }
     let search_params = { start: start, end: end, teams: JSON.stringify(teams), range: JSON.stringify(range) };
-    console.log(search_params);
     let url = '/user/get_first_available';
     $.ajax({
       type: 'POST',
@@ -429,10 +428,6 @@ $(".switch_visits_customer").change(function() {
     $("#create_job").hide();
     $("#create_visit_container").show();
   }
-});
-
-$('#map_tab').click(function() {
-  console.log('go');
 });
 
 ////////////////////////////////////////////////////////////////////////////////

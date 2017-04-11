@@ -20,25 +20,11 @@ function getListData(){
 
 
 ////// Add data to list ///////
-function makeList(data) {
-  for (var i = 0; i < data.length; i++) {
-    let date = new Date(parseInt(data[i].start));
-    let meridiem = 'am';
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    if (hours > 12) {
-      meridiem = 'pm';
-      hours -= 12;
-    }
-    if (minutes < 10) {
-      minutes = "0" + minutes;
-    }
-    let time = hours + ":" + minutes + " " + meridiem;
-    $(".list").append(`<tr><td>${time}</td>
-                            <td>${data[i].team_id}</td>
-                            <td>${data[i].visit_type}</td>
-                            <td>${data[i].customer_name}</td>
-                            <td>${data[i].address}</td>
-                            <td>${data[i].phone_1}</td></tr>`);
+function makeList(visits) {
+  for (var i = 0; i < visits.length; i++) {
+    let date = parseDate(visits[i].start);
+    let start = parseTime(visits[i].start);
+    let end = parseTime(visits[i].end);
+    $(".list").append(`<tr><td>${date}</td><td>${start}</td><td>${end}</td><td>${visits[i].customer_name}</td><td>${visits[i].address}</td><td>${visits[i].visit_type}</td><td>${visits[i].crew}</td></tr>`);
   }
 }
