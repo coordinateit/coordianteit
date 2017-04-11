@@ -107,8 +107,7 @@ section {
 }
 
 .maplist-container {
-  left: 50%;
-  position: fixed;
+  float: right;
 }
 
 .team-dropdown {
