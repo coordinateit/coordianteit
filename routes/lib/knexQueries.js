@@ -69,7 +69,8 @@ module.exports = {
       .andWhere('start', '<', end)
   },
 
-  getFirstAvailable(start, end, teams) {
+  getFirstAvailable(start, end, teams, range) {
+    console.log(range);
     return knex('teams')
       .join('visits', 'teams.id', 'visits.team_id')
       .join('customers', 'visits.customers_id', 'customers.id')
@@ -80,6 +81,14 @@ module.exports = {
       })
       .andWhere('start', '>', start)
       .andWhere('start', '<', end)
+      .andWhere(function() {
+        if (range.lat_hi) {
+          this.where('lat', '<', range.lat_hi)
+          this.where('lat', '>', range.lat_lo)
+          this.where('lng', '<', range.lng_hi)
+          this.where('lng', '>', range.lng_lo)
+        }
+      })
   },
 
   getTeams() {

@@ -45,8 +45,8 @@ router.post('/get_first_available', auth.userAuth, function(req, res, next) {
   let start = req.body.start;
   let end = req.body.end;
   let teams = JSON.parse(req.body.teams);
-  let radius = req.body.radius;
-  knexQueries.getFirstAvailable(start, end, teams)
+  let range = JSON.parse(req.body.range);
+  knexQueries.getFirstAvailable(start, end, teams, range)
     .then(function(visits) {
       res.send(visits);
     });
@@ -59,9 +59,6 @@ router.post('/customers', auth.userAuth, function(req, res, next) {
       res.send(customers);
     })
 });
-
-
-////////////////////// ^ NEW FORMAT ^ //////////////////////////
 
 ////// Gets visits //////
 router.post('/visits', auth.userAuth, function(req, res, next) {

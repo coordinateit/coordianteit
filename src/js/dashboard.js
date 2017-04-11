@@ -166,29 +166,29 @@ function getListData(teams) {
     dataType: 'json',
     data: { teams: JSON.stringify(teams), start: start, end: end },
     url: '/user/list',
-    success: function(data) {
-      visitList(data);
+    success: function(visits) {
+      visits.sort(function(a, b) {
+        return a.start - b.start;
+      });
+      visitList(visits);
     }
   });
 }
 
 ////// Add data to list ///////
-function visitList(data) {
+function visitList(visits) {
   // Make an array of ids for list view
-  var listIds = data.map(function(visit) {
+  var listIds = visits.map(function(visit) {
     return visit.id;
   })
   window.localStorage.list = JSON.stringify(listIds);
   $(".list").empty();
-  $(".list").append("<tr><th>Start Time</th><th>Team</th><th>Visit type</th><th>Customer</th><th>Address</th><th>Phone Number</th></tr>");
-  for (var i = 0; i < data.length; i++) {
-    let time = parseTime(data[i].start)
-    $(".list").append(`<tr><td>${time}</td>
-                            <td>${data[i].team_id}</td>
-                            <td>${data[i].visit_type}</td>
-                            <td>${data[i].customer_name}</td>
-                            <td>${data[i].address}</td>
-                            <td>${data[i].phone_1}</td></tr>`);
+  $(".list").append("<tr><th>Date</th><th>Start Time</th><th>End Time</th><th>Customer Name</th><th>Address</th><th>Visit type</th><th>Crew</th></tr>");
+  for (var i = 0; i < visits.length; i++) {
+    let date = parseDate(visits[i].start);
+    let start = parseTime(visits[i].start);
+    let end = parseTime(visits[i].end);
+    $(".list").append(`<tr><td>${date}</td><td>${start}</td><td>${end}</td><td>${visits[i].customer_name}</td><td>${visits[i].address}</td><td>${visits[i].visit_type}</td><td>${visits[i].crew}</td></tr>`);
   }
 }
 
