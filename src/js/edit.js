@@ -5,7 +5,10 @@ $(document).ready(function() {
   initCalendar();
   getTeamList();
   // $('#calendar').hide();
+  $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
   $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
+  $('#visit_start').val('12:00');
+  $('#visit_end').val('13:00');
   $('#calendar').fullCalendar('addEventSource', calendarVisits);
   $(`#state option[value="${customer.state}"]`).attr("selected", "selected");
   $(`#customer_type option[value="${customer.customer_type}"]`).attr("selected", "selected");
@@ -48,9 +51,15 @@ Date.prototype.toDateInputValue = (function() {
     let end = start + (number_days * 86400000); // Number of days * length of a day
     let teams = $('#team_filter').val();
     let radius = $('#visit_radius').val();
+    let range = {};
     let lat = parseFloat(customer.lat);
     let lng = parseFloat(customer.lng);
-    let search_params = { start: start, end: end, teams: JSON.stringify(teams), radius: radius, lat: lat, lng: lng};
+    if (radius) {
+      let r = radius / 69;
+      range = { lat_hi: (lat + r/2), lat_lo: (lat - r/2), lng_hi: (lng + r/2), lng_lo: (lng - r/2) };
+    }
+    let search_params = { start: start, end: end, teams: JSON.stringify(teams), range: JSON.stringify(range) };
+    console.log(search_params);
     let url = '/user/get_first_available';
     $.ajax({
       type: 'POST',
@@ -285,7 +294,7 @@ $('#visit_start').on('change', function() {
   let date = $('#visit_date').val();
   let start = $('#visit_start').val();
   let newStart = Date.parse(date + ', ' + start);
-  let newEnd = new Date(newStart + 1800000);
+  let newEnd = new Date(newStart + 3600000);
   let endTime = setTime(newEnd);
   $('#visit_end').val(endTime);
 });
@@ -430,6 +439,8 @@ $('#map_tab').click(function() {
 //                                    Map Resize Fix                          //
 ////////////////////////////////////////////////////////////////////////////////
 
-$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-  google.maps.event.trigger(map, 'resize');
+$('a[data-toggle="tab"]').on('shown.bs.tab', function(event) {
+  var center = map.getCenter();
+     google.maps.event.trigger(map, "resize");
+     map.setCenter(center);
 });

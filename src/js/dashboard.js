@@ -166,8 +166,11 @@ function getListData(teams) {
     dataType: 'json',
     data: { teams: JSON.stringify(teams), start: start, end: end },
     url: '/user/list',
-    success: function(data) {
-      visitList(data);
+    success: function(visits) {
+      visits.sort(function(a, b) {
+        return a.start - b.start;
+      });
+      visitList(visits);
     }
   });
 }
