@@ -102,6 +102,83 @@
     </footer>
   </div><!--container-->
 
+  <!-- Quick Visit Create Modal -->
+  <div class="modal fade" id="visit-quick-create" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Visit Quick Create</h4>
+      </div>
+      <div class="modal-body">
+        <h4>Assignment</h4>
+        <br>
+        <form id="assign_visit" method="POST">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="visit_date">Assign Date</label>
+                <input type="date" id="visit_date" class="form-control" name="visit_date">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="visit_start">Assign Time</label>
+                <input type="time" id="visit_start" class="form-control" name="visit_start">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="visit_end">End Time</label>
+                <input type="time" id="visit_end" class="form-control" name="visit_end">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="visit_team">Assign Team</label>
+                  <select name="visit_team" id="visit_team" class="form-control">
+                    <option value="poop">Wolf Pack</option>
+                    <!-- Teams appended from dashboard.js makeList() -->
+                  </select>
+              </div>
+            </div>
+          </div>
+        </form>
+        <hr>
+        <h4>Confirm</h4>
+        <br>
+
+        <form id="confirm_visit" method="POST">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="visit_type"> Visit Type</label>
+                <input type="text" id="visit_type" class="form-control" name="visit_type">
+              </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                  <label for="visit_notes"> Notes </label>
+                  <textarea type="textarea" id="visit_notes" class="form-control" name="visit_notes" rows="4"></textarea>
+                </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="confirm_crew"> Crew </label>
+                  <textarea type="textarea" id="visit_crew" class="form-control" name="confirm_crew" rows="4"></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" id="visit_submit" class="btn btn-success" title="Submit new visit">Confirm</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
   <script src='https://code.jquery.com/jquery-2.2.3.min.js' integrity='sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=' crossorigin='anonymous'></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js'></script>
