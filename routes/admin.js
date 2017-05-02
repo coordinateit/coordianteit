@@ -59,24 +59,21 @@ router.post('/postUser', function(req, res, next) {
 
 router.post('/updateUser/:id', function(req, res, next) {
   if (req.session.isadmin) {
-    if (!req.body.team_id) {
-      var team_id = null;
-    } else {
-      var team_id = req.body.team_id;
+    let user = {
+      name: req.body.name,
+      phone: req.body.phone,
+      team_id: req.body.team_id || null,
+      isadmin: req.body.isadmin
     }
-    var email = req.body.email.toLowerCase();
-    var password = bcrypt.hashSync(req.body.password, 8);
-
+    user.email = req.body.email.toLowerCase();
+    if (req.body.password) {
+      console.log('change password');
+      user.password = bcrypt.hashSync(req.body.password, 8);
+    }
+    console.log(user);
     knex('users')
       .where('id', req.params.id)
-      .update({
-        email: email,
-        password: password,
-        name: req.body.name,
-        phone: req.body.phone,
-        team_id: team_id,
-        isadmin: req.body.isadmin
-      }).then(function() {
+      .update(user).then(function() {
         res.send({success: "The user has been updated."})
     });
   }

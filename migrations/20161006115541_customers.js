@@ -12,6 +12,7 @@ exports.up = function(knex, Promise) {
     table.string('state');
     table.string('zip');
     table.string('customer_type');
+    table.boolean('is_vendor');
     table.string('referral');
     table.boolean('isactive').notNullable().defaultsTo(true);
     table.string('notes', 5000);

@@ -80,7 +80,6 @@ function makeMarkers(customers, currentCustomer) {
       dataType: "json",
       url: "/user/jobVisits/" + customers[i].id,
       success: function(data) {
-        console.log(data);
         for (var i = 0; i < data.length; i++) {
           let start = parseTime(data[i].start);
           let end = parseTime(data[i].end);
