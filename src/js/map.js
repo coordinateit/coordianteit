@@ -85,7 +85,7 @@ function makeMarkers(customers, currentCustomer) {
         if (customer.is_vendor) {
           let date = new Date();
           date.setHours(0);
-          return visits.filter(function(visit) {
+          data = data.filter(function(visit) {
             return (parseInt(visit.start) > date);
           });
         }
