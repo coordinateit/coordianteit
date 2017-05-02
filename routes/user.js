@@ -234,6 +234,7 @@ router.post('/updateCustomer', auth.userAuth, function(req, res, next) {
         state: req.body.state,
         zip: req.body.zip,
         customer_type: req.body.customer_type,
+        is_vendor: req.body.is_vendor,
         referral: req.body.referral,
         notes: req.body.notes
       }).then(function(id) {

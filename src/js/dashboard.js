@@ -134,7 +134,7 @@ function getCustomerList() {
 $('#visit_customer').keyup(function() {
   let customer_input = $('#visit_customer').val();
   let customer_search = customers.filter(function(customer) {
-    return customer.customer_name.toLowerCase().includes(customer_input);
+    return customer.customer_name.toLowerCase().includes(customer_input.toLowerCase());
   });
   $('#customer_list').empty();
   // Search array

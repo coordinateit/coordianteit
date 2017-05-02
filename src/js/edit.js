@@ -2,11 +2,15 @@
 
 ////// Invoke these functions when page loads //////
 $(document).ready(function() {
+  if (customer.is_vendor) {
+    $('#is_vendor').attr('checked', true);
+    filter_vendor_visits();
+  }
+  append_visits();
+  let calendar_visits = map_calendar_visits();
   initCalendar();
   getTeamList();
-  // $('#calendar').hide();
-  if (visit) {
-    console.log(visit);
+  if (visit.id) {
     showVisit(visit);
   } else {
     $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
@@ -14,9 +18,10 @@ $(document).ready(function() {
     $('#visit_start').val('12:00');
     $('#visit_end').val('13:00');
   }
-  $('#calendar').fullCalendar('addEventSource', calendarVisits);
+  $('#calendar').fullCalendar('addEventSource', calendar_visits);
   $(`#state option[value="${customer.state}"]`).attr("selected", "selected");
   $(`#customer_type option[value="${customer.customer_type}"]`).attr("selected", "selected");
+
 });
 
 ////// Make today's date default with timezone support ///////
@@ -186,6 +191,7 @@ $('#update_customer_button').click(function() {
     state: $('#state').val(),
     zip: $('#zip').val(),
     customer_type: $('#customer_type').val(),
+    is_vendor: $('#is_vendor').prop('checked'),
     referral: $('#referral').val(),
     notes: $('#notes').val()
   }
@@ -198,7 +204,7 @@ $('#update_customer_button').click(function() {
       if (data.error) {
         $('#create_form').prepend(`<h3 style="color: red">${data.error}</h3>`)
       } else {
-        window.location.reload();
+        window.location.reload(true);
       }
     }
   });
@@ -256,12 +262,21 @@ function showVisit(visit) {
   });
 }
 
-//////  //////
-for (var i = 0; i < visits.length; i++) {
-  let date = parseDate(parseInt(visits[i].start));
-  let start = parseTime(parseInt(visits[i].start));
-  let end = parseTime(parseInt(visits[i].end));
-  $('.visit_list').append(`<tr>
+function filter_vendor_visits() {
+  let date = new Date();
+  date.setHours(0);
+  visits = visits.filter(function(visit) {
+    return parseInt(visit.start) > date;
+  });
+}
+
+////// Display visit list //////
+function append_visits() {
+  for (var i = 0; i < visits.length; i++) {
+    let date = parseDate(parseInt(visits[i].start));
+    let start = parseTime(parseInt(visits[i].start));
+    let end = parseTime(parseInt(visits[i].end));
+    $('.visit_list').append(`<tr>
       <td>${date}</td>
       <td>${start}</td>
       <td>${end}</td>
@@ -270,6 +285,7 @@ for (var i = 0; i < visits.length; i++) {
       <td><button type="button" id=${i} class="btn btn-primary btn-xs visitEdit">Edit</button></td>
       <td><button type="button" id=${visits[i].id} class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
+  }
 }
 
 $('#visit_start').on('change', function() {
@@ -381,12 +397,14 @@ $('.visitDelete').click(function(event) {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-var calendarVisits = visits.map(function(visit, i) {
+function map_calendar_visits() {
+  return visits.map(function(visit, i) {
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let team = teams[visit.team_id];
   return { id: visit.id, title: `${team.team_name} - ${visit.visit_type} - ${customer.customer_name} - ${customer.address} - ${customer.phone_1}`, start: start, end: end, index: i }
-});
+  });
+}
 
 function visitClick(customerId, visitIndex) {
   showVisit(visits[visitIndex]);
