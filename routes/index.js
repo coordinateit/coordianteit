@@ -30,6 +30,7 @@ router.get('/edit/:id', auth.userAuth, function(req, res, next) {
     .then((customer) => knexQueries.visitsByCustomer(req.params.id)
       .then((visits) => knexQueries.getTeams()
         .then((teams) => res.render('edit', { customer: customer,
+                                              visit: {},
                                               teams: teams,
                                               visits: timeFunctions.timeSort(visits) }))))
 });

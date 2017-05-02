@@ -4,9 +4,7 @@
 $(document).ready(function() {
   initCalendar();
   getTeamList();
-  // $('#calendar').hide();
-  if (visit) {
-    console.log(visit);
+  if (visit.id) {
     showVisit(visit);
   } else {
     $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
@@ -17,6 +15,9 @@ $(document).ready(function() {
   $('#calendar').fullCalendar('addEventSource', calendarVisits);
   $(`#state option[value="${customer.state}"]`).attr("selected", "selected");
   $(`#customer_type option[value="${customer.customer_type}"]`).attr("selected", "selected");
+  if (customer.is_vendor) {
+    $('#is_vendor').attr('checked', true);
+  }
 });
 
 ////// Make today's date default with timezone support ///////
@@ -186,6 +187,7 @@ $('#update_customer_button').click(function() {
     state: $('#state').val(),
     zip: $('#zip').val(),
     customer_type: $('#customer_type').val(),
+    is_vendor: $('#is_vendor').prop('checked'),
     referral: $('#referral').val(),
     notes: $('#notes').val()
   }
