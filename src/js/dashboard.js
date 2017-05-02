@@ -10,6 +10,14 @@ $(document).ready(function() {
   $('#calendar').fullCalendar('refetchEvents');
 });
 
+function filter_vendor_visit(visits) {
+  let date = new Date();
+  date.setHours(0);
+  return visits.filter(function(visit) {
+    return !visit.is_vendor || (parseInt(visit.start) > date);
+  });
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,6 +34,7 @@ function getVisits(teams) {
     data: { teams: JSON.stringify(teams) },
     url: '/user/visits'
   }).then(function(data) {
+    data = filter_vendor_visit(data);
     schedulesLookup.schedules = {};
     let visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));
@@ -230,6 +239,7 @@ function getListData(teams) {
     data: { teams: JSON.stringify(teams), start: start, end: end },
     url: '/user/list',
     success: function(visits) {
+      visits = filter_vendor_visit(visits);
       visits.sort(function(a, b) {
         return a.start - b.start;
       });

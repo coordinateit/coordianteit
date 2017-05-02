@@ -68,18 +68,27 @@ function makeMarkers(customers, currentCustomer) {
     markers[i].setMap(null);
   }
   for (var i = 0; i < customers.length; i++) {  // Set new markers
-    let content = `<h4>${customers[i].customer_name}</h4>
-                    <p>${customers[i].address}, ${customers[i].city}</p>
-                    <p>${customers[i].customer_type}</p>
-                    <a href='/edit/${customers[i].id}'>View Customer</a>
+    let customer = customers[i];
+    let content = `<h4>${customer.customer_name}</h4>
+                    <p>${customer.address}, ${customer.city}</p>
+                    <p>${customer.customer_type}</p>
+                    <a href='/edit/${customer.id}'>View Customer</a>
                     <br><br>
                     <h5>Visits:</h5>`
     let infowindow;
     $.ajax({
       type: "GET",
       dataType: "json",
-      url: "/user/jobVisits/" + customers[i].id,
+      url: "/user/jobVisits/" + customer.id,
       success: function(data) {
+        // Filter out vendor visits before today
+        if (customer.is_vendor) {
+          let date = new Date();
+          date.setHours(0);
+          return visits.filter(function(visit) {
+            return (parseInt(visit.start) > date);
+          });
+        }
         for (var i = 0; i < data.length; i++) {
           let start = parseTime(data[i].start);
           let end = parseTime(data[i].end);

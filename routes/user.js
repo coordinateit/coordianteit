@@ -55,7 +55,6 @@ router.post('/get_first_available', auth.userAuth, function(req, res, next) {
 router.get('/customer_list', auth.userAuth, function(req, res, next) {
   knex('customers')
     .then(function(customers) {
-      console.log(customers);
       res.send(customers);
     });
 });
