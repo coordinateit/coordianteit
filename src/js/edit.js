@@ -5,10 +5,15 @@ $(document).ready(function() {
   initCalendar();
   getTeamList();
   // $('#calendar').hide();
-  $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
-  $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
-  $('#visit_start').val('12:00');
-  $('#visit_end').val('13:00');
+  if (visit) {
+    console.log(visit);
+    showVisit(visit);
+  } else {
+    $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
+    $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
+    $('#visit_start').val('12:00');
+    $('#visit_end').val('13:00');
+  }
   $('#calendar').fullCalendar('addEventSource', calendarVisits);
   $(`#state option[value="${customer.state}"]`).attr("selected", "selected");
   $(`#customer_type option[value="${customer.customer_type}"]`).attr("selected", "selected");
@@ -228,22 +233,13 @@ $('#get_first_available').click(function() {
 
 
 ////// Show visit in visit form //////
-function showVisit(visitIndex) {
-  let visit = visits[visitIndex];
+function showVisit(visit) {
+  // let visit = visits[visitIndex];
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
-  let dd = start.getDate();
-  let MM = start.getMonth() + 1;
-  if (dd.toString().length < 2) {
-    dd = "0" + dd;
-  }
-  if (MM.toString().length < 2) {
-    MM = "0" + MM;
-  }
-  let yyyy = start.getFullYear();
-  let date = yyyy + "-" + MM + "-" + dd;
-  let startTime = setTime(start);
-  let endTime = setTime(end);
+  let date = htmlDate(start);
+  let startTime = htmlTime(start);
+  let endTime = htmlTime(end);
   $('#visit_date').val(date);
   $('#visit_start').val(startTime);
   $('#visit_end').val(endTime);
@@ -276,25 +272,12 @@ for (var i = 0; i < visits.length; i++) {
     </tr>`);
 }
 
-////// Return pretty time string //////
-function setTime(time) {
-  let hh = time.getHours();
-  let mm = time.getMinutes();
-  if (hh.toString().length < 2) {
-    hh = "0" + hh;
-  }
-  if (mm.toString().length < 2) {
-    mm = "0" + mm;
-  }
-  return hh + ":" + mm;
-}
-
 $('#visit_start').on('change', function() {
   let date = $('#visit_date').val();
   let start = $('#visit_start').val();
   let newStart = Date.parse(date + ', ' + start);
   let newEnd = new Date(newStart + 3600000);
-  let endTime = setTime(newEnd);
+  let endTime = htmlTime(newEnd);
   $('#visit_end').val(endTime);
 });
 
@@ -374,7 +357,7 @@ $('#clear_visit').click(function() {
 
 ////// Click edit to display visit in form //////
 $('.visitEdit').click(function(event) {
-  showVisit(event.target.id);
+  showVisit(visits[event.target.id]);
 });
 
 /////// Prompts user for confirmation then deletes a visit //////
@@ -406,7 +389,7 @@ var calendarVisits = visits.map(function(visit, i) {
 });
 
 function visitClick(customerId, visitIndex) {
-  showVisit(visitIndex);
+  showVisit(visits[visitIndex]);
   $("#create_job").hide();
   $("#create_visit_container").show();
 }

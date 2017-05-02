@@ -34,6 +34,18 @@ router.get('/edit/:id', auth.userAuth, function(req, res, next) {
                                               visits: timeFunctions.timeSort(visits) }))))
 });
 
+////// Route to edit page //////
+router.get('/edit/:customer_id/visit/:visit_id', auth.userAuth, function(req, res, next) {
+  knexQueries.customerById(req.params.customer_id)
+    .then((customer) => knexQueries.visitsByCustomer(req.params.customer_id)
+      .then((visits) => knexQueries.getTeams()
+        .then((teams) => knexQueries.visitById(req.params.visit_id)
+          .then((visit) => res.render('edit', { customer: customer,
+                                              visit: visit,
+                                              teams: teams,
+                                              visits: timeFunctions.timeSort(visits) })))));
+});
+
 ////// Route to list page //////
 router.get('/list', auth.userAuth, function(req, res, next) {
   res.sendfile('./html/list.html');

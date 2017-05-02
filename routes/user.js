@@ -52,6 +52,14 @@ router.post('/get_first_available', auth.userAuth, function(req, res, next) {
     });
 });
 
+router.get('/customer_list', auth.userAuth, function(req, res, next) {
+  knex('customers')
+    .then(function(customers) {
+      console.log(customers);
+      res.send(customers);
+    });
+});
+
 ////// Gets customers based on map position, optionally filtered by team //////
 router.post('/customers', auth.userAuth, function(req, res, next) {
   knexQueries.customersForDashboard(req.body)
@@ -83,8 +91,8 @@ router.post('/visits', auth.userAuth, function(req, res, next) {
 
 ////// Get visits for a given job ///////
 router.get('/jobVisits/:customerId', auth.userAuth, function(req, res, next) {
-  knex('visits')
-    .join('teams', 'team_id', 'teams.id')
+  knex('teams')
+    .join('visits', 'teams.id', 'team_id')
     .where('customers_id', req.params.customerId)
     .then(function(data) {
       res.send(data);
@@ -238,8 +246,10 @@ router.post('/updateCustomer', auth.userAuth, function(req, res, next) {
 router.post('/postVisit', auth.userAuth, function(req, res, next) {
   knex('visits')
     .insert(req.body)
-    .then(function() {
-      res.send({});
+    .returning('id')
+    .then(function(visit_id) {
+      console.log(visit_id);
+      res.send({ visit_id: visit_id });
     });
 });
 
