@@ -6,6 +6,7 @@ $(document).ready(function() {
   getListData();
   getTeamList();
   getVisits(null);
+  getCustomerList();
   $('#calendar').fullCalendar('refetchEvents');
 });
 
@@ -117,6 +118,74 @@ $('#calendar').click(function() {
   filter_by_team();
 });
 
+////// Populate customer list //////
+var customers = [];
+var customer_select;
+function getCustomerList() {
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '/user/customer_list'
+  }).then(function(response) {
+    customers = response;
+  });
+}
+
+$('#visit_customer').keyup(function() {
+  let customer_input = $('#visit_customer').val();
+  let customer_search = customers.filter(function(customer) {
+    return customer.customer_name.toLowerCase().includes(customer_input);
+  });
+  $('#customer_list').empty();
+  // Search array
+  for (var i = 0; i < customer_search.length; i++) {
+    $('#customer_list').append(`<tr><td id='customer${customer_search[i].id}' class="customer_list_item">${customer_search[i].customer_name}</td></tr>`);
+    // Bind customer id and name to appended element
+    $(`#customer${customer_search[i].id}`).data('customer_id', customer_search[i].id);
+    $(`#customer${customer_search[i].id}`).data('customer_name', customer_search[i].customer_name);
+  }
+
+  $('.customer_list_item').click(function(event) {
+    let customer_id = event.target.id;
+    let customer_name = $(`#${customer_id}`).data('customer_name');
+    customer_select = $(`#${customer_id}`).data('customer_id');
+    $('#visit_customer').val(customer_name);
+    $('#customer_list').empty();
+  });
+});
+
+
+$('#visit_start').on('change', function() {
+  let date = $('#visit_date').val();
+  let start = $('#visit_start').val();
+  let newStart = Date.parse(date + ', ' + start);
+  let newEnd = new Date(newStart + 3600000);
+  let endTime = htmlTime(newEnd);
+  $('#visit_end').val(endTime);
+});
+
+$('#visit_submit').click(function() {
+  let date = $('#visit_date').val();
+  let start = $('#visit_start').val();
+  let end = $('#visit_end').val();
+  let visit = {
+    customers_id: customer_select,
+    visit_type: $('#visit_type').val(),
+    start: Date.parse(date + ', ' + start),
+    end: Date.parse(date + ', ' + end),
+    team_id: $('#visit_team').val(),
+    notes: $('#visit_notes').val(),
+    crew: $('#visit_crew').val()
+  }
+  $.ajax({
+    type: 'POST',
+    dataType: 'json',
+    data: visit,
+    url: '/user/postVisit'
+  }).then(function(response) {
+    window.location = `/edit/${visit.customers_id}/visit/${response.visit_id}`
+  });
+});
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                    MAP                                     //
@@ -137,9 +206,6 @@ function mapReady() {
 
 ////// Get customers for coming week, option for filter by team //////
 function getCustomers(teams) {
-  // let date = new Date(Date.now());
-  // let start = date.setHours(0,0,0,0);
-  // let end = start + 604800000;
   let dates = date_range();
   let start = dates.start;
   let end = dates.end;
@@ -155,9 +221,6 @@ function getCustomers(teams) {
 
 ////// Get list data from server ///////
 function getListData(teams) {
-  // var date = new Date(parseInt(Date.now()));
-  // let start = date.setHours(0,0,0,0);
-  // let end = date.setHours(24,0,0,0);
   let dates = date_range();
   let start = dates.start;
   let end = dates.end;

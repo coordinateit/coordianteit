@@ -42,3 +42,29 @@ function parseDate(input) {
   let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return dayNames[date.getDay()] + ", " + monthNames[date.getMonth()] + " " + date.getDate().toString();
 }
+
+// Parse time and date for html format
+function htmlTime(time) {
+  let hh = time.getHours();
+  let mm = time.getMinutes();
+  if (hh.toString().length < 2) {
+    hh = "0" + hh;
+  }
+  if (mm.toString().length < 2) {
+    mm = "0" + mm;
+  }
+  return hh + ":" + mm;
+}
+
+function htmlDate(input) {
+  let dd = input.getDate();
+  let MM = input.getMonth() + 1;
+  if (dd.toString().length < 2) {
+    dd = "0" + dd;
+  }
+  if (MM.toString().length < 2) {
+    MM = "0" + MM;
+  }
+  let yyyy = input.getFullYear();
+  return yyyy + "-" + MM + "-" + dd;
+}

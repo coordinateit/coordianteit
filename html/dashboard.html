@@ -113,7 +113,27 @@
       <div class="modal-body">
         <h4>Assignment</h4>
         <br>
-        <form id="assign_visit" method="POST">
+        <form id="confirm_visit" method="POST">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="visit_customer">Customer Name</label>
+                <input type="text" id="visit_customer" class="form-control" name="visit_customer">
+                <!-- <select name="visit_customer" id="visit_customer" class="form-control">
+                  <option value="">Customer</option>
+                    </select> -->
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <table id="customer_list">
+                  <!-- Append customers here when user types in customer field -->
+                </table>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <br>
           <div class="row">
             <div class="col-md-3">
               <div class="form-group">
@@ -136,19 +156,15 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="visit_team">Assign Team</label>
-                  <select name="visit_team" id="visit_team" class="form-control">
-                    <option value="poop">Wolf Pack</option>
+                  <select name="visit_team" id="visit_team" class="form-control teams">
+                    <option value=""></option>
                     <!-- Teams appended from dashboard.js makeList() -->
                   </select>
               </div>
             </div>
           </div>
-        </form>
-        <hr>
-        <h4>Confirm</h4>
-        <br>
-
-        <form id="confirm_visit" method="POST">
+          <hr>
+          <br>
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">

@@ -18,9 +18,9 @@ function initMap() {
 function makeMarker(position, no_address) {
   let image;
   if (no_address) {
-    image = "../img/question_mark.png"
+    image = "/../img/question_mark.png";
   } else {
-    image = "../img/focus-marker.png"
+    image = "/../img/focus-marker.png"
   }
   editMarker = new google.maps.Marker({
     position: position,
@@ -80,11 +80,12 @@ function makeMarkers(customers, currentCustomer) {
       dataType: "json",
       url: "/user/jobVisits/" + customers[i].id,
       success: function(data) {
+        console.log(data);
         for (var i = 0; i < data.length; i++) {
           let start = parseTime(data[i].start);
           let end = parseTime(data[i].end);
           let date = parseDate(data[i].start);
-          content += `<p>${data[i].visit_type}: ${start} - ${end}, ${date} -- ${data[i].team_name}</p>`
+          content += `<p><a href="/edit/${data[i].customers_id}/visit/${data[i].id}">${data[i].visit_type}: ${start} - ${end}, ${date} -- ${data[i].team_name}</a></p>`
         }
         infowindow = new google.maps.InfoWindow({
           content: content
