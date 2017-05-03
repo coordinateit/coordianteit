@@ -64,7 +64,8 @@ function initCalendar() {
             titleFormat: 'MMMM Do'
         }
     },
-    defaultView: 'agendaWeek'
+    defaultView: 'agendaWeek',
+    displayEventTime: false
   });
   date_range();
 }

@@ -38,9 +38,9 @@ function getVisits(teams) {
     schedulesLookup.schedules = {};
     let visits = data.map(function(visit) {
       let start = new Date(parseInt(visit.start));
-      start = schedulesLookup.lookup(start); // Determines if start time is available, then adjusts if need be
-      let end = new Date(start.getTime() + 1800000);
-      return { id: visit.id, title: `${visit.team_name} - ${visit.visit_type} - ${visit.customer_name} - ${visit.address} - ${visit.phone_1}`, start: start, end: end }
+      let newStart = schedulesLookup.lookup(start); // Determines if start time is available, then adjusts if need be
+      let end = new Date(newStart.getTime() + 1800000);
+      return { id: visit.id, title: `${parseTime(visit.start)} - ${visit.team_name} - ${visit.visit_type} - ${visit.customer_name} - ${visit.address} - ${visit.phone_1}`, start: newStart, end: end }
     })
     $('#calendar').fullCalendar('removeEvents');
     $('#calendar').fullCalendar('addEventSource', visits);

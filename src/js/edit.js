@@ -11,6 +11,8 @@ $(document).ready(function() {
   initCalendar();
   getTeamList();
   if (visit.id) {
+    current_visit = visit.id;
+    $(`#edit${current_visit}`).parent().parent().addClass('current_visit');
     showVisit(visit);
   } else {
     $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
@@ -237,11 +239,9 @@ $('#get_first_available').click(function() {
 //                                    VISITS                                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-
+var current_visit;
 ////// Show visit in visit form //////
 function showVisit(visit) {
-  console.log(visit);
-  // let visit = visits[visitIndex];
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let date = htmlDate(start);
@@ -283,16 +283,23 @@ function append_visits() {
       <td>${end}</td>
       <td>${visits[i].visit_type}</td>
       <td>${visits[i].team_name}</td>
-      <td><button type="button" id="edit${i}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
-      <td><button type="button" id="delete${i}" class="btn btn-danger btn-xs visitDelete">Delete</button></td>
+      <td><button type="button" id="edit${visits[i].id}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
+      <td><button type="button" id="delete${visits[i].id}" class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
-    $(`#edit${i}`).data({ i: i, visit_id: visits[i].id });
-    $(`#delete${i}`).data({ i: i, visit_id: visits[i].id });
+    $(`#edit${visits[i].id}`).data({ i: i, visit_id: visits[i].id });
+    $(`#delete${visits[i].id}`).data({ i: i, visit_id: visits[i].id });
   }
 
   ////// Click edit to display visit in form //////
   $('.visitEdit').click(function(event) {
     let i = $(event.target).data('i');
+    let visit_id = $(event.target).data('visit_id');
+    // Remove current visit highlight
+    $(`#edit${current_visit}`).parent().parent().removeClass('current_visit');
+    // Update_current visit
+    current_visit = visit_id;
+    // Add class to new current_visit
+    $(event.target).parent().parent().addClass('current_visit');
     showVisit(visits[i]);
   });
 
@@ -393,6 +400,10 @@ $('#clear_visit').click(function() {
   $("#saveVisitSubmit").hide();
   $("#visitSubmit").show();
   $("#visit_list").show();
+  // Remove current visit highlight
+  $(`#edit${current_visit}`).parent().parent().removeClass('current_visit');
+  // Update_current visit to null
+  current_visit = null;
 });
 
 
