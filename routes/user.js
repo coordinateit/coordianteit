@@ -108,6 +108,17 @@ router.get('/teams', auth.userAuth, function(req, res, next) {
     });
 });
 
+////// Gets a list of teams by id //////
+router.post('/teams_by_ids', auth.userAuth, function(req, res, next) {
+  let teams = JSON.parse(req.body.teams);
+  console.log(typeof(teams[0]));
+  knex('teams')
+    .whereIn('id', teams)
+    .then(function(teams) {
+      res.send(teams);
+    });
+});
+
 ////// Get visits and jobs //////
 router.post('/list', auth.userAuth, function(req, res, next) {
   knex('customers')

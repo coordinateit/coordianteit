@@ -44,15 +44,22 @@
 
   <header class="dashboard-header">
     <br>
-    <div class="team-dropdown">
-      <!-- Team Selection Dropdown -->
-      <div class="form-group">
-        <select id="teams" class="selectpicker teams" data-title="Select Team" multiple>
-          <option value="">All Teams</option>
-          <!-- Teams appended from dashboard.js makeList() -->
-        </select>
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="team-dropdown">
+          <!-- Team Selection Dropdown -->
+          <div class="form-group">
+            <select id="teams" class="selectpicker teams" data-title="Filter data by team(s)" multiple>
+              <!-- Teams appended from teams.js makeList() -->
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-8">
+        <div><h4 id="display_teams">Displaying data for all teams.</h4></div>
       </div>
     </div>
+
   </header>
   <div class="dash-container">
 
