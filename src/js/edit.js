@@ -258,10 +258,12 @@ function showVisit(visit) {
   $("#create_visit").show();
   $("#visit_save").show();
   $("#visit_submit").hide();
-  $('#visit_save').click(function() {
-    saveVisit(visit.id);
-  });
 }
+
+$('#visit_save').click(function() {
+  console.log('current visit: ' + current_visit);
+  saveVisit(current_visit);
+});
 
 function filter_vendor_visits() {
   let date = new Date();
@@ -297,7 +299,7 @@ function append_visits() {
     let visit_id = $(event.target).data('visit_id');
     // Remove current visit highlight
     $(`#edit${current_visit}`).parent().parent().removeClass('current_visit');
-    // Update_current visit
+    // Update current_visit
     current_visit = visit_id;
     // Add class to new current_visit
     $(event.target).parent().parent().addClass('current_visit');
@@ -363,14 +365,14 @@ function visitSubmit() {
 }
 
 ////// Update visit in database //////
-function saveVisit(visitId) {
+function saveVisit(visit_id) {
   let date = $('#visit_date').val();
   let start = $('#visit_start').val();
   let newStart = Date.parse(date + ', ' + start);
   let end = $('#visit_end').val();
   let newEnd = Date.parse(date + ', ' + end);
   let data = {
-    id: visitId,
+    id: visit_id,
     start: newStart,
     end: newEnd,
     visit_type: $('#visit_type').val(),
@@ -383,8 +385,9 @@ function saveVisit(visitId) {
     dataType: "json",
     data: data,
     url: "/user/updateVisit",
-    success: function() {
-      window.location.reload();
+    success: function(response) {
+      let customer_id = response.customer_id;
+      window.location = `/edit/${customer.id}/visit/${visit_id}`
     }
   });
 }
