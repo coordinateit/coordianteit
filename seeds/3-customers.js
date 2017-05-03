@@ -7,7 +7,7 @@ exports.seed = function(knex, Promise) {
         knex('customers').insert({ customer_name: 'Erlich Bachman', phone_1: '2223456712', address: '1085 S Public Rd', city: 'Lafayette', state: 'CO', zip: '80026', customer_type: 'EI_WM', notes: 'Beware of ferrets, neighbor keeps illegal ferrets', lat: 39.9887872, lng: -105.0911771 }),
         knex('customers').insert({ customer_name: 'Gavin Belson', phone_1: '5553948603', address: '6765 W 120th Ave A', city: 'Broomfield', state: 'CO', zip: '80020', customer_type: 'WWI', notes: 'Keep this man happy at all costs, tell him what he wants to hear', lat: 39.9152647, lng: -105.069651 }),
         knex('customers').insert({ customer_name: 'Jared Dunn', phone_1: '4443901937', address: '6650 W 120th Ave', city: 'Broomfield', state: 'CO', zip: '80020', customer_type: 'DCS', notes: 'Beware of rodent infestation in garage', lat: 39.9128856, lng: -105.0695519 }),
-        knex('customers').insert({ customer_name: 'Vendor', phone_1: '4443901937', address: '670 Beauprez Ave', city: 'Lafayette', state: 'CO', zip: '80026', customer_type: '', notes: 'Drives a hard bargain', lat: 40.005517, lng: -105.129729 })
+        knex('customers').insert({ customer_name: 'Vendor', phone_1: '4443901937', address: '670 Beauprez Ave', city: 'Lafayette', state: 'CO', zip: '80026', customer_type: '', is_vendor: true, notes: 'Drives a hard bargain', lat: 40.005517, lng: -105.129729 })
       ]);
     });
 };

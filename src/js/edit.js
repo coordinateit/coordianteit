@@ -2,11 +2,15 @@
 
 ////// Invoke these functions when page loads //////
 $(document).ready(function() {
+  if (customer.is_vendor) {
+    $('#is_vendor').attr('checked', true);
+    filter_vendor_visits();
+  }
+  append_visits();
+  let calendar_visits = map_calendar_visits();
   initCalendar();
   getTeamList();
-  // $('#calendar').hide();
-  if (visit) {
-    console.log(visit);
+  if (visit.id) {
     showVisit(visit);
   } else {
     $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
@@ -14,9 +18,10 @@ $(document).ready(function() {
     $('#visit_start').val('12:00');
     $('#visit_end').val('13:00');
   }
-  $('#calendar').fullCalendar('addEventSource', calendarVisits);
+  $('#calendar').fullCalendar('addEventSource', calendar_visits);
   $(`#state option[value="${customer.state}"]`).attr("selected", "selected");
   $(`#customer_type option[value="${customer.customer_type}"]`).attr("selected", "selected");
+
 });
 
 ////// Make today's date default with timezone support ///////
@@ -135,7 +140,7 @@ Date.prototype.toDateInputValue = (function() {
             for (var j = 0; j < schedule.length; j++) {
               let highlight = "";
               if (schedule[j].customers_id === visits_arr[i].customers_id) {
-                highlight = "highlight"
+                highlight = "highlight";
               }
               $(`#first_available_table_${i}${h}`).append(`
                 <tr class="${highlight}">
@@ -186,6 +191,7 @@ $('#update_customer_button').click(function() {
     state: $('#state').val(),
     zip: $('#zip').val(),
     customer_type: $('#customer_type').val(),
+    is_vendor: $('#is_vendor').prop('checked'),
     referral: $('#referral').val(),
     notes: $('#notes').val()
   }
@@ -198,7 +204,7 @@ $('#update_customer_button').click(function() {
       if (data.error) {
         $('#create_form').prepend(`<h3 style="color: red">${data.error}</h3>`)
       } else {
-        window.location.reload();
+        window.location.reload(true);
       }
     }
   });
@@ -234,6 +240,7 @@ $('#get_first_available').click(function() {
 
 ////// Show visit in visit form //////
 function showVisit(visit) {
+  console.log(visit);
   // let visit = visits[visitIndex];
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
@@ -256,21 +263,54 @@ function showVisit(visit) {
   });
 }
 
-//////  //////
-for (var i = 0; i < visits.length; i++) {
-  let date = parseDate(parseInt(visits[i].start));
-  let start = parseTime(parseInt(visits[i].start));
-  let end = parseTime(parseInt(visits[i].end));
-  $('.visit_list').append(`<tr>
+function filter_vendor_visits() {
+  let date = new Date();
+  date.setHours(0);
+  visits = visits.filter(function(visit) {
+    return parseInt(visit.start) > date;
+  });
+}
+
+////// Display visit list //////
+function append_visits() {
+  for (var i = 0; i < visits.length; i++) {
+    let date = parseDate(parseInt(visits[i].start));
+    let start = parseTime(parseInt(visits[i].start));
+    let end = parseTime(parseInt(visits[i].end));
+    $('.visit_list').append(`<tr>
       <td>${date}</td>
       <td>${start}</td>
       <td>${end}</td>
       <td>${visits[i].visit_type}</td>
       <td>${visits[i].team_name}</td>
-      <td><button type="button" id=${i} class="btn btn-primary btn-xs visitEdit">Edit</button></td>
+      <td><button type="button" id="edit${i}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
       <td><button type="button" id="duplicate" class="btn btn-info btn-xs visitDuplicate">Duplicate</button></td>
-      <td><button type="button" id=${visits[i].id} class="btn btn-danger btn-xs visitDelete">Delete</button></td>
+      <td><button type="button" id="delete${i}" class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
+    $(`#edit${i}`).data({ i: i, visit_id: visits[i].id });
+    $(`#delete${i}`).data({ i: i, visit_id: visits[i].id });
+  }
+
+  ////// Click edit to display visit in form //////
+  $('.visitEdit').click(function(event) {
+    let i = $(event.target).data('i');
+    showVisit(visits[i]);
+  });
+
+  /////// Prompts user for confirmation then deletes a visit //////
+  $('.visitDelete').click(function(event) {
+    if (window.confirm("Are you sure you want to delete this visit?")) {
+      let visit_id = $(event.target).data('visit_id');
+      $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: `/user/deleteVisit/${visit_id}`,
+        success: function() {
+          window.location.reload();
+        }
+      });
+    }
+  });
 }
 
 $('#visit_start').on('change', function() {
@@ -356,25 +396,6 @@ $('#clear_visit').click(function() {
   $("#visit_list").show();
 });
 
-////// Click edit to display visit in form //////
-$('.visitEdit').click(function(event) {
-  showVisit(visits[event.target.id]);
-});
-
-/////// Prompts user for confirmation then deletes a visit //////
-$('.visitDelete').click(function(event) {
-  if (window.confirm("Are you sure you want to delete this visit?")) {
-    $.ajax({
-      type: 'GET',
-      dataType: 'json',
-      url: `/user/deleteVisit/${event.target.id}`,
-      success: function() {
-        window.location.reload();
-      }
-    });
-  }
-});
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -382,12 +403,14 @@ $('.visitDelete').click(function(event) {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-var calendarVisits = visits.map(function(visit, i) {
+function map_calendar_visits() {
+  return visits.map(function(visit, i) {
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let team = teams[visit.team_id];
   return { id: visit.id, title: `${team.team_name} - ${visit.visit_type} - ${customer.customer_name} - ${customer.address} - ${customer.phone_1}`, start: start, end: end, index: i }
-});
+  });
+}
 
 function visitClick(customerId, visitIndex) {
   showVisit(visits[visitIndex]);
