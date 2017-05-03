@@ -2,28 +2,19 @@
 ////// Initialize calendar and display visits //////
 function initCalendar() {
   let clickTimer;
+  let popover_element;
   $('#calendar').fullCalendar({
     eventClick: function(event, jsEvent) {
-      // Event handler for click vs double click
-      let element = $(jsEvent.target), eventClicker = element.data('eventClicker');
-      if (eventClicker) { // Double click
-        clearTimeout(eventClicker);
-        element.data('eventClicker', '');
-
-      } else { // Single click
-
-        $(this).popover({
-          html:true,
-          content:"<button class='btn btn-primary'>Edit</button>",
-          placement:'right',
-          container:'body'
-        }).popover('toggle');
-
-        element.data('eventClicker', setTimeout(function() {
-          element.data('eventClicker', '');
-          visitClick(event.id, event.index);
-        }, 300));
-      }
+      visitClick(event.customers_id, event.index);
+      // $(this).popover({
+      //   html: true,
+      //   content: `<a href='/edit/visit/${event.visit_id}'><button class='btn btn-primary'>Edit</button>`,
+      //   placement: 'right',
+      //   container: 'body',
+      // }).popover();
+      // $(this).attr('data-toggle', 'popover');
+      // $(this).attr('data-trigger', 'focus');
+        // $(this).popover('hide');
     },
     dayClick: function(date, jsEvent) {
       // Event handler for click vs double click
@@ -58,9 +49,11 @@ function initCalendar() {
     },
     eventMouseover: function() {
       document.body.style.cursor = "pointer";
+
     },
     eventMouseout: function() {
       document.body.style.cursor = "default";
+
     },
     header: {
         left: 'title',

@@ -40,8 +40,8 @@ function getVisits(teams) {
       let start = new Date(parseInt(visit.start));
       let newStart = schedulesLookup.lookup(start); // Determines if start time is available, then adjusts if need be
       let end = new Date(newStart.getTime() + 1800000);
-      return { id: visit.id, title: `${parseTime(visit.start)} - ${visit.team_name} - ${visit.visit_type} - ${visit.customer_name} - ${visit.address} - ${visit.phone_1}`, start: newStart, end: end }
-    })
+      return { visit_id: visit.visit_id, customers_id: visit.customers_id, title: `${parseTime(visit.start)} - ${visit.team_name} - ${visit.visit_type} - ${visit.customer_name} - ${visit.address} - ${visit.phone_1}`, start: newStart, end: end }
+    });
     $('#calendar').fullCalendar('removeEvents');
     $('#calendar').fullCalendar('addEventSource', visits);
     $('#calendar').fullCalendar('refetchEvents');
@@ -50,14 +50,23 @@ function getVisits(teams) {
 
 ////// When user clicks a visit //////
 function visitClick(customerId, index) {
-  var customers = [];
   $.ajax({
     type: 'GET',
     dataType: 'json',
     url: `/dashboard/customerVisit/${customerId}`
   }).then(function(customer) {
-    customers.push(customer)
-    makeMarkers(customers);
+    setTimeout(function() {
+      makeMarkers([customer], customer);
+      click_marker();
+      function click_marker() {
+        for (var i = 0; i < markers.length; i++) {
+          if (markers[i].id == customerId) {
+            console.log(markers[i].id);
+            return google.maps.event.trigger(markers[i], 'click');
+          }
+        }
+      }
+    }, 300);
   });
 }
 

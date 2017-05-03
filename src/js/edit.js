@@ -286,12 +286,15 @@ function append_visits() {
       <td>${visits[i].visit_type}</td>
       <td>${visits[i].team_name}</td>
       <td><button type="button" id="edit${visits[i].id}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
-      <td><button type="button" id="duplicate" class="btn btn-info btn-xs visitDuplicate">Duplicate</button></td>
+
       <td><button type="button" id="delete${visits[i].id}" class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
     $(`#edit${visits[i].id}`).data({ i: i, visit_id: visits[i].id });
     $(`#delete${visits[i].id}`).data({ i: i, visit_id: visits[i].id });
   }
+
+  // Add duplicate above when ready to wire up
+  //<td><button type="button" id="duplicate" class="btn btn-info btn-xs visitDuplicate">Duplicate</button></td>
 
   ////// Click edit to display visit in form //////
   $('.visitEdit').click(function(event) {
