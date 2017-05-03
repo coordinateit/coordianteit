@@ -11,6 +11,8 @@ $(document).ready(function() {
   initCalendar();
   getTeamList();
   if (visit.id) {
+    current_visit = visit.id;
+    $(`#edit${current_visit}`).parent().parent().addClass('current_visit');
     showVisit(visit);
   } else {
     $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
@@ -237,11 +239,9 @@ $('#get_first_available').click(function() {
 //                                    VISITS                                  //
 ////////////////////////////////////////////////////////////////////////////////
 
-
+var current_visit;
 ////// Show visit in visit form //////
 function showVisit(visit) {
-  console.log(visit);
-  // let visit = visits[visitIndex];
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let date = htmlDate(start);
@@ -258,10 +258,12 @@ function showVisit(visit) {
   $("#create_visit").show();
   $("#visit_save").show();
   $("#visit_submit").hide();
-  $('#visit_save').click(function() {
-    saveVisit(visit.id);
-  });
 }
+
+$('#visit_save').click(function() {
+  console.log('current visit: ' + current_visit);
+  saveVisit(current_visit);
+});
 
 function filter_vendor_visits() {
   let date = new Date();
@@ -283,17 +285,24 @@ function append_visits() {
       <td>${end}</td>
       <td>${visits[i].visit_type}</td>
       <td>${visits[i].team_name}</td>
-      <td><button type="button" id="edit${i}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
+      <td><button type="button" id="edit${visits[i].id}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
       <td><button type="button" id="duplicate" class="btn btn-info btn-xs visitDuplicate">Duplicate</button></td>
-      <td><button type="button" id="delete${i}" class="btn btn-danger btn-xs visitDelete">Delete</button></td>
+      <td><button type="button" id="delete${visits[i].id}" class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
-    $(`#edit${i}`).data({ i: i, visit_id: visits[i].id });
-    $(`#delete${i}`).data({ i: i, visit_id: visits[i].id });
+    $(`#edit${visits[i].id}`).data({ i: i, visit_id: visits[i].id });
+    $(`#delete${visits[i].id}`).data({ i: i, visit_id: visits[i].id });
   }
 
   ////// Click edit to display visit in form //////
   $('.visitEdit').click(function(event) {
     let i = $(event.target).data('i');
+    let visit_id = $(event.target).data('visit_id');
+    // Remove current visit highlight
+    $(`#edit${current_visit}`).parent().parent().removeClass('current_visit');
+    // Update current_visit
+    current_visit = visit_id;
+    // Add class to new current_visit
+    $(event.target).parent().parent().addClass('current_visit');
     showVisit(visits[i]);
   });
 
@@ -356,14 +365,14 @@ function visitSubmit() {
 }
 
 ////// Update visit in database //////
-function saveVisit(visitId) {
+function saveVisit(visit_id) {
   let date = $('#visit_date').val();
   let start = $('#visit_start').val();
   let newStart = Date.parse(date + ', ' + start);
   let end = $('#visit_end').val();
   let newEnd = Date.parse(date + ', ' + end);
   let data = {
-    id: visitId,
+    id: visit_id,
     start: newStart,
     end: newEnd,
     visit_type: $('#visit_type').val(),
@@ -376,8 +385,9 @@ function saveVisit(visitId) {
     dataType: "json",
     data: data,
     url: "/user/updateVisit",
-    success: function() {
-      window.location.reload();
+    success: function(response) {
+      let customer_id = response.customer_id;
+      window.location = `/edit/${customer.id}/visit/${visit_id}`
     }
   });
 }
@@ -394,6 +404,10 @@ $('#clear_visit').click(function() {
   $("#saveVisitSubmit").hide();
   $("#visitSubmit").show();
   $("#visit_list").show();
+  // Remove current visit highlight
+  $(`#edit${current_visit}`).parent().parent().removeClass('current_visit');
+  // Update_current visit to null
+  current_visit = null;
 });
 
 

@@ -259,7 +259,6 @@ router.post('/postVisit', auth.userAuth, function(req, res, next) {
     .insert(req.body)
     .returning('id')
     .then(function(visit_id) {
-      console.log(visit_id);
       res.send({ visit_id: visit_id });
     });
 });
@@ -281,8 +280,8 @@ router.post('/updateVisit', auth.userAuth, function(req, res, next) {
     .where('id', req.body.id)
     .update(data)
     .returning('customers_id')
-    .then(function(data) {
-      res.send(data);
+    .then(function(customer_id) {
+      res.send({ customer_id: customer_id });
     })
 });
 
