@@ -256,12 +256,12 @@ function visitList(visits) {
   })
   window.localStorage.list = JSON.stringify(listIds);
   $(".list").empty();
-  $(".list").append("<tr><th>Date</th><th>Start Time</th><th>End Time</th><th>Customer Name</th><th>Address</th><th>Visit type</th><th>Crew</th></tr>");
+  $(".list").append("<tr><th>Date</th><th>Start Time</th><th>Team</th><th>Customer Name</th><th>Address</th><th>Visit type</th><th>Crew</th><th>Notes</th></tr>");
   for (var i = 0; i < visits.length; i++) {
     let date = parseDate(visits[i].start);
     let start = parseTime(visits[i].start);
     let end = parseTime(visits[i].end);
-    $(".list").append(`<tr><td>${date}</td><td>${start}</td><td>${end}</td><td>${visits[i].customer_name}</td><td>${visits[i].address}</td><td>${visits[i].visit_type}</td><td>${visits[i].crew}</td></tr>`);
+    $(".list").append(`<tr><td>${date}</td><td>${start}</td><td>${visits[i].team_id}<td>${visits[i].customer_name}</td><td>${visits[i].address}</td><td>${visits[i].visit_type}</td><td>${visits[i].crew}</td><td>${visits[i].notes}</td></tr>`);
   }
 }
 
