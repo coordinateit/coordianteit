@@ -139,6 +139,10 @@ form:nth-child(2) {
   margin-top: 5px;
 }*/
 
+.current_visit {
+  color: blue;
+}
+
 /*****>> nav styles <<*****/
 
 /*****>> side nav styles <<*****/
