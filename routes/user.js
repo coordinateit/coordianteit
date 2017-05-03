@@ -71,7 +71,8 @@ router.post('/customers', auth.userAuth, function(req, res, next) {
 router.post('/visits', auth.userAuth, function(req, res, next) {
   let teams = JSON.parse(req.body.teams);
   if (teams) {
-    knex('visits')
+    knex.select('visits.id as visit_id', 'start', 'end', 'team_name', 'visit_type', 'customer_name', 'address', 'phone_1', 'customers_id', 'team_id')
+      .from('visits')
       .join('teams', 'team_id', 'teams.id')
       .join('customers', 'customers_id', 'customers.id')
       .whereIn('team_id', teams)
@@ -79,12 +80,13 @@ router.post('/visits', auth.userAuth, function(req, res, next) {
         res.send(visits);
       })
   } else {
-    knex('visits')
-      .join('teams', 'team_id', 'teams.id')
+    knex.select('visits.id as visit_id', 'start', 'end', 'team_name', 'visit_type', 'customer_name', 'address', 'phone_1', 'customers_id', 'team_id')
+      .from('visits')
       .join('customers', 'customers_id', 'customers.id')
+      .join('teams', 'team_id', 'teams.id')
       .then(function(visits) {
         res.send(visits);
-      })
+      });
   }
 });
 
