@@ -11,6 +11,14 @@ function initCalendar() {
         element.data('eventClicker', '');
 
       } else { // Single click
+
+        $(this).popover({
+          html:true,
+          content:"<button class='btn btn-primary'>Edit</button>",
+          placement:'right',
+          container:'body'
+        }).popover('toggle');
+
         element.data('eventClicker', setTimeout(function() {
           element.data('eventClicker', '');
           visitClick(event.id, event.index);

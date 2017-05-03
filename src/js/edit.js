@@ -284,6 +284,7 @@ function append_visits() {
       <td>${visits[i].visit_type}</td>
       <td>${visits[i].team_name}</td>
       <td><button type="button" id="edit${i}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
+      <td><button type="button" id="duplicate" class="btn btn-info btn-xs visitDuplicate">Duplicate</button></td>
       <td><button type="button" id="delete${i}" class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
     $(`#edit${i}`).data({ i: i, visit_id: visits[i].id });

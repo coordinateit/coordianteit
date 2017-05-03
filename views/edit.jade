@@ -35,7 +35,7 @@ html(lang="en")
             a(href="/user") Profile
           li
             a(href="#" id="logout") Log Out
-        a(class="btn btn-success navbar-btn navbar-right", href="/create", role="button") Create
+        a(class="btn btn-success navbar-btn navbar-right", href="/create", role="button", title="Create new Customer Profile") Create
   
   
   <!-- Exammple of injected customer data -->      
@@ -231,9 +231,12 @@ html(lang="en")
                 th Team
                 th
                 th
+                th
+      
           hr
           
-          h4 Search
+          h4 Search 
+            small - Search for Nearby Visits
           br
           
           form(id="search_visit", method="POST")
@@ -271,7 +274,8 @@ html(lang="en")
 
           
           hr
-          h4 Assignment
+          h4 Assignment 
+            small - Assign a Date and Time for this Visit
           br
           
           form(id="assign_visit", method="POST")
@@ -297,13 +301,14 @@ html(lang="en")
                   select(id="visit_team" class="form-control teams" name="visit_team")
                     <!-- Teams appended from dashboard.js makeList() -->
               
-            //- div(class="row")  
-            //-   div(class="col-md-2")
-            //-     div(class="form-group")
-            //-       button(type="button", id="check_team_schedule", class="btn btn-info", title="Checks selected team's schedule.") Check Team Schedule
+            div(class="row")  
+              div(class="col-md-2")
+                div(class="form-group")
+                  button(type="button", id="check_team_schedule", class="btn btn-info", title="Checks selected team's schedule.") Check Team Schedule
           
           hr
-          h4 Confirm
+          h4 Confirm 
+            small - Add Details and Save Changes
           br
           
           form(id="confirm_visit", method="POST")
@@ -338,7 +343,7 @@ html(lang="en")
       <!-- Nav tabs -->
       ul(class="nav nav-tabs" role="tablist")
         li(role="presentation" class="active")
-          a(href="#calendar_panel" aria-controls="calendar" role="tab" data-toggle="tab") Calendar
+          a(href="#calendar_panel" aria-controls="calendar" role="tab" data-toggle="tab") Customer Calendar
         li(role="presentation")
           a(href="#map_panel" aria-controls="map" role="tab" id="map_tab" data-toggle="tab") Map
         li(role="presentation")
