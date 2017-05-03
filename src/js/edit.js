@@ -140,7 +140,7 @@ Date.prototype.toDateInputValue = (function() {
             for (var j = 0; j < schedule.length; j++) {
               let highlight = "";
               if (schedule[j].customers_id === visits_arr[i].customers_id) {
-                highlight = "highlight"
+                highlight = "highlight";
               }
               $(`#first_available_table_${i}${h}`).append(`
                 <tr class="${highlight}">
@@ -240,6 +240,7 @@ $('#get_first_available').click(function() {
 
 ////// Show visit in visit form //////
 function showVisit(visit) {
+  console.log(visit);
   // let visit = visits[visitIndex];
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
@@ -282,10 +283,33 @@ function append_visits() {
       <td>${end}</td>
       <td>${visits[i].visit_type}</td>
       <td>${visits[i].team_name}</td>
-      <td><button type="button" id=${i} class="btn btn-primary btn-xs visitEdit">Edit</button></td>
-      <td><button type="button" id=${visits[i].id} class="btn btn-danger btn-xs visitDelete">Delete</button></td>
+      <td><button type="button" id="edit${i}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
+      <td><button type="button" id="delete${i}" class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
+    $(`#edit${i}`).data({ i: i, visit_id: visits[i].id });
+    $(`#delete${i}`).data({ i: i, visit_id: visits[i].id });
   }
+
+  ////// Click edit to display visit in form //////
+  $('.visitEdit').click(function(event) {
+    let i = $(event.target).data('i');
+    showVisit(visits[i]);
+  });
+
+  /////// Prompts user for confirmation then deletes a visit //////
+  $('.visitDelete').click(function(event) {
+    if (window.confirm("Are you sure you want to delete this visit?")) {
+      let visit_id = $(event.target).data('visit_id');
+      $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: `/user/deleteVisit/${visit_id}`,
+        success: function() {
+          window.location.reload();
+        }
+      });
+    }
+  });
 }
 
 $('#visit_start').on('change', function() {
@@ -369,25 +393,6 @@ $('#clear_visit').click(function() {
   $("#saveVisitSubmit").hide();
   $("#visitSubmit").show();
   $("#visit_list").show();
-});
-
-////// Click edit to display visit in form //////
-$('.visitEdit').click(function(event) {
-  showVisit(visits[event.target.id]);
-});
-
-/////// Prompts user for confirmation then deletes a visit //////
-$('.visitDelete').click(function(event) {
-  if (window.confirm("Are you sure you want to delete this visit?")) {
-    $.ajax({
-      type: 'GET',
-      dataType: 'json',
-      url: `/user/deleteVisit/${event.target.id}`,
-      success: function() {
-        window.location.reload();
-      }
-    });
-  }
 });
 
 
