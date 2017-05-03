@@ -73,7 +73,8 @@ function makeMarkers(customers, currentCustomer) {
                     <p>${customers[i].customer_type}</p>
                     <a href='/edit/${customers[i].id}'>View Customer</a>
                     <br><br>
-                    <h5>Visits:</h5>`
+                    <h5>Visits:</h5>
+                    <table class='info-window'>`
     let infowindow;
     $.ajax({
       type: "GET",
@@ -84,7 +85,10 @@ function makeMarkers(customers, currentCustomer) {
           let start = parseTime(data[i].start);
           let end = parseTime(data[i].end);
           let date = parseDate(data[i].start);
-          content += `<p><a href="/edit/${data[i].customers_id}/visit/${data[i].id}">${data[i].visit_type}: ${start} - ${end}, ${date} -- ${data[i].team_name}</a></p>`
+          content += `<tr><td><a href="/edit/${data[i].customers_id}/visit/${data[i].id}">${date}</a></td><td>${start}</td><td> ${data[i].visit_type}</td><td>${data[i].team_name}</td></tr>`
+          if (i == data.length - 1){
+            content += "</table>";
+          }
         }
         infowindow = new google.maps.InfoWindow({
           content: content
