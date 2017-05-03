@@ -52,6 +52,11 @@ router.get('/list', auth.userAuth, function(req, res, next) {
   res.sendfile('./html/list.html');
 });
 
+////// Route to list page //////
+router.get('/calendar', auth.userAuth, function(req, res, next) {
+  res.sendfile('./html/calendar.html');
+});
+
 ////// Route to user page //////
 router.get('/user', auth.userAuth, function(req, res, next) {
   res.sendfile('./html/user.html');

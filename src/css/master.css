@@ -314,3 +314,13 @@ footer {
   margin: 0 20px;
   clear: both;
 }
+
+.print-cal{
+  height: 100%;
+  width: 100%;
+  padding: 3rem;
+}
+
+#calendar {
+  margin-bottom: 3rem;
+}
