@@ -390,7 +390,7 @@ function saveVisit(visit_id) {
     url: "/user/updateVisit",
     success: function(response) {
       let customer_id = response.customer_id;
-      window.location = `/edit/${customer.id}/visit/${visit_id}`
+      window.location = `/edit/visit/${visit_id}`
     }
   });
 }
