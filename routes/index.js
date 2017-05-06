@@ -36,7 +36,7 @@ router.get('/edit/:id', auth.userAuth, function(req, res, next) {
 });
 
 ////// Route to edit page //////
-router.get('/edit/visit/:visit_id', auth.userAuth, function(req, res, next) {
+router.get('/edit_visit/:visit_id', auth.userAuth, function(req, res, next) {
   knexQueries.visitById(req.params.visit_id)
     .then((visit) => knexQueries.customerById(visit.customers_id)
       .then((customer) => knexQueries.visitsByCustomer(visit.customers_id)

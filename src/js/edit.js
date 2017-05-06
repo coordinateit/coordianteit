@@ -344,7 +344,7 @@ function append_visits() {
         dataType: 'json',
         url: `/user/deleteVisit/${visit_id}`,
         success: function() {
-          window.location.reload();
+          window.location = `/edit/${customer.id}`;
         }
       });
     }
@@ -389,7 +389,7 @@ function visitSubmit() {
     url: "/user/postVisit",
     success: function(response) {
       let visit_id = response.visit_id;
-      window.location = `/edit/visit/${visit_id}`;
+      window.location = `/edit_visit/${visit_id}`;
     }
   });
 }
@@ -416,7 +416,7 @@ function saveVisit(visit_id) {
     data: data,
     url: "/user/updateVisit",
     success: function(response) {
-      window.location = `/edit/visit/${visit_id}`
+      window.location = `/edit_visit/${visit_id}`
     }
   });
 }

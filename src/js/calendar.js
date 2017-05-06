@@ -8,7 +8,7 @@ function initCalendar() {
       visitClick(event.customers_id, event.index);
       // $(this).popover({
       //   html: true,
-      //   content: `<a href='/edit/visit/${event.visit_id}'><button class='btn btn-primary'>Edit</button>`,
+      //   content: `<a href='/edit_visit/${event.visit_id}'><button class='btn btn-primary'>Edit</button>`,
       //   placement: 'right',
       //   container: 'body',
       // }).popover();

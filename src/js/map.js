@@ -94,7 +94,7 @@ function makeMarkers(customers, currentCustomer) {
           let start = parseTime(data[i].start);
           let end = parseTime(data[i].end);
           let date = parseDate(data[i].start);
-          content += `<tr><td><a href="/edit/visit/${data[i].id}">${date}</a></td><td>${start}</td><td> ${data[i].visit_type}</td><td>${data[i].team_name}</td></tr>`
+          content += `<tr><td><a href="/edit_visit/${data[i].id}">${date}</a></td><td>${start}</td><td> ${data[i].visit_type}</td><td>${data[i].team_name}</td></tr>`
           if (i == data.length - 1){
             content += "</table>";
           }
