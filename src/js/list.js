@@ -13,14 +13,18 @@ function getListData(){
     data: {list: window.localStorage.list},
     url: '/user/printlist',
     success: function(data) {
-      makeList(data);
+      let visits = data.sort(function(a, b) {
+        return a.start - b.start;
+      });
+      makeList(visits);
     }
   });
 };
 
-
 ////// Add data to list ///////
 function makeList(visits) {
+  let start = parseDate(visits[0].start), end = parseDate(visits[visits.length - 1].start);
+  $('#date_range').append(`<h3>Schedule: ${start} - ${end}</h3>`)
   for (var i = 0; i < visits.length; i++) {
     let date = parseDate(visits[i].start);
     let start = parseTime(visits[i].start);

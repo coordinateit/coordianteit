@@ -255,13 +255,32 @@ function showVisit(visit) {
   team.value = visit.team_id;
   $('#visit_notes').val(visit.notes);
   $('#visit_crew').val(visit.crew);
-  $("#create_visit").show();
+  // $("#create_visit").show();
   $("#visit_save").show();
   $("#visit_submit").hide();
 }
 
+function duplicateVisit(visit) {
+  let start = new Date(parseInt(visit.start));
+  let end = new Date(parseInt(visit.end));
+  let date = htmlDate(start);
+  let startTime = htmlTime(start);
+  let endTime = htmlTime(end);
+  $('#visit_date').val(date);
+  $('#visit_start').val(startTime);
+  $('#visit_end').val(endTime);
+  $('#visit_type').val(visit.visit_type);
+  let team = document.getElementById('visit_team');
+  team.value = visit.team_id;
+  $('#visit_notes').val(visit.notes);
+  $('#visit_crew').val(visit.crew);
+  // $("#create_visit").show();
+  $("#visit_save").hide();
+  $("#visit_submit").show();
+}
+
+
 $('#visit_save').click(function() {
-  console.log('current visit: ' + current_visit);
   saveVisit(current_visit);
 });
 
@@ -286,15 +305,14 @@ function append_visits() {
       <td>${visits[i].visit_type}</td>
       <td>${visits[i].team_name}</td>
       <td><button type="button" id="edit${visits[i].id}" class="btn btn-primary btn-xs visitEdit">Edit</button></td>
-
+      <td><button type="button" id="duplicate${visits[i].id}" class="btn btn-info btn-xs visitDuplicate">Duplicate</button></td>
       <td><button type="button" id="delete${visits[i].id}" class="btn btn-danger btn-xs visitDelete">Delete</button></td>
     </tr>`);
     $(`#edit${visits[i].id}`).data({ i: i, visit_id: visits[i].id });
+    $(`#duplicate${visits[i].id}`).data({ i: i, visit_id: visits[i].id });
     $(`#delete${visits[i].id}`).data({ i: i, visit_id: visits[i].id });
   }
 
-  // Add duplicate above when ready to wire up
-  //<td><button type="button" id="duplicate" class="btn btn-info btn-xs visitDuplicate">Duplicate</button></td>
 
   ////// Click edit to display visit in form //////
   $('.visitEdit').click(function(event) {
@@ -307,6 +325,14 @@ function append_visits() {
     // Add class to new current_visit
     $(event.target).parent().parent().addClass('current_visit');
     showVisit(visits[i]);
+  });
+
+  ////// Click duplicate to copy visit into form //////
+  $('.visitDuplicate').click(function(event) {
+    let i = $(event.target).data('i');
+    // Remove current visit highlight
+    $(`#edit${current_visit}`).parent().parent().removeClass('current_visit');
+    duplicateVisit(visits[i]);
   });
 
   /////// Prompts user for confirmation then deletes a visit //////
