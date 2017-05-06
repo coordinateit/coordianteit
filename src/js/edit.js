@@ -387,8 +387,9 @@ function visitSubmit() {
     dataType: "json",
     data: data,
     url: "/user/postVisit",
-    success: function() {
-      window.location.reload();
+    success: function(response) {
+      let visit_id = response.visit_id;
+      window.location = `/edit/visit/${visit_id}`;
     }
   });
 }
@@ -415,7 +416,6 @@ function saveVisit(visit_id) {
     data: data,
     url: "/user/updateVisit",
     success: function(response) {
-      let customer_id = response.customer_id;
       window.location = `/edit/visit/${visit_id}`
     }
   });
