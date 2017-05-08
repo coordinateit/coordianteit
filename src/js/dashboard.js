@@ -61,7 +61,6 @@ function visitClick(customerId, index) {
       function click_marker() {
         for (var i = 0; i < markers.length; i++) {
           if (markers[i].id == customerId) {
-            console.log(markers[i].id);
             return google.maps.event.trigger(markers[i], 'click');
           }
         }
