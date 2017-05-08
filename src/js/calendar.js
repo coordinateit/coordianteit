@@ -4,27 +4,23 @@ function initCalendar() {
   let clickTimer;
   $('#calendar').fullCalendar({
     eventClick: function(event, jsEvent) {
-      // Event handler for click vs double click
-      let element = $(jsEvent.target), eventClicker = element.data('eventClicker');
-      if (eventClicker) { // Double click
-        clearTimeout(eventClicker);
-        element.data('eventClicker', '');
-
-      } else { // Single click
-
+      console.log(event);
+      // visitClick(event.customers_id, event.index);
+        closePopovers();
         $(this).popover({
           html:true,
           content:"<button class='btn btn-primary'>Edit</button>",
-          placement:'right',
-          container:'body'
-        }).popover('toggle');
-
-        element.data('eventClicker', setTimeout(function() {
-          element.data('eventClicker', '');
-          visitClick(event.id, event.index);
-        }, 300));
-      }
+          placement:'bottom',
+          trigger: 'manual',
+          container:'.fc-scroller'
+        });
+        if ($('.popover').length === 0){
+          $(this).popover('show');
+        } else {
+          $(this).popover('hide');
+        }
     },
+
     dayClick: function(date, jsEvent) {
       // Event handler for click vs double click
       let element = $(jsEvent.target), dayClicker = element.data('dayClicker');
@@ -78,6 +74,9 @@ function initCalendar() {
   date_range();
 }
 
+function closePopovers() {
+    $('.popover').not(this).popover('hide');
+}
 
 function date_range() {
   let start = $('#calendar').fullCalendar('getView').start._d;
