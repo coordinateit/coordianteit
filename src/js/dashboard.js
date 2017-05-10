@@ -69,6 +69,13 @@ function visitClick(customerId, index) {
   });
 }
 
+function edit_popover_click() {
+  $('.calendar_edit').click(function(event) {
+    let visit_id = $(`#${event.target.id}`).data('visit_id')
+    window.location = `/edit_visit/${visit_id}`
+  });
+}
+
 ////// Schedules object contains timeslot objects for every day with visits //////
 ////// Lookup function checks for available timeslots and increments until finding one available //////
 var schedulesLookup = {
@@ -269,7 +276,7 @@ function visitList(visits) {
     let date = parseDate(visits[i].start);
     let start = parseTime(visits[i].start);
     let end = parseTime(visits[i].end);
-    $(".list").append(`<tr><td>${date}</td><td>${start}</td><td>${visits[i].team_id}<td>${visits[i].customer_name}</td><td>${visits[i].address}</td><td>${visits[i].visit_type}</td><td>${visits[i].crew}</td><td>${visits[i].notes}</td></tr>`);
+    $(".list").append(`<tr><td>${date}</td><td>${start}</td><td>${visits[i].team_id}<td>${visits[i].customer_name}</td><td>${visits[i].address || ''}</td><td>${visits[i].visit_type || ''}</td><td>${visits[i].crew || ''}</td><td>${visits[i].notes || ''}</td></tr>`);
   }
 }
 

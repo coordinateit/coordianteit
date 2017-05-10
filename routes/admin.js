@@ -148,18 +148,27 @@ router.get('/deleteTeam/:teamId', function(req, res, next) {
   if (req.session.isadmin) {
     knex('users')
       .where('team_id', req.params.teamId)
-      .then(function(data) {
-        if (data.length) {
-          res.send({ error: "Please remove members before deleting team." })
+      .then(function(members) {
+        if (members.length) {
+          res.send({ error: "This team still has members assigned." });
         } else {
-          knex('teams')
-            .where('id', req.params.teamId)
-            .del()
-            .then(function() {
-              res.redirect('/admin');
-            })
+          knex('visits')
+            .where('team_id', req.params.teamId)
+            .then(function(teams) {
+              if (teams.length) {
+                res.send({ error: "This team still has visits assigned." });
+              } else {
+                knex('teams')
+                  .where('id', req.params.teamId)
+                  .del()
+                  .then(function() {
+                    res.send({ okay: "The team has been deleted." });
+                  });
+              }
+            });
+
         }
-      })
+      });
   }
 });
 

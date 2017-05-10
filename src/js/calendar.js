@@ -6,23 +6,29 @@ function initCalendar() {
   $('#calendar').fullCalendar({
     eventClick: function(event, jsEvent) {
       visitClick(event.customers_id, event.index)
-      $('.popover').not(this).popover('hide');
-      $(this).popover({
-        html:true,
-        content:`<a href="/edit_visit/${event.visit_id}"><button class='btn btn-primary'>Edit</button></a>`,
-        placement:'bottom',
-        trigger: 'manual',
-        container:'.fc-scroller'
-      });
-      if ($('.popover').length === 0) { // Open popover initially
-        $(this).popover('show');
-        current_cal_event = event.visit_id;
-      } else if (current_cal_event !== event.visit_id) { // Open new popover, close old one
-        $(this).popover('show');
-        current_cal_event = event.visit_id;
-      } else { // Click on same popover to close
-        $(this).popover('hide');
-        current_cal_event = null;
+      if (current_page == 'dashboard') {
+        $('.popover').not(this).popover('hide');
+        $(this).popover({
+          html:true,
+          content:`<button class='btn btn-primary calendar_edit' id='visit${event.visit_id}'>Edit</button>`, // <a href="/edit_visit/${event.visit_id}"></a>
+          placement:'bottom',
+          trigger: 'manual',
+          container:'.fc-scroller'
+        });
+        if ($('.popover').length === 0) { // Open popover initially
+          $(this).popover('show');
+          current_cal_event = event.visit_id;
+          $(`#visit${event.visit_id}`).data('visit_id', event.visit_id || event.id);
+          edit_popover_click();
+        } else if (current_cal_event !== event.visit_id) { // Open new popover, close old one
+          $(this).popover('show');
+          current_cal_event = event.visit_id;
+          $(`#visit${event.visit_id}`).data('visit_id', event.visit_id || event.id);
+          edit_popover_click();
+        } else { // Click on same popover to close
+          $(this).popover('hide');
+          current_cal_event = null;
+        }
       }
     },
 
