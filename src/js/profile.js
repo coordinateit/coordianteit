@@ -43,7 +43,7 @@ function getUsers() {
     url: "/admin/users",
     success: function(data) {
       for (var i = 0; i < data.length; i++) {
-        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone}</td><td>${data[i].isadmin}</td><td><button type="button" id="${data[i].id}edit" class="btn btn-primary btn-xs userEdit">Edit</button></td><td><button type="button" id="${data[i].id}delete" class="btn btn-danger btn-xs userDelete">Delete</button></td></tr>`)
+        $('#allUsers').append(`<tr><td>${data[i].name}</td><td>${data[i].email}</td><td>${data[i].phone || ''}</td><td>${data[i].isadmin}</td><td><button type="button" id="${data[i].id}edit" class="btn btn-primary btn-xs userEdit">Edit</button></td><td><button type="button" id="${data[i].id}delete" class="btn btn-danger btn-xs userDelete">Delete</button></td></tr>`)
       }
       userEditListen();
       userDeleteListen();
@@ -234,24 +234,27 @@ $('#saveTeam').click(function(e) {
 });
 
 $('#clearForm').click(function() {
-  $('#team-name').val() = null;
-  $('#truck').val() = null;
+  $('#team-name').val(null);
+  $('#truck').val(null);
   $('#submitTeam').show();
   $('#saveTeam').hide();
   $('#clearForm').hide();
+  $('#team_error').empty();
 });
 
-//////  //////
-$('#delete-team').click(function(e) {
-  e.preventDefault();
-  console.log(teamFilter);
+$('#teamselect').on('change', function() {
+  $('#team_error').empty();
+});
+
+$('#delete-team').click(function() {
   $.ajax({
     type: "GET",
     datatype: "json",
     url: "/admin/deleteTeam/" + teamFilter,
     success: function(data) {
       if (data.error) {
-        $('#teamSelect').append(`<h3 style="color: red">${data.error}</h3>`)
+        $('#team_error').empty();
+        $('#team_error').append(`<h3 style="color: red">${data.error}</h3>`)
       } else {
         window.location = "/admin";
       }

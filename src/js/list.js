@@ -29,6 +29,6 @@ function makeList(visits) {
     let date = parseDate(visits[i].start);
     let start = parseTime(visits[i].start);
     let end = parseTime(visits[i].end);
-    $(".list").append(`<tr><td>${date}</td><td>${start}</td><td>${end}</td><td>${visits[i].customer_name}</td><td>${visits[i].address}</td><td>${visits[i].visit_type}</td><td>${visits[i].crew}</td></tr>`);
+    $(".list").append(`<tr><td>${date}</td><td>${start}</td><td>${end}</td><td>${visits[i].customer_name}</td><td>${visits[i].address || ''}</td><td>${visits[i].visit_type || ''}</td><td>${visits[i].crew || ''}</td>td>${visits[i].notes || ''}</td></tr>`);
   }
 }
