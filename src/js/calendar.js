@@ -29,6 +29,19 @@ function initCalendar() {
           $(this).popover('hide');
           current_cal_event = null;
         }
+      } else if (current_page == 'edit') {
+        $.ajax({
+          type: 'GET',
+          dataType: 'json',
+          url: `/user/visit/${event.id}`
+        }).then(function(visit) {
+          // Remove current visit highlight
+          $(`#edit${current_visit}`).parent().parent().removeClass('current_visit');
+          // Update current_visit
+          current_visit = visit.id;
+          // Add class to new current_visit
+          showVisit(visit);
+        });
       }
     },
 

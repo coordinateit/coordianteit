@@ -176,7 +176,7 @@ router.get('/visit/:id', auth.userAuth, function(req, res, next) {
     .where('visits.id', req.params.id)
     .first()
     .then(function(visit) {
-      res.send(visit)
+      res.send(visit);
     });
 });
 

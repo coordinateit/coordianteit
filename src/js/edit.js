@@ -242,7 +242,6 @@ $('#get_first_available').click(function() {
 var current_visit;
 ////// Show visit in visit form //////
 function showVisit(visit) {
-  console.log(visit);
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let date = htmlDate(start);
@@ -451,8 +450,7 @@ function map_calendar_visits() {
   return visits.map(function(visit, i) {
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
-  let team = teams[visit.team_id];
-  return { id: visit.id, title: `${team.team_name} - ${visit.visit_type} - ${customer.customer_name} - ${customer.address} - ${customer.phone_1}`, start: start, end: end, index: i }
+  return { id: visit.id, title: `${visit.team_name} - ${visit.visit_type} - ${customer.customer_name} - ${customer.address} - ${customer.phone_1}`, start: start, end: end, index: i }
   });
 }
 
@@ -461,18 +459,6 @@ function visitClick(customerId, visitIndex) {
   $("#create_job").hide();
   $("#create_visit_container").show();
 }
-// 
-// function edit_popover_click() {
-//   $('.calendar_edit').click(function(event) {
-//     let visit_id = $(`#${event.target.id}`).data('visit_id');
-//     console.log(visit_id);
-//     for (var i = 0; i < visits.length; i++) {
-//       if (visits[i].id == visit_id) {
-//         showVisit(visits[i]);
-//       }
-//     }
-//   });
-// }
 
 
 ////////////////////////////////////////////////////////////////////////////////
