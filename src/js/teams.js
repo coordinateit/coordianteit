@@ -16,6 +16,7 @@ function teamList(teams) {
   for (var i = 0; i < teams.length; i++) {
     $('.teams').append(`<option value=${teams[i].id}>${teams[i].team_name}</option>`);
   }
+  teamsReady();
 }
 
 ////// Filter page by team //////
@@ -40,11 +41,8 @@ function displayTeams(){
     }).then(function(response) {
       for (var i = 0; i < response.length; i++) {
         team_names.push(" " + response[i].team_name);
-        console.log(team_names);
       }
-
         $('#display_teams').text("Displaying data for " + team_names + ".");
-
       });
   } else {
     $('#display_teams').text("Displaying data for all teams.");
