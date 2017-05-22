@@ -10,16 +10,10 @@ $(document).ready(function() {
   let calendar_visits = map_calendar_visits();
   initCalendar();
   getTeamList();
-  if (visit.id) {
-    current_visit = visit.id;
-    $(`#edit${current_visit}`).parent().parent().addClass('current_visit');
-    showVisit(visit);
-  } else {
-    $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
-    $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
-    $('#visit_start').val('12:00');
-    $('#visit_end').val('13:00');
-  }
+  $('#search_date').val(new Date().toDateInputValue()); // Make today's date default
+  $('#visit_date').val(new Date().toDateInputValue()); // Make today's date default
+  $('#visit_start').val('12:00');
+  $('#visit_end').val('13:00');
   $('#calendar').fullCalendar('addEventSource', calendar_visits);
   $(`#state option[value="${customer.state}"]`).attr("selected", "selected");
   $(`#customer_type option[value="${customer.customer_type}"]`).attr("selected", "selected");
@@ -32,6 +26,14 @@ Date.prototype.toDateInputValue = (function() {
   local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
   return local.toJSON().slice(0,10);
 });
+
+function teamsReady() {
+  if (visit.id) {
+    current_visit = visit.id;
+    $(`#edit${current_visit}`).parent().parent().addClass('current_visit');
+    showVisit(visit);
+  }
+}
 
 
 
@@ -225,8 +227,13 @@ $('#nearbyVisits').click(function() {
 });
 
 ////// When Check Team Schedule is clicked //////
-$('#checkTeamSchedule').click(function() {
-  checkTeamSchedule();
+$('#check_team_schedule').click(function() {
+  $('#map_tab').tab('show');
+  let date = new Date($('#visit_date').val());
+  let start = date.getTime();
+  let end = start + 86400000; // + 24 hours
+  let teams = [$('#visit_team').val()];
+  getCustomersDateTeam(start, end, teams)
 });
 
 $('#get_first_available').click(function() {
@@ -242,7 +249,6 @@ $('#get_first_available').click(function() {
 var current_visit;
 ////// Show visit in visit form //////
 function showVisit(visit) {
-  console.log(visit);
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
   let date = htmlDate(start);
@@ -252,11 +258,9 @@ function showVisit(visit) {
   $('#visit_start').val(startTime);
   $('#visit_end').val(endTime);
   $('#visit_type').val(visit.visit_type);
-  let team = document.getElementById('visit_team');
-  team.value = visit.team_id;
+  $('#visit_team').val(visit.team_id);
   $('#visit_notes').val(visit.notes);
   $('#visit_crew').val(visit.crew);
-  // $("#create_visit").show();
   $("#visit_save").show();
   $("#visit_submit").hide();
 }
@@ -461,18 +465,7 @@ function visitClick(customerId, visitIndex) {
   $("#create_job").hide();
   $("#create_visit_container").show();
 }
-// 
-// function edit_popover_click() {
-//   $('.calendar_edit').click(function(event) {
-//     let visit_id = $(`#${event.target.id}`).data('visit_id');
-//     console.log(visit_id);
-//     for (var i = 0; i < visits.length; i++) {
-//       if (visits[i].id == visit_id) {
-//         showVisit(visits[i]);
-//       }
-//     }
-//   });
-// }
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
