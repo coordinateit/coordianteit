@@ -454,8 +454,7 @@ function map_calendar_visits() {
   return visits.map(function(visit, i) {
   let start = new Date(parseInt(visit.start));
   let end = new Date(parseInt(visit.end));
-  let team = teams[visit.team_id];
-  return { id: visit.id, title: `${team.team_name} - ${visit.visit_type} - ${customer.customer_name} - ${customer.address} - ${customer.phone_1}`, start: start, end: end, index: i }
+  return { id: visit.id, title: `${visit.team_name} - ${visit.visit_type} - ${customer.customer_name} - ${customer.address} - ${customer.phone_1}`, start: start, end: end, index: i }
   });
 }
 
@@ -464,7 +463,6 @@ function visitClick(customerId, visitIndex) {
   $("#create_job").hide();
   $("#create_visit_container").show();
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
