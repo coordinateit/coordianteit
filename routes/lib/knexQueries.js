@@ -70,10 +70,10 @@ module.exports = {
   },
 
   getFirstAvailable(start, end, teams, range) {
-    console.log(range);
-    return knex('teams')
-      .join('visits', 'teams.id', 'visits.team_id')
+    return knex.select('visits.id as visit_id', 'start', 'end', 'customer_name', 'address', 'city', 'visit_type', 'crew', 'team_id', 'team_name', 'customers_id as id', 'lat', 'lng')
+      .from('visits')
       .join('customers', 'visits.customers_id', 'customers.id')
+      .join('teams', 'visits.team_id', 'teams.id')
       .where(function() {
         if (teams) {
           this.whereIn('team_id', teams)

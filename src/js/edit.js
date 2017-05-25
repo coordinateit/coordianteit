@@ -69,7 +69,7 @@ function teamsReady() {
     let lat = parseFloat(customer.lat);
     let lng = parseFloat(customer.lng);
     if (radius) {
-      let r = radius / 69;
+      let r = radius / 29;
       range = { lat_hi: (lat + r/2), lat_lo: (lat - r/2), lng_hi: (lng + r/2), lng_lo: (lng - r/2) };
     }
     let search_params = { start: start, end: end, teams: JSON.stringify(teams), range: JSON.stringify(range) };
@@ -91,15 +91,18 @@ function teamsReady() {
       });
       let keys = [];
       let customers_arr = [];
+      // Push unique instance of each customer id into keys array
       for (var i = 0; i < visits.length; i++) {
-        if (!keys.includes(visits[i].customers_id)) {
-          keys.push(visits[i].customers_id)
+        if (!keys.includes(visits[i].id)) {
+          keys.push(visits[i].id)
         }
       }
+      console.log(keys);
+      // For each in customer array, push all visits for that customer, then sort visits by time
       for (var i = 0; i < keys.length; i++) {
         let visits_arr = [];
         for (var j = 0; j < visits.length; j++) {
-          if (visits[j].customers_id === keys[i]) {
+          if (visits[j].id === keys[i]) {
            visits_arr.push(visits[j])
           }
         }
@@ -118,13 +121,13 @@ function teamsReady() {
           let schedule = visits.filter(function(visit) {
             return visit.team_id === visits_arr[i].team_id && visit.start > start && visit.start < end;
           });
-          let miles = (visits_arr[i].coord_distance * 69).toFixed(1);
+          let miles = (visits_arr[i].coord_distance * 56).toFixed(1);
           // TODO: Join with teams to get team name, add team name below instead of ID
           if (!days.includes(start)) {
             days.push(start);
             $('#first_available_list').append(`
               <li data-toggle="collapse" data-target="#first_available_visit_${i}${h}" class="collapsed">
-                <h4>Team ${visits_arr[i].team_id} - ${miles} miles - ${parseDate(visits_arr[i].start)}</h4>
+                <h4>${visits_arr[i].team_name} - ${miles} miles - ${parseDate(visits_arr[i].start)}</h4>
                 <ul class="sub-menu collapse" id="first_available_visit_${i}${h}">
                   <li>
                     <table id="first_available_table_${i}${h}" class="table table-striped">
@@ -142,12 +145,8 @@ function teamsReady() {
                 </ul>
               </li>`);
             for (var j = 0; j < schedule.length; j++) {
-              let highlight = "";
-              if (schedule[j].customers_id === visits_arr[i].customers_id) {
-                highlight = "highlight";
-              }
               $(`#first_available_table_${i}${h}`).append(`
-                <tr class="${highlight}">
+                <tr>
                   <td>${parseDate(visits_arr[i].start)}</td>
                   <td>${parseTime(schedule[j].start)}</td>
                   <td>${parseTime(schedule[j].end)}</td>
