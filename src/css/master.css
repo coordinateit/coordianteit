@@ -319,7 +319,7 @@ footer {
   clear: both;
 }
 
-.print-cal{
+.print-cal {
   height: 100%;
   width: 100%;
   padding: 3rem;
@@ -331,4 +331,14 @@ footer {
 
 #display_teams {
   margin-top: 7px;
+}
+
+@media print {
+  .noprint {
+    display: none;
+  }
+  .cal-container {
+    float: none;
+    width: 100%;
+  }
 }
