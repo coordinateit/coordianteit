@@ -55,6 +55,9 @@ function teamsReady() {
     makeMarker(position, no_address);
   }
 
+// Use bounds variable to resize map when needed
+  var bounds;
+
 // Search visits by team/date/location
   function get_first_available() {
     $('#list_tab_button').tab('show');
@@ -97,7 +100,6 @@ function teamsReady() {
           keys.push(visits[i].id)
         }
       }
-      console.log(keys);
       // For each in customer array, push all visits for that customer, then sort visits by time
       for (var i = 0; i < keys.length; i++) {
         let visits_arr = [];
@@ -160,11 +162,12 @@ function teamsReady() {
         }
       }
       if (window.customer && !visits.error) {
-        makeMarkers(visits.filter(function(localCustomer) {
+        visits = visits.filter(function(localCustomer) {
           return localCustomer.id !== customer.id;
-        }), customer);
+        });
+        bounds = makeMarkers(visits, customer);
       } else if (!visits.error) {
-        makeMarkers(visits);
+        bounds = makeMarkers(visits);
       } else {
         for (var i = 0; i < markers.length; i++) {  // Clear markers
           markers[i].setMap(null);
@@ -172,6 +175,12 @@ function teamsReady() {
       }
     });
   }
+
+  $('#map_tab').click(function() {
+    setTimeout(function () {
+      map.fitBounds(bounds);
+    }, 10);
+  });
 
 
 

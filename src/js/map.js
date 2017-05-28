@@ -9,6 +9,7 @@ function initMap() {
     center: position,
     zoom: 11,
     maxZoom: 18,
+    minZoom: 8,
     fullscreenControl: true
   });
   mapReady();
@@ -128,4 +129,5 @@ function makeMarkers(customers, currentCustomer) {
     bounds.extend(position);
   }
   map.fitBounds(bounds);
+  return bounds;
 }
