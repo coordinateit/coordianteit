@@ -48,16 +48,18 @@ function initCalendar() {
     dayClick: function(date, jsEvent) {
       // Event handler for click vs double click
       let element = $(jsEvent.target), dayClicker = element.data('dayClicker');
-      if (dayClicker) {
+      if (dayClicker) { // Double click
+        console.log('second click');
         clearTimeout(dayClicker);
         element.data('dayClicker', '');
         let dateObj = date._d;
         showVisitCreate(dateObj);
-      } else {
+      } else { // Single click
+        console.log('first click');
         element.data('dayClicker', setTimeout(function() {
           element.data('dayClicker', '');
           showDay();
-        }, 300));
+        }, 500));
       }
       // On single click, show day
       function showDay() {
@@ -73,7 +75,6 @@ function initCalendar() {
         $('#visit_start').val(htmlTime(date));
         date.setHours(date.getHours() + 1);
         $('#visit_end').val(htmlTime(date));
-
       }
     },
     eventMouseover: function() {

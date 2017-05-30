@@ -83,6 +83,7 @@ function teamsReady() {
       data: search_params,
       url: url
     }).then(function(visits) {
+      console.log(visits);
       // TODO: add radius
       visits.map(function(visit) {
         let x = Math.abs(lng - parseFloat(visit.lng));
@@ -100,6 +101,7 @@ function teamsReady() {
           keys.push(visits[i].id)
         }
       }
+      console.log(keys);
       // For each in customer array, push all visits for that customer, then sort visits by time
       for (var i = 0; i < keys.length; i++) {
         let visits_arr = [];
@@ -111,55 +113,66 @@ function teamsReady() {
         visits_arr.sort(function(a, b) {
          return a.start - b.start;
         });
+        console.log(visits_arr);
         customers_arr.push(visits_arr);
       }
-      for (var h = 0; h < customers_arr.length; h++) {
-        let visits_arr = customers_arr[h];
-        let days = [];
-        for (var i = 0; i < visits_arr.length; i++) {
-          let date = new Date(parseInt(visits_arr[i].start));
-          let start = date.setHours(0,0,0,0);
-          let end = start + 86400000;
-          let schedule = visits.filter(function(visit) {
-            return visit.team_id === visits_arr[i].team_id && visit.start > start && visit.start < end;
-          });
-          let miles = (visits_arr[i].coord_distance * 56).toFixed(1);
-          // TODO: Join with teams to get team name, add team name below instead of ID
-          if (!days.includes(start)) {
-            days.push(start);
-            $('#first_available_list').append(`
-              <li data-toggle="collapse" data-target="#first_available_visit_${i}${h}" class="collapsed">
-                <h4>${visits_arr[i].team_name} - ${miles} miles - ${parseDate(visits_arr[i].start)}</h4>
-                <ul class="sub-menu collapse" id="first_available_visit_${i}${h}">
-                  <li>
-                    <table id="first_available_table_${i}${h}" class="table table-striped">
-                      <tr>
-                        <th>Date</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Customer Name</th>
-                        <th>Address</th>
-                        <th>Visit Type</th>
-                        <th>Crew</th>
-                      </tr>
-                    </table>
-                  </li>
-                </ul>
-              </li>`);
-            for (var j = 0; j < schedule.length; j++) {
-              $(`#first_available_table_${i}${h}`).append(`
-                <tr>
-                  <td>${parseDate(visits_arr[i].start)}</td>
-                  <td>${parseTime(schedule[j].start)}</td>
-                  <td>${parseTime(schedule[j].end)}</td>
-                  <td>${visits_arr[i].customer_name}</td>
-                  <td>${visits_arr[i].address}, ${visits_arr[i].city}</td>
-                  <td>${schedule[j].visit_type}</td>
-                  <td>${schedule[j].crew}</td>
-                </tr>`);
+      if (customers_arr.length) {
+        let search_date = parseDate(start);
+        $('#first_available_list').append(`<h3>Showing within ${radius} miles of Customer Location</h3>`);
+        // $('#first_available_list').append(`<h3>Searching visits within ${number_days} days of ${search_date} and within ${radius} miles.</h3>`);
+        for (var h = 0; h < customers_arr.length; h++) {
+          let visits_arr = customers_arr[h];
+          let days = [];
+          for (var i = 0; i < visits_arr.length; i++) {
+            let date = new Date(parseInt(visits_arr[i].start));
+            let start = date.setHours(0,0,0,0);
+            let end = start + 86400000;
+            let schedule = visits.filter(function(visit) {
+              return visit.team_id === visits_arr[i].team_id && visit.start > start && visit.start < end;
+            });
+            let miles = (visits_arr[i].coord_distance * 56).toFixed(1);
+            if (!days.includes(start)) {
+              days.push(start);
+              $('#first_available_list').append(`
+                <li data-toggle="collapse" data-target="#first_available_visit_${i}${h}" class="collapsed">
+                  <h4>${visits_arr[i].team_name} - ${miles} miles - ${parseDate(visits_arr[i].start)}</h4>
+                  <ul class="sub-menu collapse" id="first_available_visit_${i}${h}">
+                    <li>
+                      <table id="first_available_table_${i}${h}" class="table table-striped">
+                        <tr>
+                          <th>Date</th>
+                          <th>Start Time</th>
+                          <th>End Time</th>
+                          <th>Customer Name</th>
+                          <th>Address</th>
+                          <th>Visit Type</th>
+                          <th>Crew</th>
+                        </tr>
+                      </table>
+                    </li>
+                  </ul>
+                </li>`);
+              for (var j = 0; j < schedule.length; j++) {
+                let highlight = "";
+                if (schedule[j].id === customers_arr[h][0].id) {
+                  highlight = "highlight";
+                }
+                $(`#first_available_table_${i}${h}`).append(`
+                  <tr class="${highlight}">
+                    <td>${parseDate(schedule[j].start)}</td>
+                    <td>${parseTime(schedule[j].start)}</td>
+                    <td>${parseTime(schedule[j].end)}</td>
+                    <td>${schedule[j].customer_name}</td>
+                    <td>${schedule[j].address}, ${schedule[j].city}</td>
+                    <td>${schedule[j].visit_type}</td>
+                    <td>${schedule[j].crew}</td>
+                  </tr>`);
+              }
             }
           }
         }
+      } else {
+        $('#first_available_list').append('<h3>No Nearby Visits, Try Increasing Search Radius</h3>');
       }
       if (window.customer && !visits.error) {
         visits = visits.filter(function(localCustomer) {
@@ -240,8 +253,11 @@ $('#check_team_schedule').click(function() {
   let date = new Date($('#visit_date').val());
   let start = date.getTime();
   let end = start + 86400000; // + 24 hours
-  let teams = [$('#visit_team').val()];
-  getCustomersDateTeam(start, end, teams)
+  let team = [$('#visit_team').val()];
+  let team_name = $(`#visit_team option[value='${team[0]}']`).text();
+  $('#map_message').empty();
+  $('#map_message').append(`<h3>Showing schedule for ${team_name} on ${parseDate(start)}</h3>`);
+  getCustomersDateTeam(start, end, team)
 });
 
 $('#get_first_available').click(function() {
@@ -271,13 +287,15 @@ function showVisit(visit) {
   $('#visit_crew').val(visit.crew);
   $("#visit_save").show();
   $("#visit_submit").hide();
+  $('#edit_message').empty();
 }
 
 function duplicateVisit(visit) {
-  let start = new Date(parseInt(visit.start));
+  let start = parseInt(visit.start);
+  let newStart = new Date(start + 86400000);
   let end = new Date(parseInt(visit.end));
-  let date = htmlDate(start);
-  let startTime = htmlTime(start);
+  let date = htmlDate(newStart);
+  let startTime = htmlTime(newStart);
   let endTime = htmlTime(end);
   $('#visit_date').val(date);
   $('#visit_start').val(startTime);
@@ -288,8 +306,11 @@ function duplicateVisit(visit) {
   $('#visit_notes').val(visit.notes);
   $('#visit_crew').val(visit.crew);
   // $("#create_visit").show();
+  $('#visit_submit').text('Confirm Duplicate');
   $("#visit_save").hide();
   $("#visit_submit").show();
+  $('#edit_message').empty();
+  $('#edit_message').append(`<h3>Creating duplicate of ${parseDate(start)}</h3>`);
 }
 
 
@@ -446,6 +467,10 @@ $('#clear_visit').click(function() {
   $("#saveVisitSubmit").hide();
   $("#visitSubmit").show();
   $("#visit_list").show();
+  $("#visit_save").hide();
+  $("#visit_submit").show();
+  $('#visit_submit').text('Confirm');
+  $('#edit_message').empty();
   // Remove current visit highlight
   $(`#edit${current_visit}`).parent().parent().removeClass('current_visit');
   // Update_current visit to null
