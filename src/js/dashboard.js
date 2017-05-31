@@ -18,6 +18,10 @@ function filter_vendor_visit(visits) {
   });
 }
 
+function teamsReady() {
+  // Placeholder for function (used on other pages)
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
