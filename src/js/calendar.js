@@ -1,8 +1,7 @@
-var current_cal_event;
+var current_cal_event, doubleclickTimeout, slotMoment;
 ////// Initialize calendar and display visits //////
 function initCalendar() {
-  let clickTimer;
-  let popover_element;
+  let clickTimer, popover_element;
   $('#calendar').fullCalendar({
     eventClick: function(event, jsEvent) {
       visitClick(event.customers_id, event.index)
@@ -45,37 +44,14 @@ function initCalendar() {
       }
     },
 
-    dayClick: function(date, jsEvent) {
-      // Event handler for click vs double click
-      let element = $(jsEvent.target), dayClicker = element.data('dayClicker');
-      if (dayClicker) { // Double click
-        console.log('second click');
-        clearTimeout(dayClicker);
-        element.data('dayClicker', '');
-        let dateObj = date._d;
-        showVisitCreate(dateObj);
-      } else { // Single click
-        console.log('first click');
-        element.data('dayClicker', setTimeout(function() {
-          element.data('dayClicker', '');
-          showDay();
-        }, 500));
+    dayClick: function(date) {
+      if(doubleclickTimeout){
+        clearTimeout(doubleclickTimeout);
+        doubleclickTimeout = null;
       }
-      // On single click, show day
-      function showDay() {
-        $('#calendar').fullCalendar('gotoDate', date);
-        $('#calendar').fullCalendar('changeView', 'agendaDay');
-        filter_by_team();
-      }
-      // On double click, create visit
-      function showVisitCreate(date) {
-        date.setHours(date.getHours() + 6);
-        $('#visit-quick-create').modal();
-        $('#visit_date').val(htmlDate(date));
-        $('#visit_start').val(htmlTime(date));
-        date.setHours(date.getHours() + 1);
-        $('#visit_end').val(htmlTime(date));
-      }
+      slotMoment = date;
+      $("#calendar").on("mousemove", forgetSlot);
+      doubleclickTimeout = window.setTimeout(showDay, 300);
     },
     eventMouseover: function() {
       document.body.style.cursor = "pointer";
@@ -107,4 +83,36 @@ function date_range() {
   start = start.getTime();
   end = end.getTime();
   return { start: start, end: end }
+}
+
+// On single click, show day
+function showDay(date) {
+  $('#calendar').fullCalendar('gotoDate', date);
+  $('#calendar').fullCalendar('changeView', 'agendaDay');
+  filter_by_team();
+}
+
+function forgetSlot(){
+    slotMoment = null;
+    $("#calendar").off("mousemove", forgetSlot);
+}
+
+$("#calendar").dblclick(function() {
+    if(slotMoment){
+      window.clearTimeout(doubleclickTimeout);
+      doubleclickTimeout = null;
+      let dateObj = slotMoment._d;
+      showVisitCreate(dateObj);
+    }
+});
+
+
+// On double click, create visit
+function showVisitCreate(date) {
+  date.setHours(date.getHours() + 6);
+  $('#visit-quick-create').modal();
+  $('#visit_date').val(htmlDate(date));
+  $('#visit_start').val(htmlTime(date));
+  date.setHours(date.getHours() + 1);
+  $('#visit_end').val(htmlTime(date));
 }
